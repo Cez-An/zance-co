@@ -1,0 +1,10 @@
+.error-message {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 5px;
+    font-weight: bold;
+}
+.login_style{
+	background: linear-gradient(to bottom, #ccc, #7d56c2);
+
+}

@@ -15,18 +15,16 @@ const userSchema = new Schema(
     },
     phone: {
       type: String,
-      required: false,
-      unique: false,
       sparse: true,
       default: null,
+      required:false
     },
     gender: {
       type: String,
       enum: ["male", "female"],
     },
     googleId: {
-      type: String,
-      unique: true,
+      type: String,      
     },
     password: {
       type: String,

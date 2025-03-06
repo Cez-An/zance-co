@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> USER LOGIN </title>
+    <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
+    <link rel="icon" type="image/x-icon" href="/favicon/favicon.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.4/components/logins/login-5/assets/css/login-5.css">
+    <link rel="stylesheet" href="/css/signin.css">
+
+</head>
+
+<body class="login_style d-flex align-items-center justify-content-center vh-100">
+
+<section class="p-3 p-md-4 p-xl-5 mt-3">
+
+  <div class="container h-100 d-flex align-items-center justify-content-center">
+
+    <div class="card border-light-subtle shadow-lg">
+      <div class="row g-0">
+        <div class="col-12 col-md-6 text-bg-light">
+          <div class="d-flex align-items-center justify-content-center h-100">
+            <div class="col-10 col-xl-8 py-3">
+              <!-- <h1 class="h1 text-center mb-4">Welcome to zance&co</h1>
+              <p class="h6 text-center my-2">Go Beyond Limits</p> -->
+              <a href="/"><img class="img-fluid signup-logo" src="/img/logo/ZANCE&co _SignUp_page_logo.svg" alt=""></a>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6">
+          <div class="card-body p-3 p-md-4 p-xl-5">
+            <div class="row">
+              <div class="col-12">
+                <div class="mb-5">
+                  <h3>Sign Up</h3>
+                </div>
+              </div>
+            </div>
+            <form id="signinform" action="/user/signup" method="post">
+              <div class="row gy-3 gy-md-4 overflow-hidden">
+                
+                <div class="col-12">
+                  <label for="name" class="form-label">Full Name <span class="text-danger">*</span></label>
+                  <input type="name" class="form-control" name="name" id="name" placeholder="" >
+                  <div id="name-error" class="error-message"></div>
+                </div>
+
+                <div class="col-12">
+                  <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                  <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com" >
+                  <div id="email-error" class="error-message"></div>
+                </div>
+                <div class="col-12">
+                  <label for="tel" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                  <input type="tel" class="form-control" name="number" id="number" placeholder="+91 XXXXXXXXXX" >
+                  <div id="number-error" class="error-message"></div>
+                </div>
+                <div class="col-12">
+                  <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                  <input type="password" class="form-control" name="password" id="password" placeholder="XXXXXXXXXX" value="" >
+                  <div id="password-error" class="error-message"></div>
+                </div>
+                <div class="col-12">
+                    <label for="password" class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                    <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="XXXXXXXXXX" value="" >
+                    <div id="confirm-password-error" class="error-message"></div>
+                  </div>
+                  
+                  <% if (locals.message && message.length > 0) { %>
+                   <div class="alert alert-danger text-center">
+                        <%=message %>
+                   </div>
+                  <% } %>
+                
+                <div class="col-12">
+                  <div class="d-grid">
+                    <button  class="btn bsb-btn-xl btn-dark" type="submit">Sign Up</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div class="row">
+              <div class="col-12">
+                <hr class="mt-3 mb-3 border-secondary-subtle">
+                <div class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-center">
+                  <a href="/user/login" class="link-secondary text-decoration-none"> <b>Got back to login</b> </a>
+                  <a href="/auth/google" class="link-secondary text-decoration-none"> <b>Sign up with Google  <i class="bi bi-google"></i></b> </a>
+                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("signinform").addEventListener("submit", function (event) {
+        event.preventDefault();
+        let isValid = true;
+
+        // Clear previous errors
+        document.querySelectorAll(".error-message").forEach(el => el.textContent = "");
+
+        // Get form values
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const number = document.getElementById("number").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const confirmPassword = document.getElementById("confirmPassword").value.trim();
+
+        // Validate Name
+        if (name === "") {
+            document.getElementById("name-error").textContent = "Full name is required.";
+            isValid = false;
+        }
+
+        // Validate Email
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email)) {
+            document.getElementById("email-error").textContent = "Enter a valid email address.";
+            isValid = false;
+        }
+
+        // Validate Phone Number
+        const phonePattern = /^\+?\d{10,15}$/;
+        if (!phonePattern.test(number)) {
+            document.getElementById("number-error").textContent = "Enter a valid phone number.";
+            isValid = false;
+        }
+
+        // Validate Password
+        const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d).{6,}$/;
+        // const passwordPattern = /^[A-Za-z]{6,}$/;
+
+
+        if (!passwordPattern.test(password)) {
+            document.getElementById("password-error").textContent = "Password must be at least 6 characters long and contain at least one letter and one number.";
+            isValid = false;
+        }
+
+        // Validate Confirm Password
+        if (password !== confirmPassword) {
+            document.getElementById("confirm-password-error").textContent = "Passwords do not match.";
+            isValid = false;
+        }
+
+        // If all validations pass, submit the form
+        if (isValid) {
+            this.submit();
+        }
+    });
+});
+</script>
+
+</body>
+</html>
+
+<!-- 
+                <form>
+                  <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="name"
+                      placeholder="Enter Name"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input
+                      type="email"
+                      class="form-control"
+                      id="email"
+                      placeholder="Enter email"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="phone"
+                      placeholder="Enter phone number"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="password">Password</label>
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="password"
+                      placeholder="Password"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="confirm-password"
+                      placeholder="Confirm Password"
+                    />
+                  </div>
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <button type="submit" class="btn btn-primary">
+                      Sign Up
+                    </button>
+                    <div class="mt-2px">
+                      <p>or sign up with</p>
+                    </div>
+                    <div class="social-btns">
+                      <button type="button" class="btn btn-outline-danger">
+                        <img
+                          src="img/googlesignup.png"
+                          alt="Google Logo"
+                          style="width: 24px; height: 24px"
+                        />
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+               -->

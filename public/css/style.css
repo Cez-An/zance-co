@@ -20,13 +20,19 @@
 /*----------------------------------------*/
 /* Template default CSS
 /*----------------------------------------*/
-
 html,
 body {
+
 	height: 100%;
 	font-family: "Nunito Sans", sans-serif;
 	-webkit-font-smoothing: antialiased;
+	background-color: hsla(0, 0%, 78%, 0.341);
+	/* background: linear-gradient(to bottom, #0B0212 0%, #5D2A92 50%, #0B0212 100%); */
+	background-attachment: fixed;
+	background-size: cover;
+	
 }
+
 
 h1,
 h2,
@@ -307,7 +313,8 @@ ol {
 -----------------------*/
 
 .header {
-	background: #ffffff;
+	background: #0B0212;
+	
 }
 
 .header__top {
@@ -402,15 +409,15 @@ ol {
 	display: inline-block;
 }
 
-.header__menu {
+.header__menu {						         /* NAVBAR LIST PADDING  */
 	text-align: center;
-	padding: 26px 0 25px;
+	padding-top: 22px ;
 }
 
-.header__menu ul li {
+.header__menu ul li {                        /* NAVBAR LIST SPACING  */
 	list-style: none;
 	display: inline-block;
-	margin-right: 45px;
+	margin-right: 30px;
 	position: relative;
 }
 
@@ -425,9 +432,8 @@ ol {
 	-ms-transform: scale(1);
 	transform: scale(1);
 }
-
-.header__menu ul li:hover .dropdown {
-	top: 32px;
+.header__menu ul li:hover .dropdown {             /* dropdown position  */
+	top: 38px;
 	opacity: 1;
 	visibility: visible;
 }
@@ -436,12 +442,12 @@ ol {
 	margin-right: 0;
 }
 
-.header__menu ul li .dropdown {
+.header__menu ul li .dropdown {					  /* dropdown position  */
 	position: absolute;
 	left: 0;
 	top: 56px;
 	width: 150px;
-	background: #111111;
+	background: #6510DC;
 	text-align: left;
 	padding: 5px 0;
 	z-index: 9;
@@ -471,7 +477,7 @@ ol {
 
 .header__menu ul li a {
 	font-size: 18px;
-	color: #111111;
+	color: #ffffff;
 	display: block;
 	font-weight: 600;
 	position: relative;
@@ -484,7 +490,7 @@ ol {
 	bottom: 0;
 	width: 100%;
 	height: 2px;
-	background: #e53637;
+	background: #6510DC;
 	content: "";
 	-webkit-transition: all, 0.5s;
 	-o-transition: all, 0.5s;
@@ -494,38 +500,45 @@ ol {
 	transform: scale(0);
 }
 
-.header__nav__option {
+.header__nav__option {               			/* LOVE CART SEARCH MENU*/
 	text-align: right;
-	padding: 30px 0;
+	font-size: 15px;	
+	padding-top: 27px;
+}
+.header__nav__option a:hover {               			/* LOVE CART SEARCH MENU*/
+	color: red;
+	
+
 }
 
-.header__nav__option a {
+ .header__nav__option a {                         /* change here */
 	display: inline-block;
-	margin-right: 26px;
+	margin-right: 18px;
+	color: #cccccc;
 	position: relative;
 }
 
-.header__nav__option a span {
-	color: #0d0d0d;
+/* .header__nav__option a span { 			 NOT NEEDED */
+	/* color: #0d0d0d;
 	font-size: 11px;
 	position: absolute;
 	left: 5px;
 	top: 8px;
-}
+} */
 
 .header__nav__option a:last-child {
 	margin-right: 0;
 }
 
-.header__nav__option .price {
-	font-size: 15px;
+/*.header__nav__option .price {           NOT NEEDED */
+	/* font-size: 18px;
 	color: #111111;
 	font-weight: 700;
 	display: inline-block;
 	margin-left: -20px;
 	position: relative;
 	top: 3px;
-}
+} */
 
 .offcanvas-menu-wrapper {
 	display: none;
@@ -1928,7 +1941,7 @@ ol {
 -----------------------*/
 
 .footer {
-	background: #111111;
+	background: #ececec;     /* FOTER COLOR CHANGE   */
 	padding-top: 70px;
 }
 
@@ -1945,7 +1958,7 @@ ol {
 }
 
 .footer__about p {
-	color: #b7b7b7;
+	color: #000000;
 	margin-bottom: 30px;
 }
 
@@ -1954,7 +1967,7 @@ ol {
 }
 
 .footer__widget h6 {
-	color: #ffffff;
+	color: #000000;
 	font-size: 15px;
 	font-weight: 700;
 	text-transform: uppercase;
@@ -1968,7 +1981,7 @@ ol {
 }
 
 .footer__widget ul li a {
-	color: #b7b7b7;
+	color: #000000;
 	font-size: 15px;
 }
 
@@ -2022,13 +2035,13 @@ ol {
 }
 
 .footer__copyright__text {
-	border-top: 1px solid rgba(255, 255, 255, 0.1);
+	border-top: 1px solid rgba(0, 0, 0, 0.1);
 	padding: 20px 0;
 	margin-top: 40px;
 }
 
 .footer__copyright__text p {
-	color: #b7b7b7;
+	color: #000000;
 	margin-bottom: 0;
 }
 
@@ -3359,16 +3372,31 @@ ol {
 	.container {
 		max-width: 1170px;
 	}
+	
+	
 }
 
 /* Medium Device = 1200px */
 
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
+	.header__menu ul li a {
+		font-size: 14px;
+		color: #ffffff;
+		display: block;
+		font-weight: 600;
+		position: relative;
+		padding: 3px 0;
+	}
+	.header__nav__option {               			/* LOVE CART SEARCH MENU*/
+		text-align: right;
+		font-size: 12px;	
+		padding-top: 27px;
+	}
 	.categories__text h2 {
 		font-size: 26px;
 	}
 	.header__menu ul li {
-		margin-right: 38px;
+		margin-right: 35px;
 	}
 	.hero__slider.owl-carousel .owl-nav button {
 		left: 2px;
@@ -3611,7 +3639,7 @@ ol {
 	}
 	.offcanvas__nav__option a {
 		display: inline-block;
-		margin-right: 26px;
+		margin-right: 18px;
 		position: relative;
 	}
 	.offcanvas__nav__option a span {
@@ -3839,4 +3867,25 @@ ol {
 	.categories__text:before {
 		height: 250px;
 	}
+}
+
+.nav_logo{
+	margin-top: -10px;
+	/* margin-left: auto; */
+}
+.nav-bar-size{												/* Nav-bar padding LEFT RIGHT */
+	width: 100%;	
+	height: 80px;
+	background-color: #ffffff00;
+	margin-left: 0px;
+	margin-right: 300px;
+}
+.signup-logo{
+	width: auto;
+	height: 110px;
+}
+
+.login_style{
+	background: linear-gradient(to bottom, #ccc, #7d56c2);
+
 }

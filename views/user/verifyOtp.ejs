@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Confirmation</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to bottom, #e6e6e6, #6a40bf);
+        }
+
+        .container-custom {
+            max-width: 800px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .otp-box {
+            padding: 30px;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+        }
+
+        .otp-input {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container container-custom p-4">
+        <div class="row">
+            <!-- Left Section -->
+            <div class="col-md-6 d-flex align-items-center justify-content-center flex-column">
+                <img src="/img/logo/ZANCE&co _SignUp_page_logo.svg" class="img-fluid" alt="Logo">
+            </div>
+            <!-- Right Section -->
+            <div class="col-md-6 d-flex align-items-center">
+                <div class="otp-box w-100">
+                    <h2>Confirm with OTP</h2>
+                    <p>Please check your mail address for OTP</p>
+                    <form id="otpForm" action="/user/verifyOtp" method="post" onsubmit="return validateOTPForm(event)">
+                        <input type="text" name="otp" class="form-control otp-input mb-3" id="otp-input" placeholder="Enter OTP"
+                            maxlength="4" required>
+                        <button type="submit" class="btn btn-dark w-100">Confirm</button>
+                    </form>
+                    <a href="/login" class="d-block mt-3">Go back to Login page</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function validateOTPForm(event) {
+            event.preventDefault();
+
+            const otpInput = document.getElementById('otp-input').value;
+
+            $.ajax({
+                type: "post",
+                url: '/user/verifyOtp',
+                data: JSON.stringify({ otp: otpInput }),
+                contentType: "application/json",
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: "OTP Verified Sussefully",
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            window.location.href = response.redirectUrl
+                        })
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.message,
+                        })
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Invalid OTP',
+                        text: 'Please try Again'
+                    })
+                }
+            })
+            return false;
+        }
+    </script>
+</body>
+
+</html>

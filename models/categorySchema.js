@@ -9,9 +9,15 @@ const categorySchema = new Schema(
       required: true,
       unique: true,
     },
-    description: {
-      type: String,
-      required: true,
+    count: {
+      type: Number,
+      required: false,
+      default:0,
+    },
+    discount:{
+      type:Number,
+      required:false,
+      default:0,
     },
     isListed: {
       type: Boolean,

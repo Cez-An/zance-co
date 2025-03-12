@@ -18,7 +18,9 @@ router.get('/unBlockCustomer',adminAuth,customerController.customerUnBlocked)
 //category Management
 router.get('/category',adminAuth,categoryController.categoryInfo)
 router.get('/categoryAdd',adminAuth,categoryController.loadCategoryAdd)
+router.get('/categoryEdit/:id',adminAuth,categoryController.loadCategoryEdit)
 router.post('/category',adminAuth,categoryController.addCategory)
+router.put('/category/',adminAuth,categoryController.updateCategory)
 
 //post methods
 router.post('/login',adminController.login)

@@ -276,10 +276,15 @@
                         <% categoryData.forEach(element => { %>  
                     <tr>
                         <td><%=element.name  %></td>
-                        <td><%=element.isListed  %></td>
-                        <td><%=element.isListed  %></td>
-     
-                                                
+                        <td><%=element.count  %></td>
+                        <td><%=element.discount  %></td>
+                        <td><% if (element.isListed===true) { %>
+                            <button class="btn btn-success">Ative</button>
+                        <% } else{ %>
+                            <button class="btn btn-danger">Blocked</button>
+                        <% } %>
+                    </td>
+                        <td><a href="/admin/categoryEdit/<%=element._id %>">edit</a></td>                                                   
                     </tr>
                        <%  }); %>              
                     

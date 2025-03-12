@@ -1,3 +1,4 @@
+import { render } from "ejs";
 import STATUS_CODE from "../../helpers/statusCode.js";
 import Category from "../../models/categorySchema.js";
 
@@ -5,7 +6,8 @@ import Category from "../../models/categorySchema.js";
 
 const categoryInfo = async (req, res) => {
   try {
-
+      console.log('Accessed categoryInfo');
+      
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const skip = (page - 1) * limit;
@@ -33,24 +35,37 @@ const categoryInfo = async (req, res) => {
 
 
 
+
 const addCategory = async (req, res) => {
-  const { name, description,visibilityStatus } = req.body;
+
+  console.log('accessed add category');
+  
+  const { name, visibilityStatus, categoryDiscount } = req.body;
   console.log(req.body);
   
   try {
+
     const existingcategory = await Category.findOne({ name });
     console.log(existingcategory);
 
     if (existingcategory) {
 
-      return res.render('admin/category',{message:'Category Already Exists'})
+      return res.render('admin/categoryAdd',{message:'Category Already Exists'})
         
+    }
+    let status;
+
+    if(visibilityStatus==='Active'){
+      let status = true;
+
+    }else{
+      let status = false;
     }
 
     const newCategory = new Category({
       name,
-      description,
-      isListed:visibilityStatus,
+      isListed:status,
+      discount:categoryDiscount,
     });
 
     await newCategory.save();
@@ -65,6 +80,10 @@ const addCategory = async (req, res) => {
   }
 };
 
+
+
+
+
 const loadCategoryAdd = async(req,res)=>{
     try {
 
@@ -75,4 +94,43 @@ const loadCategoryAdd = async(req,res)=>{
     }
 }
 
-export default { categoryInfo, addCategory, loadCategoryAdd };
+
+
+const loadCategoryEdit = async(req,res)=>{
+  try {
+    const id = req.params.id;
+    const category = await Category.findOne({_id:id});
+    console.log(category);
+    
+    res.render('admin/categoryEdit',{category})
+  } catch (error) {
+    res.redirect('/error');
+  }
+}
+
+
+
+const updateCategory = async(req,res)=>{
+  try {
+    
+    let {categoryName,visibilityStatus,categoryDiscount,categoryId} =req.body;
+    console.log(categoryId);
+    if(visibilityStatus==='Active'){
+      visibilityStatus = true;
+    }else{
+      visibilityStatus = false;
+    }
+
+    const category = await Category.findById({_id:categoryId})
+    category.name = categoryName;
+    category.isListed = visibilityStatus;
+    category.discount = categoryDiscount;
+
+    await category.save();
+    res.status(STATUS_CODE.SUCCESS).json({message:'done'})
+  } catch (error) {
+    res.redirect('/error')
+  }
+}
+
+export default { categoryInfo, addCategory, loadCategoryAdd, loadCategoryEdit, updateCategory };

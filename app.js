@@ -9,6 +9,7 @@ import STATUS_CODE from './helpers/statusCode.js';
 import session from 'express-session';
 import passport from './config/passport.js';
 import googleRouter from './routes/googleRouter.js'
+import adminRouter from './routes/adminRouter.js'
 
 
 dotenv.config(); // Load environment variables from .env file
@@ -51,11 +52,10 @@ app.use((req,res,next)=>{
     next();
 })
 
-// Setting up EJS as the view engine
+
+app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
-// Setting the views directory for rendering templates
-app.set('views', path.join(__dirname, '/views'));
 
 // Serving static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
@@ -64,24 +64,26 @@ app.get("/",(req,res)=>{
     res.render('user/home')
 })
 
-// app.use('/user', userRouter);
+
 app.use('/user',userRouter)
 app.use('/auth',googleRouter)
+app.use('/admin',adminRouter)
 
+app.use('/error',(req,res)=>{
+    res.render('partials/404')
+});
 
 // app.use((req, res, next) => {
 //     res.status(STATUS_CODE.SUCCESS).render('partials/404'); // Ensure you have a `404.ejs` file in your `views` folder
 // });
 
 
-// Start the Express server
+
 app.listen(PORT, () => {
     console.log(`Server is running at:`);
     console.log(`http://localhost:${PORT}/user`); // User routes
-    console.log(`http://localhost:${PORT}`); // User routes
-    console.log(`http://localhost:${PORT}/admin`); // Admin routes (not yet defined in the code)
+    console.log(`http://localhost:${PORT}`); // home routes
+    console.log(`http://localhost:${PORT}/admin/login`); // Admin routes (not yet defined in the code)
     console.log(`http://localhost:${PORT}/user/login`); // User login route (ensure it exists in userRouter)
     console.log(`http://localhost:${PORT}/user/signup`); // User signin route (ensure it exists in userRouter)
-    console.log(`http://localhost:${PORT}/404error`); // Custom 404 error page
-    console.log(`http://localhost:${PORT}/user/verifyOtp`); // Custom 404 error page
 });

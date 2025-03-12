@@ -8,6 +8,9 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    userId:{
+      type:String,
+    },
     email: {
       type: String,
       required: true,
@@ -31,10 +34,6 @@ const userSchema = new Schema(
       required: false,
     },
     isBlocked: {
-      type: Boolean,
-      default: false,
-    },
-    isAdmin: {
       type: Boolean,
       default: false,
     },

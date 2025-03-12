@@ -64,25 +64,25 @@
             <div class="row nav-bar-size">
                 <div class="col-lg-3 col-md-3">
                     <div class="header__logo">
-                        <a href="./index.html"><img class="nav_logo" src="img/logo/ZANCE&co_navbar_logo.svg" alt=""></a>
+                        <a href="/user"><img class="nav_logo" src="img/logo/ZANCE&co_navbar_logo.svg" alt=""></a>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6">
                     <nav class="header__menu mobile-menu">
                         <ul>
-                            <li class="active"><a href="./index.html">HOME</a></li>
-                            <li><a href="./shop.html">PRODUCTS</a></li>
+                            <li class="active"><a href="/user">HOME</a></li>
+                            <li><a href="/user">PRODUCTS</a></li>
                             <li><a href="#">PAGES</a>
                                 <ul class="dropdown">
-                                    <li><a href="./about.html">About Us</a></li>
-                                    <li><a href="./shop-details.html">Shop Details</a></li>
-                                    <li><a href="./shopping-cart.html">Shopping Cart</a></li>
-                                    <li><a href="./checkout.html">Check Out</a></li>
-                                    <li><a href="./blog-details.html">Blog Details</a></li>
+                                    <li><a href="/user">About Us</a></li>
+                                    <li><a href="/user">Shop Details</a></li>
+                                    <li><a href="/user">Shopping Cart</a></li>
+                                    <li><a href="/user">Check Out</a></li>
+                                    <li><a href="/user">Blog Details</a></li>
                                 </ul>
                             </li>
-                            <li><a href="./blog.html">ABOUT</a></li>
-                            <li><a href="./contact.html">CONTACT</a></li>
+                            <li><a href="/user">ABOUT</a></li>
+                            <li><a href="/user">CONTACT</a></li>
                         </ul>
                     </nav>
                 </div>
@@ -94,10 +94,10 @@
 
                         <% if (locals.user) { %>
                          <div class="dropdown">
-                            <a href="" class="sign-in-link"><%=locals.user.name %></a>
+                            <a href="" class="sign-in-link" id="user-name"><%=locals.user.name %></a>
                             <div class="dropdown-content">
-                                <a href="/userProfile">User Profile</a>
-                                <a href="/logout">Logout</a>
+                                <a href="/user/userProfile">User Profile</a>
+                                <a href="/user/logout">Logout</a>
                             </div>
                          </div>
                          <% } else { %>

@@ -1,5 +1,6 @@
 
 .dropdown {
+	color: #000000;
 	position: relative;
 	display: inline-block;
 }
@@ -7,7 +8,7 @@
 .dropdown-content{
 	display: none;
 	position: absolute;
-	background-color: white;
+	background-color: rgb(255, 255, 255);
 	min-width: 160px;
 	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 2);
 	z-index: 1000;
@@ -32,3 +33,8 @@
 	position: relative;
 	z-index: 500;
 }
+#user-name{                           
+	color: #00e1ff;
+	font-weight: bold;
+	font-size: large;
+}	

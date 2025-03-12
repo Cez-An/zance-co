@@ -18,34 +18,46 @@ passport.use(
                 let user = await User.findOne({ googleId: profile.id });
 
                 if (!user) {
+
                     user = new User({
                         name: profile.displayName,
                         email: profile.emails[0].value,
                         googleId: profile.id,
                     });
+                    
                     await user.save();
                 }
 
                 req.session.user = user
 
                 return done(null, user);
+
             } catch (error) {
+
                 return done(error, null);
+
             }
         }
     )
 );
 
 passport.serializeUser((user, done) => {
+
     done(null, user.id);
+
 });
 
-passport.deserializeUser(async (id, done) => {
+passport.deserializeUser(async(id, done) => {
+
     try {
+
         const user = await User.findById(id);
         done(null, user);
+
     } catch (err) {
+
         done(err, null);
+
     }
 });
 

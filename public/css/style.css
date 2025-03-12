@@ -500,7 +500,7 @@ ol {
 	transform: scale(0);
 }
 
-.header__nav__option {               			/* LOVE CART SEARCH MENU*/
+.header__nav__option {               			        /* LOVE CART SEARCH MENU*/
 	text-align: right;
 	font-size: 15px;	
 	padding-top: 27px;
@@ -511,14 +511,14 @@ ol {
 
 }
 
- .header__nav__option a {                         /* change here */
+ .header__nav__option a {                               /* change color here */
 	display: inline-block;
 	margin-right: 18px;
-	color: #cccccc;
+	color: #ffffff;
 	position: relative;
 }
 
-/* .header__nav__option a span { 			 NOT NEEDED */
+/* .header__nav__option a span { 			             NOT NEEDED */
 	/* color: #0d0d0d;
 	font-size: 11px;
 	position: absolute;

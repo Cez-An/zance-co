@@ -6,6 +6,8 @@ import bcrypt from 'bcrypt'
 
 const LoadAdminLogin = (req, res) => {
     try {
+        console.log('dashboard Accessed');
+        
         if (req.session.admin) {
             return res.status(302).redirect('/admin/dashboard'); // Redirect if admin is already logged in
         }
@@ -45,7 +47,7 @@ const login = async(req,res)=>{
     }
 }
 
-const loadDashboard = (req,res)=>{
+const   loadDashboard = (req,res)=>{
     try {
         if(req.session.admin){
             res.render('admin/dashboard.ejs');              //page render

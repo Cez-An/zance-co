@@ -6,18 +6,25 @@ import Category from "../../models/categorySchema.js";
 
 const categoryInfo = async (req, res) => {
   try {
+    let search = '';
+
+        if(req.query.search){
+            console.log(search);
+            
+            search = req.query.search;
+        }
       console.log('Accessed categoryInfo');
       
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const skip = (page - 1) * limit;
 
-    const categoryData = await Category.find({})
+    const categoryData = await Category.find({name:{$regex:'.*'+search+".*",$options:'i'}})
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
 
-    const totalCategories = await Category.countDocuments();
+    const totalCategories = Category.find({name:{$regex:'.*'+search+".*",$options:'i'}}).countDocuments();
     const totalPages = Math.ceil(totalCategories / limit);
 
     res.render("admin/category", {                                // category Page loading
@@ -71,7 +78,7 @@ const addCategory = async (req, res) => {
     await newCategory.save();
     console.log(newCategory);
     
-    return res.render('admin/category',{message:'Category saved succefully'})
+    return res.redirect('/admin/category')
 
   } catch (error) {
     return res

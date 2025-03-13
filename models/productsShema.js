@@ -4,8 +4,9 @@ const { Schema } = mongoose;
 
 const productSchema = new Schema(
   {
-    productName: {
+    name: {
       type: String,
+      unique:true,
       required: true,
     },
     description: {
@@ -14,16 +15,15 @@ const productSchema = new Schema(
     },
     brand: {
       type: String,
-      required: true,
+      required: false,
     },
     category: {
-      type: Schema.Types.ObjectId,
-      ref: "Category",
-      required: true,
+      type: String,
+      required: false,
     },
     regularPrice: {
       type: Number,
-      required: true,
+      required: false,
     },
     salePrice: {
       type: Number,
@@ -39,7 +39,7 @@ const productSchema = new Schema(
     },
     color: {
       type: String,
-      required: true,
+      required: false,
     },
     productImage: {
       type: [String],
@@ -52,7 +52,7 @@ const productSchema = new Schema(
     status: {
       type: String,
       enum: ["Available", "Out Of Stock", "Discontinued"],
-      required: true,
+      // required: true,
       default: "Available",
     },
   },

@@ -12,6 +12,7 @@ const adminAuth = async (req, res, next) => {
     }
   } catch (error) {
     console.error("Error in adminAuth Middleware", error);
+    res.redirect('/error');
     res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).send("Internal Server Error");
   }
 };

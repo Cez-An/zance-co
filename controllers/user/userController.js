@@ -316,6 +316,18 @@ const logout = (req, res) => {
   res.redirect("/user");
 };
 
+
+
+const loadProductsDetails = async(req,res)=>{
+  try {
+    return res.render('user/productsdetailspage')
+  } catch (error) {
+    console.error("Error loading product details:", error);
+    return res.status(500).send("Internal Server Error");
+  }
+}
+
+
 export default {
   loadHomepage,
   loadSignUp,
@@ -328,4 +340,5 @@ export default {
   pageNotFound,
   login,
   logout,
+  loadProductsDetails,
 };

@@ -199,7 +199,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="/admin/products">
                     <i class="bi bi-box"></i> Products
                 </a>
             </li>
@@ -256,11 +256,11 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>User ID</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone</th>
-                        <th>Wallt</th>
+                        <th>Wallet</th>
+                        <th>User ID</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -271,11 +271,12 @@
                     <% user.forEach(element => {%>
                                         
                     <tr>
-                        <td><%=element._id %></td>
                         <td><%=element.name %></td>
                         <td><%=element.email %></td>
                         <td><%=element.phone %></td>
                         <td>₹ <%=element.wallet %></td>
+                        <td><%=element._id %></td>
+
                         
                             <% if (element.isBlocked===false) { %>
                             <td>

@@ -9,6 +9,7 @@ router.get('/signup',userController.loadSignUp)
 router.get('/login',userController.loadLogin)
 router.get('/verifyOtp',userController.loadOtpVerification)
 router.get('/logout',userController.logout)
+router.get('/loadProductsDetailsPage',userController.loadProductsDetails)
 
 router.post('/signup',userController.signup)
 router.post('/login',userController.login)

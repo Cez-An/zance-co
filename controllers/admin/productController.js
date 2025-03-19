@@ -16,7 +16,7 @@ const loadproductAddPage = async (req, res) => {
   } catch (error) {
     console.log("error occured while loading Product page");
 
-    return res.redirect("/error");
+    return res.redirect("/error-admin");
   }
 };
 
@@ -25,14 +25,13 @@ const loadProductsPage = async (req, res) => {
     let search = "";
 
     if (req.query.search) {
-      console.log(search);
-
-      search = req.query.search;
+       search = req.query.search;
     }
     console.log("Accessed productInfo");
 
     const page = parseInt(req.query.page) || 1;
-    const limit = 8;
+
+    const limit = 10;
     const skip = (page - 1) * limit;
 
     const product = await Product.find({
@@ -42,17 +41,19 @@ const loadProductsPage = async (req, res) => {
       .skip(skip)
       .limit(limit);
 
-    const totalProducts = Product.find({
+    const totalProducts = await Product.countDocuments({
       name: { $regex: ".*" + search + ".*", $options: "i" },
-    }).countDocuments();
+    });
 
     const totalPages = Math.ceil(totalProducts / limit);
 
+    // console.log(`${product} ${page} ${totalPages} ${totalProducts}`);
+    
+
     res.render("admin/products", {
-      product,
+      product:product,
       currentPage: page,
-      totalPages: totalPages,
-      totalProducts: totalProducts,
+      totalPages: totalPages
     });
   } catch (error) {
     console.error(error);
@@ -64,8 +65,7 @@ const addProduct = async (req, res) => {
   try {
     console.log("add product accessed");
 
-    const { name, description, category, basePrice, discount, stock } =
-      req.body;
+    const { name, description, category, basePrice, discount, stock } = req.body;
 
     const imageFilenames = req.files.map((file) => file.filename);
 
@@ -105,17 +105,17 @@ const productBlocked = async (req, res) => {
     await Product.updateOne({ _id: id }, { $set: { isBlocked: true } });
     res.redirect("/admin/products");
   } catch (error) {
-    res.redirect("/error");
+    res.redirect("/error-admin");
   }
 };
 
 const productUnBlocked = async (req, res) => {
   try {
-    let id = req.query.id;
+    let id = req.query.id; 
     await Product.updateOne({ _id: id }, { $set: { isBlocked: false } });
     res.redirect("/admin/products");
   } catch (error) {
-    res.redirect("/error");
+    res.redirect("/error-admin");
   }
 };
 

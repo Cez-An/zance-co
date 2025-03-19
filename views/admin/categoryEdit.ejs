@@ -213,7 +213,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/admin/product">
+                <a class="nav-link" href="/admin/products">
                     <i class="bi bi-box"></i> Products
                 </a>
             </li>
@@ -275,8 +275,14 @@
                         <div class="col-md-6 mb-3">
                             <label for="visibilityStatus" class="form-label">Visibility Status</label>
                             <select class="form-select" id="visibilityStatus" name="visibilityStatus" value="<%= category.isListed %>">
-                                <option selected>Active</option>
-                                <option>Inactive</option>
+                                <% if (category.isListed===true) { %>
+                                    <option selected>Active</option>
+                                    <option>Inactive</option>
+                                <% } else{ %>
+                                    <option selected>Inactive</option>
+                                    <option>Active</option>
+                                <% } %>
+                                
                             </select>
                             <div id="visibilityStatus-error" class="error-message"></div>
                         </div>

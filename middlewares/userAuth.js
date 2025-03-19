@@ -4,11 +4,15 @@ import STATUS_CODE from "../helpers/statusCode.js";
 const userAuth = async (req, res, next) => {
   
   try {
-    if (!req.session.user) {
-      return res.redirect("/user/login");
-    }
 
-    const user = await User.findById(req.session.user);
+    if (!req.session.user) {
+      
+      return res.redirect("/user/login");
+      
+    }
+    const {email} = req.session.user;
+    const user = await User.find({email});
+
     if (user && !user.isBlocked) {
       return next();
     } else {
@@ -21,4 +25,4 @@ const userAuth = async (req, res, next) => {
 };
 
 
-export default userAuth;
+export default userAuth 

@@ -278,19 +278,19 @@
                     <tr>
                         <td><%=element.name %></td>
                         <td><%=element.category %></td>
-                        <td><%=element.salePrice %></td>
+                        <td>₹&nbsp;<%=element.salePrice %></td>
                         <td><%=element._id %></td>
 
                         
                             <% if (element.isBlocked===false) { %>
                             <td>
                                 <button class="status-btn btn btn-success"><a class="block-unblock" >ACTIVE</a></button>
-                                <button class="view-btn btn btn-secondary block-unblock "">View</button>
+                                <!-- <button class="view-btn btn btn-secondary block-unblock "">View</button> -->
                             </td>
                             <% } else { %>
 
                                 <td><button class="status-btn btn btn-danger"><a>BLOCKED</a></button>
-                                <button class="view-btn btn btn-secondary block-unblock ">View</button>
+                                <!-- <button class="view-btn btn btn-secondary block-unblock ">View</button> -->
                                     
                         <% } %>
                     </td>
@@ -308,15 +308,14 @@
 
         <nav aria-label="Page navigation">
             <ul class="pagination">
-
-
-                <% for(let i=1; i<=totalPages; i++) { %>
-                <li class="page-item <%=(i===currentPage) %>"><a class="page-link" href="?page=<%=i %>"> <%=i %> </a></li>                    
-                <%  }; %>
-               
-              
+                <% for(let i = 1; i <= totalPages; i++) { %>
+                    <li class="page-item <%= (i === currentPage) ? 'active' : '' %>">
+                        <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                    </li>
+                <% } %>
             </ul>
-          </nav>
+        </nav>
+        
         
 
         <!-- Bootstrap 5 JS and Bootstrap Icons -->

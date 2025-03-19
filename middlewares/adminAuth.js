@@ -1,20 +1,20 @@
 import STATUS_CODE from "../helpers/statusCode.js";
-import Admin from "../models/adminSchema.js";
 
 
-const adminAuth = async (req, res, next) => {
-  try {
-    const admin = await Admin.findOne({ isAdmin: true });
-    if (admin) {
-      return next();
-    } else {
-      return res.redirect("/admin/login");
-    }
-  } catch (error) {
-    console.error("Error in adminAuth Middleware", error);
-    res.redirect('/error');
-    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).send("Internal Server Error");
+const checkSession = async(req,res,next)=>{
+  if(req.session.admin){
+    next();
+  }else{
+    res.redirect('/admin/login')
   }
-};
+}
 
-export default adminAuth;
+const islogin = async(req,res,next)=>{
+  if(req.session.admin){
+    res.redirect('/admin/dashboard')
+  }else{
+    next();
+  }
+}
+
+export default {islogin,checkSession};

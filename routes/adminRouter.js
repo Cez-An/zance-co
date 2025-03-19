@@ -11,30 +11,32 @@ import storage from '../helpers/multer.js'
 const uploads = multer({storage:storage})
 
 // Admin login management
-router.get('/login',adminController.LoadAdminLogin)
-router.get('/dashboard',adminAuth,adminController.loadDashboard)
+router.get('/login',adminAuth.islogin,adminController.renderAdminLoginPage)
+router.get('/dashboard',adminAuth.checkSession,adminController.loadDashboard)
 router.get('/logout',adminController.logout)
-router.post('/login',adminController.login)
+router.post('/login',adminController.adminLogin)
+
 
 
 // customer management
-router.get('/customers',adminAuth,customerController.customerInfo);
-router.get('/blockCustomer',adminAuth,customerController.customerBlocked)
-router.get('/unBlockCustomer',adminAuth,customerController.customerUnBlocked)
+router.get('/customers',adminAuth.checkSession,customerController.customerInfo);
+router.get('/blockCustomer',adminAuth.checkSession,customerController.customerBlocked)
+router.get('/unBlockCustomer',adminAuth.checkSession,customerController.customerUnBlocked)
 
 //category Management
-router.get('/category',adminAuth,categoryController.categoryInfo)
-router.get('/categoryAdd',adminAuth,categoryController.loadCategoryAdd)
-router.get('/categoryEdit/:id',adminAuth,categoryController.loadCategoryEdit)
-router.post('/category',adminAuth,categoryController.addCategory)
-router.put('/category/',adminAuth,categoryController.updateCategory)
+router.get('/category',adminAuth.checkSession,categoryController.categoryInfo)
+router.get('/categoryAdd',adminAuth.checkSession,categoryController.loadCategoryAdd)
+router.get('/categoryEdit/:id',adminAuth.checkSession,categoryController.loadCategoryEdit)  // remove Edit
+router.post('/category',adminAuth.checkSession,categoryController.addCategory)
+router.put('/category/',adminAuth.checkSession,categoryController.updateCategory)
+router.delete('/category/',adminAuth.checkSession,categoryController.deleteCategory)
 
 //product Management
-router.get('/products',adminAuth,productController.loadProductsPage)
-router.get('/productAdd',adminAuth,productController.loadproductAddPage)
-router.post('/products',adminAuth,uploads.array('variantImages[]',8),productController.addProduct)
-router.get('/blockProduct',adminAuth,productController.productBlocked)
-router.get('/unBlockProduct',adminAuth,productController.productUnBlocked)
+router.get('/products',adminAuth.checkSession,productController.loadProductsPage)
+router.get('/productAdd',adminAuth.checkSession,productController.loadproductAddPage)
+router.post('/products',uploads.array('variantImages[]',8),productController.addProduct)
+router.get('/blockProduct',adminAuth.checkSession,productController.productBlocked)
+router.get('/unBlockProduct',adminAuth.checkSession,productController.productUnBlocked)
 
 
 export default router;

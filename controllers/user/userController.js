@@ -42,7 +42,7 @@ const loadSignUp = async (req, res) => {
 
 const loadLogin = async (req, res) => {
   try {
-    console.log("accesed loadlogin");
+    console.log("ACCESSED loadlogin");
 
     if (!req.session.user) {
       return res.render("user/login");
@@ -54,6 +54,7 @@ const loadLogin = async (req, res) => {
   }
 };
 
+
 const loadShop = async (req, res) => {
   try {
     res.render("user/shop");
@@ -62,6 +63,7 @@ const loadShop = async (req, res) => {
     res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).send("Server Error");
   }
 };
+
 
 function generateOtp() {
   return Math.floor(1000 + Math.random() * 9000).toString();
@@ -156,9 +158,6 @@ const securePassword = async (password) => {
   }
 };
 
-
-
-
 const otpVerification = async (req, res) => {
   try {
     console.log("OTP FUNCTION ACCESSED");
@@ -171,12 +170,10 @@ const otpVerification = async (req, res) => {
     // Check if OTP exists in session
 
     if (!req.session.userOtp) {
-      return res
-        .status(STATUS_CODE.BAD_REQUEST)
-        .json({
-          success: false,
-          message: "OTP session expired. Request a new OTP.",
-        }); // while using ajax or fetch we give message as json data
+      return res.status(STATUS_CODE.BAD_REQUEST).json({
+        success: false,
+        message: "OTP session expired. Request a new OTP.",
+      }); // while using ajax or fetch we give message as json data
     }
 
     // Convert both to strings for safe comparison
@@ -213,12 +210,10 @@ const otpVerification = async (req, res) => {
         .status(STATUS_CODE.SUCCESS)
         .json({ success: true, redirectUrl: "/user/login" });
     } else {
-      res
-        .status(STATUS_CODE.BAD_REQUEST)
-        .json({
-          success: false,
-          message: "Invalid OTP, Please try again backend",
-        });
+      res.status(STATUS_CODE.BAD_REQUEST).json({
+        success: false,
+        message: "Invalid OTP, Please try again backend",
+      });
     }
   } catch (error) {
     console.error("Error Verifying OTP:", error);
@@ -249,21 +244,17 @@ const resendOtp = async (req, res) => {
         .status(STATUS_CODE.SUCCESS)
         .json({ success: true, message: "OTP Resend Successfully" });
     } else {
-      res
-        .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
-        .json({
-          success: false,
-          message: "Failed to resend OTP. Please try again",
-        });
+      res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        message: "Failed to resend OTP. Please try again",
+      });
     }
   } catch (error) {
     console.error("error resending OTP", error);
-    res
-      .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
-      .json({
-        success: false,
-        message: "Internal Server Error, Please try again later",
-      });
+    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      message: "Internal Server Error, Please try again later",
+    });
   }
 };
 
@@ -271,7 +262,7 @@ const pageNotFound = async (req, res) => {
   try {
     res.render("partials/404");
   } catch (error) {
-    res.redirect("/user/pagenotfound");
+    res.redirect("/error");
   }
 };
 
@@ -316,17 +307,54 @@ const logout = (req, res) => {
   res.redirect("/user");
 };
 
-
-
-const loadProductsDetails = async(req,res)=>{
+const loadProductsDetails = async (req, res) => {
   try {
-    return res.render('user/productsdetailspage')
+    return res.render("user/productsdetailspage");
   } catch (error) {
     console.error("Error loading product details:", error);
     return res.status(500).send("Internal Server Error");
   }
-}
+};
 
+
+const loadForgotPassword = async (req, res) => {
+  try {
+    res.render("user/forgotPassword",{message:''});
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
+      .redirect("/error-admin");
+  }
+};
+
+
+const loadForgotPasswordOtp = async (req, res) => {
+  try {
+    res.render("user/forgotPasswordOtp");
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
+      .redirect("/error-admin");
+  }
+};
+
+const validateEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.render("user/forgotPassword", { message: "This email is not registered."});
+    }
+    res.json({ success: true, redirectUrl: "/user/forgotPasswordOtp" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 export default {
   loadHomepage,
@@ -341,4 +369,7 @@ export default {
   login,
   logout,
   loadProductsDetails,
+  loadForgotPassword,
+  loadForgotPasswordOtp,
+  validateEmail,
 };

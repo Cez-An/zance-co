@@ -1,71 +1,89 @@
-import { render } from 'ejs'
-import STATUS_CODE from '../../helpers/statusCode.js'
-import Admin from '../../models/adminSchema.js'
-import bcrypt from 'bcrypt'
+import { render } from "ejs";
+import STATUS_CODE from "../../helpers/statusCode.js";
+import Admin from "../../models/adminSchema.js";
+import bcrypt from "bcrypt";
 
+const renderAdminLoginPage = (req, res) => {
+  try {
+    console.log(`Rendering Admin Login Page
+      `);
 
-const LoadAdminLogin = (req, res) => {
-    try {
-        console.log('dashboard Accessed');
-        
-        if (req.session.admin) {
-            return res.status(302).redirect('/admin/dashboard'); // Redirect if admin is already logged in
-        }
-        res.status(200).render('admin/login', { message: null }); // Render login page
-    } catch (error) {
-        console.error('Error loading admin login page:', error);
-        res.status(500).redirect('/error'); // Internal Server Error
+    if (req.session.admin) {
+      return res.status(302).redirect("/admin/dashboard");
     }
+    res.status(200).render("admin/login", { message: null });
+    
+  } catch (error) {
+    console.error("Internal Server Error:", error);
+    res.status(500).render("partials/admin/404.ejs", {
+      statuscode: "",
+      errorname: "",
+      message: "Something went wrong! Please try again later.",
+    });
+  }
 };
 
+const adminLogin = async (req, res) => {
+  try {
+    console.log(`Login POST req accessed
+      `);
 
-const login = async(req,res)=>{
-    try {
+    const { email, password } = req.body;
 
-    const {email,password} = req.body;
-    const admin = await Admin.findOne({email});
+    const admin = await Admin.findOne({ email });
 
-    if(admin){
-
-        const passwordMatch = await bcrypt.compare(password,admin.password);
-
-        if(passwordMatch){
-            req.session.admin = true;
-            return res.redirect('/admin/dashboard');    //route
-        }
-        else{
-            console.log('password not correct')
-           return res.render('admin/login',{message:'login Credentials not correct'})
-        }
-    }else{
-        return res.redirect('/admin/login')             //route
+    if (!admin) {
+      console.warn(`Login failed: Invalid credentials for email - ${email}`);
+      return res.status(STATUS_CODE.UNAUTHORIZED).render("admin/login", {
+        message: "Invalid email or password",
+      });
     }
 
-    } catch (error) {
-        console.error('login error',error)
-        return res.redirect('/partials/404.ejs')        //route
-    }
-}
+    const isPasswordValid = await bcrypt.compare(password, admin.password);
 
-const   loadDashboard = (req,res)=>{
-    try {
-        if(req.session.admin){
-            res.render('admin/dashboard.ejs');              //page render
-        }
-    } catch (error) {
-        console.error('error occured',error);
-        res.redirect('/error')                          //route
+    if (!isPasswordValid) {
+      console.warn(`Login failed: Incorrect password for email - ${email}`);
+      return res.status(STATUS_CODE.UNAUTHORIZED).render("admin/login", {
+        message: "Invalid email or password",
+      });
     }
-}
 
-const logout = (req,res)=>{
-    try {
-        req.session.destroy();
-        res.redirect('/admin/login');
-    } catch (error) {
-        console.error('error occured',error);
-        res.res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).redirect('/error')
-    }
-}
+    req.session.admin = { id: admin._id, email: admin.email };
 
-export default {LoadAdminLogin, login, loadDashboard, logout};
+    console.info(`Admin logged in successfully: ${email}
+      `);
+
+    return res.redirect("/admin/dashboard");
+  } catch (error) {
+    console.error("Admin login error:", error);
+    return res
+      .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
+      .render("admin/error-admin");
+  }
+};
+
+const loadDashboard = (req, res) => {
+  try {
+    console.log("Rendering Dashboard Page");
+    res.status(STATUS_CODE.SUCCESS).render("admin/dashboard.ejs");
+  } catch (error) {
+    console.error("Error occurred while loading the dashboard:", error);
+    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).render("admin/error-admin");
+  }
+};
+
+const logout = (req, res) => {
+  try {
+    console.log(`Logout button clicked
+      `);
+
+    req.session.destroy();
+    res.status(STATUS_CODE.SUCCESS).redirect("/admin/login");
+
+  } catch (error) {
+    console.error("Unexpected error during logout:", error);
+    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).render("admin/error-admin");
+  }
+};
+
+export default { renderAdminLoginPage, adminLogin, loadDashboard, logout };

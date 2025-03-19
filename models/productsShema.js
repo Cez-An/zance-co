@@ -15,7 +15,7 @@ const productSchema = new Schema(
     },
     brand: {
       type: String,
-      required: false,
+      required: true,
     },
     category: {
       type: String,

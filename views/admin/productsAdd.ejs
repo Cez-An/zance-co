@@ -271,14 +271,14 @@
         #cropper-image {
             width: 1000px !important;
             height: 600px !important;
-            
+
             display: block;
             margin: 0 auto;
             /* Center the image */
         }
 
         .cropper-container {
-            
+
             width: 1000px !important;
             /* Constrain for better control */
             height: 600px !important;
@@ -404,9 +404,22 @@
                                 <% }); %>
                         </select>
                     </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Brand</label>
+                        <select class="form-select" name="category">
+                            <% cat.forEach(element=> { %>
+                                <option value="<%=element.name %>">
+                                    <%=element.name %>
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
+                    
                     <div class="mb-3">
                         <label class="form-label">Product Description</label>
-                        <textarea class="form-control" rows="3" placeholder="Write your description here..." name="description"></textarea>
+                        <textarea class="form-control" rows="3" placeholder="Write your description here..."
+                            name="description"></textarea>
                     </div>
                     <div class="mb-4">
                         <div id="variantContainer">
@@ -462,15 +475,17 @@
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Discount Percentage</label>
-                            <input type="text" class="form-control" placeholder="Enter discount percentage" name="discount">
+                            <input type="text" class="form-control" placeholder="Enter discount percentage"
+                                name="discount">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Stock</label>
                             <input type="text" class="form-control" placeholder="Enter stock limit" name="stock">
                         </div>
+                        
                     </div>
                     <div class="d-flex justify-content-end">
-                        <button type="button" class="btn btn-outline-secondary me-2">Cancel</button>
+                        <button type="button" class="btn btn-outline-secondary me-2"><a href="/admin/products"></a>Cancel</button>
                         <button type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </div>
@@ -500,60 +515,61 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.js"></script>
+
     <script>
         let cropper;
         let currentSlot;
 
         document.querySelectorAll('.image-upload-slot').forEach(slot => {
-    const dropzone = slot.querySelector('.image-upload-dropzone');
-    const input = slot.querySelector('input[type="file"]');
-    const preview = slot.querySelector('.image-preview');
+            const dropzone = slot.querySelector('.image-upload-dropzone');
+            const input = slot.querySelector('input[type="file"]');
+            const preview = slot.querySelector('.image-preview');
 
-    dropzone.addEventListener('click', () => input.click());
+            dropzone.addEventListener('click', () => input.click());
 
-    input.addEventListener('change', (e) => {
-        if (e.target.files && e.target.files[0]) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const modal = new bootstrap.Modal(document.getElementById('cropper-modal'));
-                const image = document.getElementById('cropper-image');
-                image.src = event.target.result;
-                modal.show();
+            input.addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const modal = new bootstrap.Modal(document.getElementById('cropper-modal'));
+                        const image = document.getElementById('cropper-image');
+                        image.src = event.target.result;
+                        modal.show();
 
-                // Ensure image is loaded before initializing Cropper
-                image.onload = () => {
-                    if (cropper) {
-                        cropper.destroy();
-                    }
-                    cropper = new Cropper(image, {
+                        // Ensure image is loaded before initializing Cropper
+                        image.onload = () => {
+                            if (cropper) {
+                                cropper.destroy();
+                            }
+                            cropper = new Cropper(image, {
                                 aspectRatio: 1, // Square crop
                                 viewMode: 1, // Restrict crop box to image
-                                autoCropArea: 1, // Start with 80% of the image area
+                                autoCropArea: 0.5, // Start with 80% of the image area
                                 responsive: true, // Adapt to container size
                                 restore: true, // Restore crop box on resize
                                 dragMode: 'move', // Allow dragging the image
                                 cropBoxResizable: true, // Allow resizing the crop box
-                                minContainerWidth: 600, // Minimum container width
+                                minContainerWidth: 1000, // Minimum container width
                                 minContainerHeight: 600, // Minimum container height
                             });
-                };
+                        };
 
-                currentSlot = slot;
-                input.value = '';
-            };
-            reader.readAsDataURL(e.target.files[0]);
-        }
-    });
+                        currentSlot = slot;
+                        input.value = '';
+                    };
+                    reader.readAsDataURL(e.target.files[0]);
+                }
+            });
 
-    preview.addEventListener('click', (e) => {
-        if (e.target.classList.contains('close-btn')) {
-            preview.style.display = 'none';
-            preview.innerHTML = '';
-            dropzone.style.display = 'flex';
-            input.value = '';
-        }
-    });
-});
+            preview.addEventListener('click', (e) => {
+                if (e.target.classList.contains('close-btn')) {
+                    preview.style.display = 'none';
+                    preview.innerHTML = '';
+                    dropzone.style.display = 'flex';
+                    input.value = '';
+                }
+            });
+        });
 
         document.getElementById('crop-button').addEventListener('click', () => {
             if (cropper && currentSlot) {

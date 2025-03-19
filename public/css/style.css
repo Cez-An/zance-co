@@ -26,7 +26,7 @@ body {
 	height: 100%;
 	font-family: "Nunito Sans", sans-serif;
 	-webkit-font-smoothing: antialiased;
-	background-color: hsla(0, 0%, 78%, 0.341);
+	background-color: hsl(0, 0%, 0%);
 	/* background: linear-gradient(to bottom, #0B0212 0%, #5D2A92 50%, #0B0212 100%); */
 	background-attachment: fixed;
 	background-size: cover;
@@ -81,6 +81,11 @@ p {
 
 img {
 	max-width: 100%;
+}
+
+.hero{
+	width: 100vw;
+	height: auto;
 }
 
 input:focus,
@@ -160,8 +165,8 @@ ol {
 	font-weight: 700;
 	text-transform: uppercase;
 	padding: 14px 30px;
-	color: #ffffff;
-	background: #000000;
+	color: #000000;
+	background: #ffffff;
 	letter-spacing: 4px;
 }
 
@@ -679,7 +684,7 @@ ol {
 
 .banner__item:hover .banner__item__text a:after {
 	width: 40px;
-	background: #e53637;
+	background: #6510DC;
 }
 
 .banner__item.banner__item--middle {
@@ -714,7 +719,7 @@ ol {
 }
 
 .banner__item__text h2 {
-	color: #111111;
+	color: #ffffff;
 	font-weight: 700;
 	line-height: 46px;
 	margin-bottom: 10px;
@@ -722,7 +727,7 @@ ol {
 
 .banner__item__text a {
 	display: inline-block;
-	color: #111111;
+	color: #ffffff;
 	font-size: 13px;
 	font-weight: 700;
 	letter-spacing: 4px;
@@ -737,7 +742,7 @@ ol {
 	bottom: 0;
 	width: 100%;
 	height: 2px;
-	background: #111111;
+	background: #ffffff;
 	content: "";
 	-webkit-transition: all, 0.3s;
 	-o-transition: all, 0.3s;
@@ -749,7 +754,7 @@ ol {
 -----------------------*/
 
 .categories {
-	background: #f3f2ee;
+	background: #f7f7f7;
 	overflow: hidden;
 	padding-top: 150px;
 	padding-bottom: 125px;
@@ -773,14 +778,14 @@ ol {
 }
 
 .categories__text h2 {
-	color: #b7b7b7;
+	color: #929292;
 	line-height: 72px;
 	font-size: 34px;
 }
 
 .categories__text h2 span {
 	font-weight: 700;
-	color: #111111;
+	color: #000000;
 }
 
 .categories__hot__deal {
@@ -855,7 +860,7 @@ ol {
 	content: ":";
 	font-size: 24px;
 	font-weight: 700;
-	color: #3d3d3d;
+	color: #ffffff;
 }
 
 .categories__deal__countdown .categories__deal__countdown__timer .cd-item:last-child:after {
@@ -863,7 +868,7 @@ ol {
 }
 
 .categories__deal__countdown .categories__deal__countdown__timer .cd-item span {
-	color: #111111;
+	color: #ffffff;
 	font-weight: 700;
 	display: block;
 	font-size: 36px;
@@ -893,7 +898,7 @@ ol {
 }
 
 .instagram__text h2 {
-	color: #111111;
+	color: #ffffff;
 	font-weight: 700;
 	margin-bottom: 30px;
 }
@@ -903,7 +908,7 @@ ol {
 }
 
 .instagram__text h3 {
-	color: #e53637;
+	color: #6a5aff;
 	font-weight: 700;
 }
 
@@ -936,7 +941,7 @@ ol {
 }
 
 .filter__controls li.active {
-	color: #111111;
+	color: #ffffff;
 }
 
 .product__item {
@@ -1048,7 +1053,7 @@ ol {
 }
 
 .product__item__pic .product__hover li img {
-	background: #ffffff;
+	background: #A578FD;
 	padding: 10px;
 	display: inline-block;
 }
@@ -1060,7 +1065,7 @@ ol {
 
 .product__item__text a {
 	font-size: 15px;
-	color: #e53637;
+	color: #A578FD;
 	font-weight: 700;
 	position: absolute;
 	left: 0;
@@ -1073,7 +1078,7 @@ ol {
 }
 
 .product__item__text h6 {
-	color: #111111;
+	color: #ffffff;
 	font-size: 15px;
 	font-weight: 600;
 	margin-bottom: 5px;
@@ -1088,12 +1093,12 @@ ol {
 
 .product__item__text .rating i {
 	font-size: 14px;
-	color: #b7b7b7;
+	color: #ececec;
 	margin-right: -5px;
 }
 
 .product__item__text h5 {
-	color: #0d0d0d;
+	color: #ffffff;
 	font-weight: 700;
 }
 
@@ -3888,4 +3893,7 @@ ol {
 .login_style{
 	background: linear-gradient(to bottom, #ccc, #7d56c2);
 
+}
+.bottom_text{
+	color: #ffffff;
 }

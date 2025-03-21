@@ -25,7 +25,7 @@ const loadProductsPage = async (req, res) => {
     let search = "";
 
     if (req.query.search) {
-       search = req.query.search;
+      search = req.query.search;
     }
     console.log("Accessed productInfo");
 
@@ -48,12 +48,11 @@ const loadProductsPage = async (req, res) => {
     const totalPages = Math.ceil(totalProducts / limit);
 
     // console.log(`${product} ${page} ${totalPages} ${totalProducts}`);
-    
 
     res.render("admin/products", {
-      product:product,
+      product,
       currentPage: page,
-      totalPages: totalPages
+      totalPages,
     });
   } catch (error) {
     console.error(error);
@@ -65,24 +64,40 @@ const addProduct = async (req, res) => {
   try {
     console.log("add product accessed");
 
-    const { name, description, category, basePrice, discount, stock } = req.body;
+    const { name, description, category, basePrice, discount, stock, brand } =
+      req.body;
 
-    const imageFilenames = req.files.map((file) => file.filename);
+    const imageUrls = req.files.map((file) => file.filename);
+
+    const generateProductId = async () => {
+      const randomNumber = Math.floor(100000 + Math.random() * 900000);
+      const id = `ZNCP${randomNumber}`;
+      const ifExists = await Product.findOne({ productId: id });
+      if (ifExists) {
+        return generateProductId();
+      }
+      return id;
+    };
+
+    
+    const productId = await generateProductId();
+      
 
     const newProduct = new Product({
       name,
+      productId,
       category,
       description,
+      brand: brand,
       salePrice: basePrice,
       productOffer: discount,
       quantity: stock,
-      productImage: imageFilenames,
+      productImage: imageUrls,
     });
 
     await newProduct.save();
 
-    res.redirect('/admin/products')
-
+    res.redirect("/admin/products");
   } catch (error) {
     console.error(error);
     res.status(500).send("Error saving product");
@@ -111,7 +126,7 @@ const productBlocked = async (req, res) => {
 
 const productUnBlocked = async (req, res) => {
   try {
-    let id = req.query.id; 
+    let id = req.query.id;
     await Product.updateOne({ _id: id }, { $set: { isBlocked: false } });
     res.redirect("/admin/products");
   } catch (error) {

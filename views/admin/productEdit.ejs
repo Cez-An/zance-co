@@ -343,7 +343,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" href="/admin/products">
+                <a class="nav-link active" href="/admin/productAdd">
                     <i class="bi bi-box"></i> Products
                 </a>
             </li>
@@ -389,7 +389,7 @@
         <form action="/admin/products" method="post" enctype="multipart/form-data">
             <div class="container mt-5">
                 <div class="card shadow p-4">
-                    <h2 class="mb-4">Add New Products</h2>
+                    <h2 class="mb-4">Edit Products</h2>
                     <div class="mb-3">
                         <label class="form-label">Product Name</label>
                         <input type="text" class="form-control" placeholder="Enter product name" name="name">
@@ -407,7 +407,8 @@
 
                     <div class="mb-3">
                         <label class="form-label">Brand</label>
-                        <input type="text" class="form-control w-25" placeholder="" name="brand" >
+                        <input type="text" class="form-control w-25" placeholder="" name="brand" >                    
+                    </div>
                     </div>
                     
                     <div class="mb-3">
@@ -425,7 +426,7 @@
                                             <div class="image-upload-dropzone">
                                                 <i class="fa-solid fa-upload"></i>
                                                 <p class="mb-0">Add Image</p>
-                                                <input type="file" class="d-none" name="variantImages"
+                                                <input type="file" class="d-none" name="variantImages[]"
                                                     accept="image/*">
                                             </div>
                                             <div class="image-preview"></div>
@@ -434,7 +435,7 @@
                                             <div class="image-upload-dropzone">
                                                 <i class="fa-solid fa-upload"></i>
                                                 <p class="mb-0">Add Image</p>
-                                                <input type="file" class="d-none" name="variantImages"
+                                                <input type="file" class="d-none" name="variantImages[]"
                                                     accept="image/*">
                                             </div>
                                             <div class="image-preview"></div>
@@ -443,7 +444,7 @@
                                             <div class="image-upload-dropzone">
                                                 <i class="fa-solid fa-upload"></i>
                                                 <p class="mb-0">Add Image</p>
-                                                <input type="file" class="d-none" name="variantImages"
+                                                <input type="file" class="d-none" name="variantImages[]"
                                                     accept="image/*">
                                             </div>
                                             <div class="image-preview"></div>
@@ -452,7 +453,7 @@
                                             <div class="image-upload-dropzone">
                                                 <i class="fa-solid fa-upload"></i>
                                                 <p class="mb-0">Add Image</p>
-                                                <input type="file" class="d-none" name="variantImages"
+                                                <input type="file" class="d-none" name="variantImages[]"
                                                     accept="image/*">
                                             </div>
                                             <div class="image-preview"></div>

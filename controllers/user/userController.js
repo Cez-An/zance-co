@@ -173,20 +173,31 @@ const otpVerification = async (req, res) => {
       return res.status(STATUS_CODE.BAD_REQUEST).json({
         success: false,
         message: "OTP session expired. Request a new OTP.",
-      }); // while using ajax or fetch we give message as json data
+      }); 
     }
 
-    // Convert both to strings for safe comparison
 
     if (otp.toString() === req.session.userOtp.toString()) {
-      //   const userId = (function generateUserId() {
-      //     return (
-      //         String.fromCharCode(65 + Math.random() * 26, 65 + Math.random() * 26) +
-      //         Math.floor(1000 + Math.random() * 9000)
-      //     );
-      // })();
+     
+      const userId = (function userId(){
+        const randomNumber = Math.floor(100000+(Math.random()*90000));
+        if(ifExists){
+          userId();
+        }
+        return id
+      })();
 
-      // console.log(userId);
+      const generateUserId = async () => {
+        const randomNumber = Math.floor(100000 + Math.random() * 900000);
+        const id = `ZNCC${randomNumber}`;
+        const ifExists = await User.findOne({userId:id});
+        if (ifExists) {
+          return generateUserId();
+        }
+        return id;
+      };
+      
+      
 
       const user = req.session.userData;
 
@@ -194,7 +205,7 @@ const otpVerification = async (req, res) => {
 
       const saveUserData = new User({
         name: user.name,
-        // userId:userId,
+        userId,
         email: user.email,
         phone: user.number,
         password: passwordHash,
@@ -203,8 +214,6 @@ const otpVerification = async (req, res) => {
       await saveUserData.save();
 
       req.session.user = saveUserData;
-
-      // console.log("User Session:", req.session.user);
 
       res
         .status(STATUS_CODE.SUCCESS)
@@ -273,8 +282,6 @@ const login = async (req, res) => {
     const { email, password } = req.body;
 
     const findUser = await User.findOne({ email: email.trim() });
-
-    console.log(findUser);
 
     if (!findUser) {
       return res.render("user/login", { message: "User not found" });

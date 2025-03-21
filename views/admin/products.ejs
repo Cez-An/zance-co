@@ -261,7 +261,7 @@
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>
-                    <tr>
+                    <tr class="text-center">
                         <th>Name</th>
                         <th>Category</th>
                         <th>Price</th>
@@ -275,11 +275,11 @@
 
                     <% product.forEach(element => {%>
                                         
-                    <tr>
+                    <tr class="text-center" >
                         <td><%=element.name %></td>
                         <td><%=element.category %></td>
                         <td>₹&nbsp;<%=element.salePrice %></td>
-                        <td><%=element._id %></td>
+                        <td><%=element.productId %></td>
 
                         
                             <% if (element.isBlocked===false) { %>

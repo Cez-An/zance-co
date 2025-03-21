@@ -10,6 +10,7 @@ import session from "express-session";
 import passport from "./config/passport.js";
 import googleRouter from "./routes/googleRouter.js";
 import adminRouter from "./routes/adminRouter.js";
+import multer from "multer";
 
 dotenv.config(); 
 
@@ -71,6 +72,13 @@ app.use("/error-admin", (req, res) => {
 
 app.use("/error", (req, res) => {
   res.render("partials/404");
+});
+
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+      return res.status(400).json({ error: `Multer Error: ${err.message}` });
+  }
+  return res.status(500).json({ error: 'Something went wrong', details: err.message });
 });
 
 app.use((req, res, next) => {

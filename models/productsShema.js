@@ -9,6 +9,10 @@ const productSchema = new Schema(
       unique:true,
       required: true,
     },
+    productId:{
+      type:String,
+      required:true,
+    },
     description: {
       type: String,
       required: true,

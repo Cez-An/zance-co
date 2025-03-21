@@ -1,5 +1,6 @@
 import { renderFile } from "ejs";
 import User from "../../models/userSchema.js";
+import STATUS_CODE from "../../helpers/statusCode.js";
 
 const customerInfo = async (req, res) => {
   try {
@@ -9,7 +10,7 @@ const customerInfo = async (req, res) => {
       search = req.query.search;
     }
 
-    let page = parseInt(req.query.page) || 1; // Ensure page is a number BUG
+    let page = parseInt(req.query.page) || 1; 
 
     const limit = 10;
 
@@ -44,13 +45,13 @@ const customerInfo = async (req, res) => {
   }
 };
 
-const customerBlocked = async (req, res) => {
+const customerBlocked = async (req, res) => { 
   try {
-    let id = req.query.id;
+    let {param:id} = req.body;
     await User.updateOne({ _id: id }, { $set: { isBlocked: true } });
-    res.redirect("/admin/customers");
+    return res.status(200).json({message:"User blocked successfully"});
   } catch (error) {
-    res.redirect("/error-admin");
+    return res.status(500).json({error:'User not blocked'})
   }
 };
 

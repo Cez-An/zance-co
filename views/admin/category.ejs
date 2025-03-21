@@ -257,8 +257,10 @@
             </form>
 
             <form action="/admin/category/" method="get" class="d-flex justify-content-end gap-2">
+
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
-                    name="search">
+                   id="name" name="search">
+
                 <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Search</button>
             </form>
         </div>
@@ -300,8 +302,8 @@
                             <td><a href="/admin/categoryEdit/<%=element._id %>"><button
                                         class="btn btn-dark">Edit</button></a>
 
-                                <button class="btn btn-dark"
-                                    onclick="return deleteCategory('<%=element._id %>')">Delete</button>
+                                <!-- <button class="btn btn-dark"
+                                    onclick="return deleteCategory('<%=element._id %>')">Delete</button> -->
                             </td>
                         </tr>
                         <% }); %>
@@ -331,46 +333,47 @@
             function toggleSidebar() {
                 document.querySelector('.sidebar').classList.toggle('active');
             }
-            async function deleteCategory(id) {
-                Swal.fire({
-                    title: "Are you sure?",
-                    text: "You won't be able to revert this!",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#e08680",
-                    cancelButtonColor: "#6510DC",
-                    confirmButtonText: "Yes, delete it!"
-                }).then(async (result) => { // Make this function async
-                    if (result.isConfirmed) {
-                        try {
-                            const response = await fetch('/admin/category', {
-                                method: 'DELETE',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ id })
-                            });
+            
+            // async function deleteCategory(id) {
+            //     Swal.fire({
+            //         title: "Are you sure?",
+            //         text: "You won't be able to revert this!",
+            //         icon: "warning",
+            //         showCancelButton: true,
+            //         confirmButtonColor: "#e08680",
+            //         cancelButtonColor: "#6510DC",
+            //         confirmButtonText: "Yes, delete it!"
+            //     }).then(async (result) => { // Make this function async
+            //         if (result.isConfirmed) {
+            //             try {
+            //                 const response = await fetch('/admin/category', {
+            //                     method: 'DELETE',
+            //                     headers: { 'Content-Type': 'application/json' },
+            //                     body: JSON.stringify({ id })
+            //                 });
 
-                            const data = await response.json();
+            //                 const data = await response.json();
 
-                            if (response.ok) {
-                                Swal.fire({
-                                    title: "Deleted!",
-                                    text: "Your file has been deleted.",
-                                    icon: "success",
-                                    showConfirmButton: false,
-                                    timer: 1500,
-                                }).then(() => {
-                                    window.location.reload(); // Reload only after success confirmation
-                                });
-                            } else {
-                                Swal.fire("Error!", data.error, "error");
-                            }
-                        } catch (error) {
-                            Swal.fire("Error!", "Something went wrong!", "error");
-                            console.error(error);
-                        }
-                    }
-                });
-            }
+            //                 if (response.ok) {
+            //                     Swal.fire({
+            //                         title: "Deleted!",
+            //                         text: "Your file has been deleted.",
+            //                         icon: "success",
+            //                         showConfirmButton: false,
+            //                         timer: 1500,
+            //                     }).then(() => {
+            //                         window.location.reload(); // Reload only after success confirmation
+            //                     });
+            //                 } else {
+            //                     Swal.fire("Error!", data.error, "error");
+            //                 }
+            //             } catch (error) {
+            //                 Swal.fire("Error!", "Something went wrong!", "error");
+            //                 console.error(error);
+            //             }
+            //         }
+            //     });
+            // }
 
         </script>
 </body>

@@ -67,16 +67,21 @@ const loadProductsPage = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    console.log(`Add product Clicked
-      `);
+    // Destructure fields from req.body matching the form field names
+    const { 
+      name, 
+      description, 
+      category, 
+      basePrice, 
+      discount, 
+      stock, 
+      brand 
+    } = req.body;
 
-    console.log("Add product Clicked");
+    // Map image URLs from uploaded files - field name matches 'variantImages' from form
+    const imageUrls = req.files.map((file) => file.path || file.url);
 
-    const { name, description, category, basePrice, discount, stock, brand } =
-      req.body;
-
-      const imageUrls = req.files.map((file) => file.path || file.url);
-
+    // Generate unique product ID
     const generateProductId = async () => {
       const randomNumber = Math.floor(100000 + Math.random() * 900000);
       const id = `ZNCP${randomNumber}`;
@@ -87,36 +92,55 @@ const addProduct = async (req, res) => {
       return id;
     };
 
-    const categoryfind = await Category.findOne({name:category})
-    const catogoryId = categoryfind._id
+    // Find category by name
+    const categoryFind = await Category.findOne({ name: category });
+    if (!categoryFind) {
+      return res.status(400).json({ 
+        success: false,
+        message: "Invalid category" 
+      });
+    }
+    const categoryId = categoryFind._id;
 
-    console.log(catogoryId);
-    await Category.findOneAndUpdate({_id:catogoryId},{$inc:{count:1}})
+    // Increment category count
+    await Category.findOneAndUpdate({ _id: categoryId }, { $inc: { count: 1 } });
 
+    // Generate product ID
     const productId = await generateProductId();
-      
+
+    // Create new product with form data
     const newProduct = new Product({
       name,
       productId,
-      category:catogoryId,
+      category: categoryId,
       description,
-      brand: brand,
-      salePrice: basePrice,
-      productOffer: discount,
-      quantity: stock,
-      productImage: imageUrls,
+      brand,
+      salePrice: basePrice,    // Matches 'basePrice' from form
+      productOffer: discount,   // Matches 'discount' from form
+      quantity: stock,          // Matches 'stock' from form
+      productImage: imageUrls,  // Matches 'variantImages' from form
     });
 
+    // Save product to database
     await newProduct.save();
-    // res.json({ message: "Product added successfully", product: newProduct });
 
-    res.redirect("/admin/products");
-
+    // Send response matching frontend expectations
+    res.status(200).json({ 
+      success: true,
+      message: "Product added successfully",
+      redirect: "/admin/products"  // Changed 'location' to 'redirect' to match frontend
+    });
+    
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Error saving product");
+    console.error("Error:", error);
+    res.status(500).json({ 
+      success: false,
+      message: "Error saving product",
+      error: error.message 
+    });
   }
 };
+
 
 
 const productBlocked = async (req, res) => {

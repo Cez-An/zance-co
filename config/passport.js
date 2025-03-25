@@ -2,6 +2,8 @@ import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import User from "../models/userSchema.js";
 import dotenv from "dotenv";
+import {generateUserId} from '../helpers/customerId.js'
+
 
 dotenv.config();
 
@@ -18,14 +20,16 @@ passport.use(
                 let user = await User.findOne({ googleId: profile.id });
 
                 if (!user) {
-
+                    const userId = await generateUserId();
                     user = new User({
                         name: profile.displayName,
                         email: profile.emails[0].value,
+                        userId,
                         googleId: profile.id,
                     });
                     
                     await user.save();
+                    req.session.user = user
                 }
 
                 req.session.user = user

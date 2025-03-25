@@ -5,6 +5,7 @@ import env from "dotenv";
 import bcrypt from "bcrypt";
 import { STATES } from "mongoose";
 import { render } from "ejs";
+import {generateUserId} from '../../helpers/customerId.js'
 
 env.config();
 
@@ -179,26 +180,9 @@ const otpVerification = async (req, res) => {
 
     if (otp.toString() === req.session.userOtp.toString()) {
      
-      const userId = (function userId(){
-        const randomNumber = Math.floor(100000+(Math.random()*90000));
-        if(ifExists){
-          userId();
-        }
-        return id
-      })();
-
-      const generateUserId = async () => {
-        const randomNumber = Math.floor(100000 + Math.random() * 900000);
-        const id = `ZNCC${randomNumber}`;
-        const ifExists = await User.findOne({userId:id});
-        if (ifExists) {
-          return generateUserId();
-        }
-        return id;
-      };
+      const userId = await generateUserId();
+      console.log(userId);
       
-      
-
       const user = req.session.userData;
 
       const passwordHash = await securePassword(user.password);

@@ -12,7 +12,7 @@ const customerInfo = async (req, res) => {
 
     let page = parseInt(req.query.page) || 1; 
 
-    const limit = 10;
+    const limit = 8;
 
     const userData = await User.find({
       $or: [
@@ -49,19 +49,20 @@ const customerBlocked = async (req, res) => {
   try {
     let {param:id} = req.body;
     await User.updateOne({ _id: id }, { $set: { isBlocked: true } });
-    return res.status(200).json({message:"User blocked successfully"});
+    return res.status(STATUS_CODE.SUCCESS).json({message:"User Blocked Successfully"});
   } catch (error) {
-    return res.status(500).json({error:'User not blocked'})
+    return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({error:'User not blocked'})
   }
 };
 
 const customerUnBlocked = async (req, res) => {
   try {
-    let id = req.query.id;
-    await User.updateOne({ _id: id }, { $set: { isBlocked: false } });
-    res.redirect("/admin/customers");
+    let {param2} = req.body;
+    console.log(req.body);
+    await User.updateOne({ _id: param2 }, { $set: { isBlocked: false } });
+    return res.status(STATUS_CODE.SUCCESS).json({message:'User unblocked Successfuly'})
   } catch (error) {
-    res.redirect("/error-admin");
+    return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({error:'User not unblocked'})
   }
 };
 

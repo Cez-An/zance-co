@@ -273,6 +273,7 @@
             <table class="table table-bordered">
                 <thead>
                     <tr class="text-center">
+                        <th>No.</th>
                         <th>Category</th>
                         <th>Number of Products</th>
                         <th>Discount %</th>
@@ -281,8 +282,12 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <% i=1 %>
                     <% categoryData.forEach(element=> { %>
                         <tr class="text-center">
+                            <td>
+                                <%= i++ %>
+                            </td>
                             <td>
                                 <%=element.name %>
                             </td>

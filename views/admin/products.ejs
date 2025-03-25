@@ -262,6 +262,7 @@
             <table class="table table-bordered">
                 <thead>
                     <tr class="text-center">
+                        <th>No.</th>
                         <th>Name</th>
                         <th>Category</th>
                         <th>Price</th>
@@ -272,12 +273,13 @@
                 </thead>
                 <tbody>
 
-
+                    <% i=1 %>
                     <% product.forEach(element => {%>
                                         
                     <tr class="text-center" >
+                        <td><%=i++ %></td>
                         <td><%=element.name %></td>
-                        <td><%=element.category %></td>
+                        <td><%=element.category?.name%></td>
                         <td>₹&nbsp;<%=element.salePrice %></td>
                         <td><%=element.productId %></td>
 

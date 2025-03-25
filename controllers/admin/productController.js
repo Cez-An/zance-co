@@ -5,9 +5,13 @@ import fs, { access } from "fs";
 import path from "path";
 import sharp from "sharp";
 import { log } from "console";
+import { render } from "ejs";
 
 const loadproductAddPage = async (req, res) => {
   try {
+    console.log(`Rendering Add Product Page
+      `);
+    
     const category = await Category.find({ isListed: true });
 
     return res.render("admin/productsAdd", {
@@ -27,7 +31,8 @@ const loadProductsPage = async (req, res) => {
     if (req.query.search) {
       search = req.query.search;
     }
-    console.log("Accessed productInfo");
+    console.log(`Rendering Product Listing Page
+      `);
 
     const page = parseInt(req.query.page) || 1;
 
@@ -36,7 +41,7 @@ const loadProductsPage = async (req, res) => {
 
     const product = await Product.find({
       name: { $regex: ".*" + search + ".*", $options: "i" },
-    })
+    }).populate('category')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
@@ -62,12 +67,15 @@ const loadProductsPage = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    console.log("add product accessed");
+    console.log(`Add product Clicked
+      `);
+
+    console.log("Add product Clicked");
 
     const { name, description, category, basePrice, discount, stock, brand } =
       req.body;
 
-    const imageUrls = req.files.map((file) => file.filename);
+      const imageUrls = req.files.map((file) => file.path || file.url);
 
     const generateProductId = async () => {
       const randomNumber = Math.floor(100000 + Math.random() * 900000);
@@ -79,14 +87,18 @@ const addProduct = async (req, res) => {
       return id;
     };
 
-    
+    const categoryfind = await Category.findOne({name:category})
+    const catogoryId = categoryfind._id
+
+    console.log(catogoryId);
+    await Category.findOneAndUpdate({_id:catogoryId},{$inc:{count:1}})
+
     const productId = await generateProductId();
       
-
     const newProduct = new Product({
       name,
       productId,
-      category,
+      category:catogoryId,
       description,
       brand: brand,
       salePrice: basePrice,
@@ -96,21 +108,16 @@ const addProduct = async (req, res) => {
     });
 
     await newProduct.save();
+    // res.json({ message: "Product added successfully", product: newProduct });
 
     res.redirect("/admin/products");
+
   } catch (error) {
     console.error(error);
     res.status(500).send("Error saving product");
   }
 };
 
-const editProduct = async (req, res) => {
-  try {
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Error editing product");
-  }
-};
 
 const productBlocked = async (req, res) => {
   try {
@@ -134,11 +141,84 @@ const productUnBlocked = async (req, res) => {
   }
 };
 
+const loadProductsEditPage = async (req, res) => {
+  try {
+    console.log('edit age loaded');
+
+    const {id} = req.params;
+
+      const product = await Product.findOne({_id:id});
+      if (!product) {
+          return res.status(404).send("Product not found");
+      }
+      const cat = await Category.find();
+      res.render('admin/productsEdit', { product, cat }); 
+  } catch (error) {
+      console.error(error);
+      res.status(500).send("Error loading product");
+  }
+};
+
+// const updateProduct = async (req, res) => {
+//   try {
+//     const { productId, name, category, brand, description, basePrice, discount, stock, existingImages } = req.body;
+    
+//     const newImages = req.files ? req.files.map(file => file.path) : [];
+
+//     if (!productId) {
+//       return res.status(400).json({ message: 'Product ID is required' });
+//     }
+
+//     const product = await Product.findOne({ productId });
+//     if (!product) {
+//       return res.status(404).json({ message: 'Product not found' });
+//     }
+
+//     // Use existingImages if provided, otherwise use current product images
+//     const keptImages = existingImages ? [].concat(existingImages) : product.productImage;
+
+//     // Combine kept images with new images
+//     const updatedImages = [...keptImages, ...newImages];
+
+//     // Update the product
+//     const updatedProduct = await Product.findByIdAndUpdate(
+//       product._id,
+//       {
+//         name,
+//         category,
+//         brand,
+//         description,
+//         salePrice: basePrice,
+//         productOffer: discount,
+//         quantity: stock,
+//         productImage: updatedImages,
+//       },
+//       { new: true, runValidators: true }
+//     );
+
+//     res.status(200).json({
+//       message: 'Product updated successfully',
+//       product: updatedProduct,
+//     });
+//   } catch (error) {
+//     console.error('Error in updateProduct:', error.message);
+//     res.status(500).json({
+//       message: 'Server error while updating product',
+//       error: error.message,
+//     });
+//   }
+// };
+
+
+
+
+
 export default {
   loadproductAddPage,
   loadProductsPage,
+  loadProductsEditPage,
   addProduct,
-  editProduct,
+  // updateProduct,
   productBlocked,
   productUnBlocked,
 };

@@ -66,24 +66,24 @@ app.use(['/user','/'], userRouter);
 app.use("/auth", googleRouter);
 app.use("/admin", adminRouter);
 
-app.use("/error-admin", (req, res) => {
-  res.render("partials/admin/404");
-});
+// app.use("/error-admin", (req, res) => {
+//   res.render("partials/admin/404");
+// });
 
-app.use("/error", (req, res) => {
-  res.render("partials/404");
-});
+// app.use("/error", (req, res) => {
+//   res.render("partials/404");
+// });
 
-app.use((err, req, res, next) => {
-  if (err instanceof multer.MulterError) {
-      return res.status(400).json({ error: `Multer Error: ${err.message}` });
-  }
-  return res.status(500).json({ error: 'Something went wrong', details: err.message });
-});
+// app.use((err, req, res, next) => {
+//   if (err instanceof multer.MulterError) {
+//       return res.status(400).json({ error: `Multer Error: ${err.message}` });
+//   }
+//   return res.status(500).json({ error: 'Something went wrong', details: err.message });
+// });
 
-app.use((req, res, next) => {
-  res.status(STATUS_CODE.NOT_FOUND).render("partials/404");
-});
+// app.use((req, res, next) => {
+//   res.status(STATUS_CODE.NOT_FOUND).render("partials/404");
+// });
 
 app.listen(PORT, () => {
   console.log(`Server is running at:`);

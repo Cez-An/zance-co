@@ -10,7 +10,7 @@ const userSchema = new Schema(
     },
     userId:{
       type:String,
-      required: true,
+      required: false,
     },
     email: {
       type: String,
@@ -19,7 +19,6 @@ const userSchema = new Schema(
     },
     phone: {
       type: String,
-      sparse: true,
       default: null,
       required:false
     },

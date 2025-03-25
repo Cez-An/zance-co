@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 const { Schema } = mongoose;
 
@@ -22,7 +22,8 @@ const productSchema = new Schema(
       required: true,
     },
     category: {
-      type: String,
+      type:Types.ObjectId,
+      ref:'Category',
       required: false,
     },
     regularPrice: {
@@ -47,7 +48,7 @@ const productSchema = new Schema(
     },
     productImage: {
       type: [String],
-      required: true,
+      required: false,
     },
     isBlocked: {
       type: Boolean,

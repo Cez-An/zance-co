@@ -14,12 +14,12 @@ router.get('/logout',adminController.logout)
 router.post('/login',adminController.adminLogin)
 
 
-
 // customer management
 router.get('/customers',adminAuth.checkSession,customerController.customerInfo);
 // router.get('/blockCustomer',adminAuth.checkSession,customerController.customerBlocked) fetch implemented
 router.post('/blockCustomer',adminAuth.checkSession,customerController.customerBlocked)
-router.get('/unBlockCustomer',adminAuth.checkSession,customerController.customerUnBlocked)
+// router.get('/unBlockCustomer',adminAuth.checkSession,customerController.customerUnBlocked) fetch implemented
+router.post('/unBlockCustomer',adminAuth.checkSession,customerController.customerUnBlocked)
 
 //category Management
 router.get('/category',adminAuth.checkSession,categoryController.categoryInfo)
@@ -30,9 +30,16 @@ router.put('/category/',adminAuth.checkSession,categoryController.updateCategory
 router.delete('/category/',adminAuth.checkSession,categoryController.deleteCategory)
 
 //product Management
+
 router.get('/products',adminAuth.checkSession,productController.loadProductsPage)
 router.get('/productAdd',adminAuth.checkSession,productController.loadproductAddPage)
+
+router.get('/productEdit/:id',adminAuth.checkSession,productController.loadProductsEditPage)
+
 router.post('/products',uploads.array('variantImages',8),productController.addProduct)
+// router.put('/products', uploads.array('variantImages',8), productController.updateProduct);
+
+
 router.get('/blockProduct',adminAuth.checkSession,productController.productBlocked)
 router.get('/unBlockProduct',adminAuth.checkSession,productController.productUnBlocked)
 

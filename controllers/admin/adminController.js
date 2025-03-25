@@ -64,7 +64,8 @@ const adminLogin = async (req, res) => {
 
 const loadDashboard = (req, res) => {
   try {
-    console.log("Rendering Dashboard Page");
+    console.log(`Rendering Dashboard Page
+      `);
     res.status(STATUS_CODE.SUCCESS).render("admin/dashboard.ejs");
   } catch (error) {
     console.error("Error occurred while loading the dashboard:", error);

@@ -263,6 +263,7 @@
             <table class="table table-bordered">
                 <thead>
                     <tr class="text-center">
+                        <th>No.</th>
                         <th>Name</th>
                         <th>Email</th>
                         <th>Phone</th>
@@ -274,10 +275,11 @@
                 </thead>
                 <tbody>
 
-
+                    <% i=1 %>
                     <% user.forEach(element=> {%>
 
                         <tr class="text-center">
+                            <td><%= i++ %></td>
                             <td>
                                 <%=element.name %>
                             </td>
@@ -310,11 +312,11 @@
                                     <% if (element.isBlocked===false) { %>
                                         <td>
                                             <button class="status-btn btn btn-danger"
-                                                onclick="return blockCustomer('<%=element._id%>')">Block</button>
+                                                onclick="blockCustomer('<%=element._id%>')">Block</button>
                                         </td>
                                         <% } else { %>
-                                            <td><button class="status-btn btn btn-success"><a class="block-unblock"
-                                                        href="/admin/unBlockCustomer?id=<%=element._id%>">Unblock</a></button>
+                                            <td><button class="status-btn btn btn-success"
+                                                    onclick="unblockCustomer('<%=element._id%>')">Unblock</button>
                                             </td>
                                             <% } %>
                         </tr>
@@ -350,7 +352,7 @@
                     text: "You want to block this customer?",
                     icon: "warning",
                     showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
+                    confirmButtonColor: "#6510DC",
                     cancelButtonColor: "#d33",
                     confirmButtonText: "Yes, block!"
                 }).then((result) => {
@@ -378,17 +380,65 @@
                             }).then(() => {
                                 location.reload()
                             })
-                        }).catch(err=>{
+                        }).catch(err => {
                             Swal.fire({
-                                icon:'error',
-                                title:'Something went wrong',
-                                text:err.error,
-                                timer:1500,
+                                icon: 'error',
+                                title: 'Something went wrong',
+                                text: err.error,
+                                timer: 1500,
                             })
                         })
                     }
                 });
 
+
+            }
+
+            async function unblockCustomer(param2) {
+                console.warn('accessed unblock in frontend');
+
+                Swal.fire({
+                    title: 'Unblock',
+                    text: 'You want to unblock this customer?',
+                    icon: 'warning',
+                    showConfirmButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes unblock.',
+                    cancelButtonColor: 'd33'
+
+                }).then(result => {
+                    if (result.isConfirmed) {
+                        fetch('/admin/unBlockCustomer', {
+                            method: 'POST',
+                            headers: { 'content-type': 'application/json' },
+                            body: JSON.stringify({ param2 })
+                        }
+                        ).then(response => {
+                            if (!response) {
+                                return response.json().then(err => {
+                                    throw new Error(err.message)
+                                })
+                            }
+                            return response.json();
+                        }).then(data => {
+                            Swal.fire({
+                                title: 'User Unblocked',
+                                text: data.message,
+                                timer: 1500,
+                                icon: 'success',
+                            }).then(() => {
+                                location.reload()
+                            })
+                        }).catch(err => {
+                            Swal.fire({
+                                title: 'Something Went Wrong',
+                                showConfirmButton: true,
+                                icon: 'error',
+                                text: err.error,
+                            })
+                        })
+                    }
+                })
 
             }
 

@@ -314,7 +314,7 @@
             }
 
     document.getElementById('editCategorform').addEventListener('submit', async (e) => {
-    e.preventDefault(); // Prevent form submission
+    e.preventDefault(); 
 
     let categoryName = document.getElementById('categoryName').value.trim();
     let visibilityStatus = document.getElementById('visibilityStatus').value.trim();
@@ -351,11 +351,6 @@
         discountError.innerText = 'Discount must be a number between 0 and 100';
         valid = false;
     }
-
-    // If all fields are valid, submit the form
-    // if (valid) {
-    //     document.getElementById('addCategorform').submit();
-    // }
 
     const formData = {categoryName,visibilityStatus,categoryDiscount,categoryId}
     const response = await fetch('/admin/category',{

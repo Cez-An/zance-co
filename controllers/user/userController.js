@@ -318,8 +318,11 @@ const loadForgotPassword = async (req, res) => {
 
 const loadForgotPasswordOtp = async (req, res) => {
   try {
-
-    res.render("user/forgotPasswordOtp");
+    if(req.session.passwordUpdated || req.session.Otpback){
+      res.redirect('/user/login')
+    }else{
+      res.render("user/forgotPasswordOtp");
+    }
   } catch (error) {
     console.log(error);
     return res
@@ -334,7 +337,7 @@ const validateUserEmail = async (req, res) => {
       `);
     
     const { email } = req.body;
-
+    req.session.idUser = email;
     const user = await User.findOne({ email });
 
     if (!user) {
@@ -352,7 +355,7 @@ const validateUserEmail = async (req, res) => {
       }
   
       req.session.userOtp = otp;
-      req.session.userData = { email };
+      req.session.userEmail = { email };
       res.json({ success: true, redirectUrl: "/user/forgotPasswordOtp",message:'This email is registered.',user });
 
     }
@@ -365,14 +368,51 @@ const validateUserEmail = async (req, res) => {
 
 const FPotpVarification = async (req,res)=>{
   const { otp } = req.body;
-  const email = req.session.userData;
   const generatedOtp = req.session.userOtp;
 
+  req.session.Otpback=true;
+
   if (otp.toString() === generatedOtp.toString()) {
-      req.session.isFPotpVerified = true;
+
+      req.session.newpass = '';
+
       res.json({ success: true,message:"Otp Verified Succefully",redirectUrl:'/user/newPassword'})
 }
 }
+const renderNewPassPage = async (req,res)=>{
+  try {
+    if(req.session.passwordUpdated){
+      res.redirect('/user/login')
+    }else{
+      res.render('user/changePassword')
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(STATUS_CODE.NOT_FOUND)
+  }
+}
+
+const newPassword = async (req,res)=>{
+  try {
+    const {newPassword} = req.body;
+    const passwordHash = await securePassword(newPassword);
+    const email = req.session.idUser
+        
+    const user = await User.findOne({email:email})
+
+    await User.findByIdAndUpdate(user._id,{$set:{password:passwordHash}})
+
+    req.session.passwordUpdated=true; //flag
+
+    res.status(200).json({message:'Password updated Successfully',redirectUrl:'/user/login'})
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+
 
 export default {
   loadHomepage,
@@ -391,4 +431,6 @@ export default {
   loadForgotPasswordOtp,
   validateUserEmail,
   FPotpVarification,
+  renderNewPassPage,
+  newPassword,
 };

@@ -404,6 +404,7 @@
                     <div class="mb-3">
                         <label class="form-label">Category</label>
                         <select class="form-select" name="category">
+                            <option value="" hidden>Select category</option>
                             <% cat.forEach(element=> { %>
                                 <option value="<%=element.name %>">
                                     <%=element.name %>

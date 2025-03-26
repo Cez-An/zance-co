@@ -167,19 +167,20 @@ const productUnBlocked = async (req, res) => {
 
 const loadProductsEditPage = async (req, res) => {
   try {
-    console.log('edit age loaded');
+    console.log("edit age loaded");
 
-    const {id} = req.params;
+    const { id } = req.params;
 
-      const product = await Product.findOne({_id:id});
-      if (!product) {
-          return res.status(404).send("Product not found");
-      }
-      const cat = await Category.find();
-      res.render('admin/productsEdit', { product, cat }); 
+    const product = await Product.findOne({ _id: id });
+    if (!product) {
+      return res.status(404).send("Product not found");
+    }
+    const cat = await Category.find();
+    res.render("admin/productsEdit", { product, cat });
+    
   } catch (error) {
-      console.error(error);
-      res.status(500).send("Error loading product");
+    console.error(error);
+    res.status(500).send("Error loading product");
   }
 };
 

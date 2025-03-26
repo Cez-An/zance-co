@@ -16,16 +16,13 @@ const loadHomepage = async (req, res) => {
     const user = req.session.user;
 
     if (user) {
-      console.log(user);
-
-      // const userData = await User.findOne({_id:user._id})
-
       res.render("user/home", { user: user });
     } else {
       console.log("ELSE ACCESSED ");
 
       return res.render("user/home");
     }
+
   } catch (error) {
     console.log("HOME PAGE NOT LOADING");
     res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).send("Server Error");
@@ -147,7 +144,18 @@ const signup = async (req, res) => {
 };
 
 const loadOtpVerification = async (req, res) => {
+
+  try {
+    if (req.session.isOtpVerified) {
+      return res.redirect('/user'); 
+  }
   res.render("user/verifyOtp");
+  } catch (error) {    
+    console.error("Error in otp Authentication", error);
+    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).send("Internal server error");
+  }
+
+  
 };
 
 const securePassword = async (password) => {
@@ -168,8 +176,6 @@ const otpVerification = async (req, res) => {
     console.log("Stored OTP:", req.session.userOtp);
     console.log("User Entered OTP:", otp);
 
-    // Check if OTP exists in session
-
     if (!req.session.userOtp) {
       return res.status(STATUS_CODE.BAD_REQUEST).json({
         success: false,
@@ -177,16 +183,12 @@ const otpVerification = async (req, res) => {
       }); 
     }
 
-
     if (otp.toString() === req.session.userOtp.toString()) {
-     
-      const userId = await generateUserId();
-      console.log(userId);
-      
+
+      req.session.isOtpVerified = true;
+      const userId = await generateUserId();      
       const user = req.session.userData;
-
       const passwordHash = await securePassword(user.password);
-
       const saveUserData = new User({
         name: user.name,
         userId,
@@ -224,7 +226,7 @@ const resendOtp = async (req, res) => {
     if (!email) {
       return res
         .status(STATUS_CODE.BAD_REQUEST)
-        .json({ success: false, message: "Email mot found is session" });
+        .json({ success: false, message: "Email not found is session" });
     }
 
     const otp = generateOtp();
@@ -331,16 +333,19 @@ const loadForgotPasswordOtp = async (req, res) => {
   }
 };
 
-const validateEmail = async (req, res) => {
+const validateUserEmail = async (req, res) => {
   try {
+    console.log(`EMAIL VALIDATION ACCESSED`);
+    
     const { email } = req.body;
 
     const user = await User.findOne({ email });
-
+    
     if (!user) {
-      return res.render("user/forgotPassword", { message: "This email is not registered."});
+      console.log(`rendering forgot password page`);
+     return res.status(400).json({redirectUrl:"/user/forgotPassword",message:'This email is not registered'});
     }
-    res.json({ success: true, redirectUrl: "/user/forgotPasswordOtp" });
+    res.json({ success: true, redirectUrl: "/user/forgotPasswordOtp",message:'This email is registered.' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -362,5 +367,5 @@ export default {
   loadProductsDetails,
   loadForgotPassword,
   loadForgotPasswordOtp,
-  validateEmail,
+  validateUserEmail,
 };

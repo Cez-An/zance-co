@@ -33,7 +33,7 @@ router.get("/loadProductsDetailsPage", userController.loadProductsDetails);
 
 // forgot password
 router.get('/forgotPassword',userController.loadForgotPassword)
-router.post('/forgotPassword',userController.validateEmail)
+router.post('/forgotPassword',userController.validateUserEmail)
 router.get('/forgotPasswordOtp',userController.loadForgotPasswordOtp)
 
 

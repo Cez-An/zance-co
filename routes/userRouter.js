@@ -35,6 +35,7 @@ router.get("/loadProductsDetailsPage", userController.loadProductsDetails);
 router.get('/forgotPassword',userController.loadForgotPassword)
 router.post('/forgotPassword',userController.validateUserEmail)
 router.get('/forgotPasswordOtp',userController.loadForgotPasswordOtp)
+router.post('/forgotPasswordOtp',userController.FPotpVarification)
 
 
 

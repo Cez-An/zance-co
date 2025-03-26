@@ -63,7 +63,7 @@ const loadShop = async (req, res) => {
 };
 
 
-function generateOtp() {
+ function generateOtp() {
   return Math.floor(1000 + Math.random() * 9000).toString();
 }
 
@@ -119,11 +119,10 @@ const signup = async (req, res) => {
 
     if (findUser) {
       console.log(`User ALREADY EXSIST redirected to SIGN UP PAGE`);
-
-      return res.render("user/signup", { message: "user already exists" }); // re-rendering is happening so the message is passed as message.
+      return res.render("user/signup", { message: "user already exists" }); 
     }
 
-    const otp = generateOtp();
+    const otp =  generateOtp();
 
     const emailSent = await sendVerificationEmail(email, otp);
 
@@ -133,7 +132,6 @@ const signup = async (req, res) => {
 
     req.session.userOtp = otp;
     req.session.userData = { email, password, name, number };
-    // req.session.user =  findUser;
 
     res.redirect("/user/verifyOtp");
     console.log("Otp sent", otp);
@@ -201,9 +199,7 @@ const otpVerification = async (req, res) => {
 
       req.session.user = saveUserData;
 
-      res
-        .status(STATUS_CODE.SUCCESS)
-        .json({ success: true, redirectUrl: "/user/login" });
+      res.status(STATUS_CODE.SUCCESS).json({ success: true, redirectUrl: "/user/login" });
     } else {
       res.status(STATUS_CODE.BAD_REQUEST).json({
         success: false,
@@ -212,9 +208,7 @@ const otpVerification = async (req, res) => {
     }
   } catch (error) {
     console.error("Error Verifying OTP:", error);
-    res
-      .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
-      .json({ success: false, message: "An error occurred" });
+    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ success: false, message: "An error occurred" });
   }
 };
 
@@ -312,7 +306,7 @@ const loadProductsDetails = async (req, res) => {
 
 const loadForgotPassword = async (req, res) => {
   try {
-    res.render("user/forgotPassword",{message:''});
+    res.render("user/forgotPassword");
   } catch (error) {
     console.log(error);
     return res
@@ -324,6 +318,7 @@ const loadForgotPassword = async (req, res) => {
 
 const loadForgotPasswordOtp = async (req, res) => {
   try {
+
     res.render("user/forgotPasswordOtp");
   } catch (error) {
     console.log(error);
@@ -335,22 +330,49 @@ const loadForgotPasswordOtp = async (req, res) => {
 
 const validateUserEmail = async (req, res) => {
   try {
-    console.log(`EMAIL VALIDATION ACCESSED`);
+    console.log(`EMAIL VALIDATION ACCESSED
+      `);
     
     const { email } = req.body;
 
     const user = await User.findOne({ email });
-    
+
     if (!user) {
       console.log(`rendering forgot password page`);
-     return res.status(400).json({redirectUrl:"/user/forgotPassword",message:'This email is not registered'});
+     return res.json({ success: false,redirectUrl:"/user/forgotPassword",error:'This email is not registered'});
     }
-    res.json({ success: true, redirectUrl: "/user/forgotPasswordOtp",message:'This email is registered.' });
+    else{
+
+      const otp =  generateOtp();
+      const emailSent = await sendVerificationEmail(email, otp);
+      console.log('otp is ',otp);
+
+      if (!emailSent) {
+        return res.json("email error");
+      }
+  
+      req.session.userOtp = otp;
+      req.session.userData = { email };
+      res.json({ success: true, redirectUrl: "/user/forgotPasswordOtp",message:'This email is registered.',user });
+
+    }
+   
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+const FPotpVarification = async (req,res)=>{
+  const { otp } = req.body;
+  const email = req.session.userData;
+  const generatedOtp = req.session.userOtp;
+
+  if (otp.toString() === generatedOtp.toString()) {
+      req.session.isFPotpVerified = true;
+      res.json({ success: true,message:"Otp Verified Succefully",redirectUrl:'/user/newPassword'})
+}
+}
 
 export default {
   loadHomepage,
@@ -368,4 +390,5 @@ export default {
   loadForgotPassword,
   loadForgotPasswordOtp,
   validateUserEmail,
+  FPotpVarification,
 };

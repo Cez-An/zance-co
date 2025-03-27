@@ -1,26 +1,31 @@
 import STATUS_CODE from "../../helpers/statusCode.js";
 import User from "../../models/userSchema.js";
+import Product from "../../models/productsShema.js"
+import Category from '../../models/categorySchema.js'
 import nodemailer from "nodemailer";
 import env from "dotenv";
 import bcrypt from "bcrypt";
 import { STATES } from "mongoose";
 import { render } from "ejs";
 import {generateUserId} from '../../helpers/customerId.js'
+import { log } from "console";
 
 env.config();
 
 const loadHomepage = async (req, res) => {
   try {
+    const product = await Product.find({isBlocked:false}).limit(12)
+
     console.log("ACCESSED LOADHOMEPAGE");
 
     const user = req.session.user;
 
     if (user) {
-      res.render("user/home", { user: user });
+      res.render("user/home", { user: user,product });
     } else {
       console.log("ELSE ACCESSED ");
 
-      return res.render("user/home");
+      return res.render("user/home",{product});
     }
 
   } catch (error) {
@@ -216,7 +221,9 @@ const resendOtp = async (req, res) => {
   try {
     console.log("resend otp accessed");
 
-    const { email } = req.session.userData;
+    const { email } = req.session?.userData ?? req.session?.userEmail;
+    console.log(email);
+    
     if (!email) {
       return res
         .status(STATUS_CODE.BAD_REQUEST)
@@ -348,6 +355,7 @@ const validateUserEmail = async (req, res) => {
 
       const otp =  generateOtp();
       const emailSent = await sendVerificationEmail(email, otp);
+
       console.log('otp is ',otp);
 
       if (!emailSent) {
@@ -355,7 +363,7 @@ const validateUserEmail = async (req, res) => {
       }
   
       req.session.userOtp = otp;
-      req.session.userEmail = { email };
+      req.session.userEmail = {email};
       res.json({ success: true, redirectUrl: "/user/forgotPasswordOtp",message:'This email is registered.',user });
 
     }
@@ -412,7 +420,142 @@ const newPassword = async (req,res)=>{
   }
 }
 
+// const renderShopPage = async (req,res)=>{
+//   try {
+//     console.log(req.session.user);
+    
+//     let search = "";
 
+//     if (req.query.search) {
+//       search = req.query.search;
+//     }
+//     console.log(`Rendering Product Listing Page
+//       `);
+//       console.log(req.session.user);
+
+//     const pageNo = parseInt(req.query.page) || 1;
+//     const limit = 9;
+//     const skip = (pageNo - 1) * limit;
+
+//     const product = await Product.find({ name: { $regex: ".*" + search + ".*", $options: "i" }})
+//     .populate('category')
+//     .sort({ createdAt: -1 })
+//     .skip(skip)
+//     .limit(limit);
+
+//     const count = await Product.countDocuments({name: { $regex: ".*" + search + ".*", $options: "i" }});
+//     const category = await Category.find({isListed: true})
+    
+//     const totalPages = Math.ceil(count / limit);
+
+//     res.render(`user/shop`,{product,category,limit,pageNo,count,totalPages})
+    
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// }
+
+const renderShopPage = async (req, res) => {
+  try { console.log(`renderShopPage ACCESS`);
+  
+      const userId = req.session.user?.id ?? req.session.user?._id ?? null;
+      console.log(userId);
+      
+      const user = await User.findOne({ _id: userId });
+
+      const page = parseInt(req.query.page) || 1;
+      
+      const limit = 9;
+      const skip = (page - 1) * limit;
+
+      let filter = { isBlocked: false };
+      if (req.query.result) {
+          filter.name = { $regex: req.query.result, $options: "i" };
+      }
+
+      if (req.query.category) {
+          let categories = req.query.category;
+          const matchedCategories = await Category.find({name: { $in: categories }, isListed: true }).select('_id');
+          console.log(matchedCategories);
+          
+          if (matchedCategories.length) {
+              filter.category = { $in: matchedCategories.map(cat => cat._id) };
+              console.log("filter is",filter.category);
+              
+          }
+      }
+
+      if (req.query.price) {
+         filter.salePrice = { $lte: parseInt(req.query.price) };
+      }
+
+      const sortOption = req.query.sort || "newest";
+      let sortQuery = {};
+      switch (sortOption) {
+          case "priceLowToHigh":
+              sortQuery = { salePrice: 1 };
+              break;
+          case "priceHighToLow":
+              sortQuery = { salePrice: -1 };
+              break;
+          case "aToZ":
+              sortQuery = { name: 1 };
+              break;
+          case "zToA":
+              sortQuery = { name: -1 };
+              break;          
+          default:
+              sortQuery = { createdAt: -1 };
+      }
+
+      console.log(sortQuery);
+      console.log(filter);
+      
+      const products = await Product.aggregate([
+          { $match: filter },
+          { $sort: sortQuery },
+          { $skip: skip },
+          { $limit: limit }
+      ]);
+
+
+      const categories = await Category.find({ isListed: true });
+      const totalProducts = await Product.countDocuments(filter);
+      const totalPages = Math.ceil(totalProducts / limit);
+
+      res.render("user/shop", {
+          title: "Shop",
+          product: products,
+          category: categories,
+          appliedFilters: req.query,
+          currentPage: page,
+          totalPages,
+          totalProducts,
+          sortOption,
+          user,
+          limit
+      });
+
+  } catch (error) {
+      console.error("Error loading shop:", error);
+      res.status(INTERNAL_SERVER_ERROR).send("Error fetching products");
+  }
+};
+
+const testing = async (req,res)=>{
+  try {
+    const product = await Product.find({isBlocked:false}).limit(12)
+
+    let page = 'shop'
+
+    res.render(`user/${page}`,{product})
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
 
 export default {
   loadHomepage,
@@ -433,4 +576,7 @@ export default {
   FPotpVarification,
   renderNewPassPage,
   newPassword,
+  renderShopPage,
+
+  testing,
 };

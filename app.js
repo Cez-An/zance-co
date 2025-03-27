@@ -93,4 +93,5 @@ app.listen(PORT, () => {
   console.log(`http://localhost:${PORT}/user/login`); // Admin routes (not yet defined in the code)
   console.log(`http://localhost:${PORT}/user/signup`); // User signin route (ensure it exists in userRouter)
   console.log(`http://localhost:${PORT}/user/forgotPassword`); // User signin route (ensure it exists in userRouter)
+  console.log(`http://localhost:${PORT}/user/testing`); // User signin route (ensure it exists in userRouter)
 });

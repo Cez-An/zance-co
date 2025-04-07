@@ -2,7 +2,6 @@ import express from "express";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import path from "path";
-import { pathToFileURL } from "url"; // This import is not used in your code, can be removed
 import { fileURLToPath } from "url";
 import userRouter from "./routes/userRouter.js";
 import STATUS_CODE from "./helpers/statusCode.js";
@@ -42,11 +41,9 @@ app.use(
   })
 );
 
-//passport initialize
 app.use(passport.initialize());
 app.use(passport.session());
 
-//cashe control
 app.use((req, res, next) => {
   res.set("cache-control", "no-store");
   next();
@@ -55,7 +52,6 @@ app.use((req, res, next) => {
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
-// Serving static files from the 'public' directory
 app.use(express.static(path.join(__dirname, "public")));
 
 // app.get("/", (req, res) => {
@@ -87,11 +83,8 @@ app.use("/admin", adminRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running at:`);
-  console.log(`http://localhost:${PORT}/user`); // User routes
-  console.log(`http://localhost:${PORT}`); // home routes
-  console.log(`http://localhost:${PORT}/admin/login`); // Admin routes (not yet defined in the code)
-  console.log(`http://localhost:${PORT}/user/login`); // Admin routes (not yet defined in the code)
-  console.log(`http://localhost:${PORT}/user/signup`); // User signin route (ensure it exists in userRouter)
-  console.log(`http://localhost:${PORT}/user/forgotPassword`); // User signin route (ensure it exists in userRouter)
-  console.log(`http://localhost:${PORT}/user/testing`); // User signin route (ensure it exists in userRouter)
+  console.log(`http://localhost:${PORT}/user`);
+  console.log(`http://localhost:${PORT}`);
+  console.log(`http://localhost:${PORT}/admin/login`);
+  console.log(`http://localhost:${PORT}/user/testing`);
 });

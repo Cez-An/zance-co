@@ -25,7 +25,7 @@ const loadHomepage = async (req, res) => {
     } else {
       console.log("ELSE ACCESSED ");
 
-      return res.render("user/home",{product});
+      return res.render("user/home",{product,user});
     }
 
   } catch (error) {
@@ -301,9 +301,16 @@ const logout = (req, res) => {
   res.redirect("/user");
 };
 
+
 const loadProductsDetails = async (req, res) => {
-  try {
-    return res.render("user/productsdetailspage");
+  try { 
+    const {id} = req.params;
+    const user = req.session.user;
+
+    console.log(`id of the product is ${id}`);    
+    const product = await Product.findOne({_id:id});
+    return res.render("user/productDetailsPage",{product,user});
+
   } catch (error) {
     console.error("Error loading product details:", error);
     return res.status(500).send("Internal Server Error");
@@ -420,42 +427,6 @@ const newPassword = async (req,res)=>{
   }
 }
 
-// const renderShopPage = async (req,res)=>{
-//   try {
-//     console.log(req.session.user);
-    
-//     let search = "";
-
-//     if (req.query.search) {
-//       search = req.query.search;
-//     }
-//     console.log(`Rendering Product Listing Page
-//       `);
-//       console.log(req.session.user);
-
-//     const pageNo = parseInt(req.query.page) || 1;
-//     const limit = 9;
-//     const skip = (pageNo - 1) * limit;
-
-//     const product = await Product.find({ name: { $regex: ".*" + search + ".*", $options: "i" }})
-//     .populate('category')
-//     .sort({ createdAt: -1 })
-//     .skip(skip)
-//     .limit(limit);
-
-//     const count = await Product.countDocuments({name: { $regex: ".*" + search + ".*", $options: "i" }});
-//     const category = await Category.find({isListed: true})
-    
-//     const totalPages = Math.ceil(count / limit);
-
-//     res.render(`user/shop`,{product,category,limit,pageNo,count,totalPages})
-    
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// }
-
 const renderShopPage = async (req, res) => {
   try { console.log(`renderShopPage ACCESS`);
   
@@ -547,7 +518,7 @@ const testing = async (req,res)=>{
   try {
     const product = await Product.find({isBlocked:false}).limit(12)
 
-    let page = 'shop'
+    let page = 'productDetailsPage'
 
     res.render(`user/${page}`,{product})
     

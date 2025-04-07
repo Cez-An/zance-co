@@ -53,7 +53,7 @@
                     <div class="breadcrumb__text">
                         <h4 class="text-white">Shop</h4>
                         <div class="breadcrumb__links">
-                            <a href="/user/home" class="text-white">Home</a>
+                            <a href="/user" class="text-white">Home</a>
                             <span class="text-white">Shop</span>
                         </div>
                     </div>
@@ -191,7 +191,7 @@
                     </div>
 
 
-                    <div class="row product__filter">
+                    <!-- <div class="row product__filter">
                         <% product.forEach(element=> { %>
                             <div class="col-lg-4 col-md-6 col-sm-6 mix">
                                 <div class="product__item">
@@ -219,8 +219,36 @@
                                 </div>
                             </div>
                             <% }); %>
-                    </div>
-
+                    </div> -->
+                    <div class="row product__filter">
+                        <% product.forEach(element => { %>
+                            <div class="col-lg-4 col-md-6 col-sm-6 mix">
+                                <div class="product__item">
+                                    <a href="/user/loadProductsDetailsPage/<%=element._id %>">
+                                        <div class="product__item__pic set-bg" data-setbg="<%=element.productImage[2]%>">
+                                        <span class="label">New</span>
+                                        <ul class="product__hover">
+                                            <li><a href="#"><i class="wishlist bi bi-suit-heart-fill fs-3"></i></a></li>                                    
+                                        </ul>
+                                    </a>
+                                        
+                                    </div>
+                                
+                                    <div class="product__item__text">
+                                        <h6><%=element.name %></h6>
+                                        <a href="#" class="add-cart">+ Add To Cart</a>
+                                        <div class="rating">
+                                            <i class="fa fa-star-o"></i>
+                                            <i class="fa fa-star-o"></i>
+                                            <i class="fa fa-star-o"></i>
+                                            <i class="fa fa-star-o"></i>
+                                            <i class="fa fa-star-o"></i>
+                                        </div>
+                                        <h5>₹&nbsp;<%=element.salePrice  %> </h5>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
 
 
                     <nav aria-label="Page navigation">

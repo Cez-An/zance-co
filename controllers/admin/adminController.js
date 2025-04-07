@@ -2,6 +2,7 @@ import { render } from "ejs";
 import STATUS_CODE from "../../helpers/statusCode.js";
 import Admin from "../../models/adminSchema.js";
 import bcrypt from "bcrypt";
+import User from "../../models/userSchema.js";
 
 const renderAdminLoginPage = (req, res) => {
   try {
@@ -62,7 +63,7 @@ const adminLogin = async (req, res) => {
   }
 };
 
-const loadDashboard = (req, res) => {
+const renderDashboard = (req, res) => {
   try {
     console.log(`Rendering Dashboard Page
       `);
@@ -87,4 +88,5 @@ const logout = (req, res) => {
   }
 };
 
-export default { renderAdminLoginPage, adminLogin, loadDashboard, logout };
+
+export default { renderAdminLoginPage, adminLogin, renderDashboard, logout };

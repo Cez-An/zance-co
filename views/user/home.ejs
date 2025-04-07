@@ -7,8 +7,36 @@
     
     <!-- Hero Section End -->
 <br><br><br>
+
+<!-- Instagram Section Begin -->
+<section class="instagram spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="instagram__pic">
+                    <div class="instagram__pic__item set-bg" data-setbg="img/instagram/instagram-1.jpg"></div>
+                    <div class="instagram__pic__item set-bg" data-setbg="img/instagram/instagram-2.jpg"></div>
+                    <div class="instagram__pic__item set-bg" data-setbg="img/instagram/instagram-3.jpg"></div>
+                    <div class="instagram__pic__item set-bg" data-setbg="img/instagram/instagram-4.jpg"></div>
+                    <div class="instagram__pic__item set-bg" data-setbg="img/instagram/instagram-5.jpg"></div>
+                    <div class="instagram__pic__item set-bg" data-setbg="img/instagram/instagram-6.jpg"></div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="instagram__text">
+                    <h2>Instagram</h2>
+                    <p class="bottom_text">We are content creators, gamers and dreamers who understand how lonely and exhausting following your passion can be!</p>
+                    <h3>#Type like a King</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<br><br><br><br><br> <br>
+<!-- Instagram Section End -->
+
     <!-- Banner Section Begin -->
-    <section class="banner spad">
+    <!-- <section class="banner spad">
         <div class="container">
             <div class="row d-flex justify-content-center align-items-center">
                 
@@ -59,7 +87,7 @@
                 
             </div>
         </div>
-    </section>
+    </section> -->
     <!-- Banner Section End -->
 
     <!-- Product Section Begin -->
@@ -78,12 +106,16 @@
                 <% product.forEach(element => { %>
                     <div class="col-lg-3 col-md-6 col-sm-6 mix">
                         <div class="product__item">
-                            <div class="product__item__pic set-bg" data-setbg="<%=element.productImage[2]%>">
+                            <a href="/user/loadProductsDetailsPage/<%=element._id %>">
+                                <div class="product__item__pic set-bg" data-setbg="<%=element.productImage[2]%>">
                                 <span class="label">New</span>
                                 <ul class="product__hover">
                                     <li><a href="#"><i class="wishlist bi bi-suit-heart-fill fs-3"></i></a></li>                                    
                                 </ul>
+                            </a>
+                                
                             </div>
+                        
                             <div class="product__item__text">
                                 <h6><%=element.name %></h6>
                                 <a href="#" class="add-cart">+ Add To Cart</a>
@@ -104,32 +136,7 @@
     </section>
     <!-- Product Section End -->
 
-    <!-- Instagram Section Begin -->
-    <section class="instagram spad">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8">
-                    <div class="instagram__pic">
-                        <div class="instagram__pic__item set-bg" data-setbg="img/instagram/instagram-1.jpg"></div>
-                        <div class="instagram__pic__item set-bg" data-setbg="img/instagram/instagram-2.jpg"></div>
-                        <div class="instagram__pic__item set-bg" data-setbg="img/instagram/instagram-3.jpg"></div>
-                        <div class="instagram__pic__item set-bg" data-setbg="img/instagram/instagram-4.jpg"></div>
-                        <div class="instagram__pic__item set-bg" data-setbg="img/instagram/instagram-5.jpg"></div>
-                        <div class="instagram__pic__item set-bg" data-setbg="img/instagram/instagram-6.jpg"></div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="instagram__text">
-                        <h2>Instagram</h2>
-                        <p class="bottom_text">We are content creators, gamers and dreamers who understand how lonely and exhausting following your passion can be!</p>
-                        <h3>#Type like a King</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    <br><br><br><br><br> <br>
-    <!-- Instagram Section End -->
+    <br><br>
 
 
 

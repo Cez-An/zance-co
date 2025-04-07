@@ -2,7 +2,7 @@ import { render } from "ejs";
 import STATUS_CODE from "../../helpers/statusCode.js";
 import Category from "../../models/categorySchema.js";
 
-const categoryInfo = async (req, res) => {
+const renderCategoryInfo = async (req, res) => {
   try {
     let search = req.query.search ? req.query.search.trim() : "";
     console.log("Search Query:", search);
@@ -76,7 +76,7 @@ const addCategory = async (req, res) => {
   }
 };
 
-const loadCategoryAdd = async (req, res) => {
+const renderCategoryAdd = async (req, res) => {
   try {
     res.render("admin/categoryAdd");
   } catch (error) {
@@ -84,7 +84,7 @@ const loadCategoryAdd = async (req, res) => {
   }
 };
 
-const loadCategoryEdit = async (req, res) => {
+const renderCategoryEdit = async (req, res) => {
   try {
     const id = req.params.id;
     const category = await Category.findOne({ _id: id });
@@ -100,7 +100,7 @@ const updateCategory = async (req, res) => {
   try {
     let { categoryName, visibilityStatus, categoryDiscount, categoryId } =
       req.body;
-    console.log(categoryId);
+
     if (visibilityStatus === "Active") {
       visibilityStatus = true;
     } else {
@@ -111,29 +111,36 @@ const updateCategory = async (req, res) => {
     category.name = categoryName;
     category.isListed = visibilityStatus;
     category.discount = categoryDiscount;
-
     await category.save();
     res.status(STATUS_CODE.SUCCESS).json({ message: "done" });
   } catch (error) {
-    res.redirect("/error-admin");
+    return res.status(STATUS_CODE.NOT_FOUND);
   }
 };
 
-const deleteCategory = async (req, res) => {
-  try {
-    const { id } = req.body;
-    const category = await Category.findByIdAndDelete(id);
-    return res.status(STATUS_CODE.SUCCESS).json({message:'Category deleted successfully'})   // backend responce
-  } catch (error) {
-    return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({error:'Category deletion failed'})
-  }
-};
+// const deleteCategory = async (req, res) => {
+//   try {
+//     const { id } = req.body;
+//     const category = await Category.findByIdAndDelete(id);
+//     return res
+//       .status(STATUS_CODE.SUCCESS)
+//       .json({ message: "Category deleted successfully" }); 
+//   } catch (error) {
+//     return res
+//       .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
+//       .json({ error: "Category deletion failed" });
+//   }
+// };
 
 export default {
-  categoryInfo,
+  renderCategoryInfo,
   addCategory,
-  loadCategoryAdd,
-  loadCategoryEdit,
+  renderCategoryAdd,
+  renderCategoryEdit,
   updateCategory,
-  deleteCategory,
+
+
+
+
+  // deleteCategory,
 };

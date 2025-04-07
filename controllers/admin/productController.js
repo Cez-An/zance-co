@@ -1,13 +1,9 @@
 import Product from "../../models/productsShema.js";
 import User from "../../models/userSchema.js";
 import Category from "../../models/categorySchema.js";
-import fs, { access } from "fs";
-import path from "path";
-import sharp from "sharp";
-import { log } from "console";
-import { render } from "ejs";
 
-const loadproductAddPage = async (req, res) => {
+
+const renderProductAddPage = async (req, res) => {
   try {
     console.log(`Rendering Add Product Page
       `);
@@ -24,7 +20,7 @@ const loadproductAddPage = async (req, res) => {
   }
 };
 
-const loadProductsPage = async (req, res) => {
+const renderProductsListPage = async (req, res) => {
   try {
     let search = "";
 
@@ -51,8 +47,6 @@ const loadProductsPage = async (req, res) => {
     });
 
     const totalPages = Math.ceil(totalProducts / limit);
-
-    // console.log(`${product} ${page} ${totalPages} ${totalProducts}`);
 
     res.render("admin/products", {
       product,
@@ -141,12 +135,8 @@ const addProduct = async (req, res) => {
   }
 };
 
-
-
 const productBlocked = async (req, res) => {
   try {
-    console.log("assessed");
-
     let id = req.query.id;
     await Product.updateOne({ _id: id }, { $set: { isBlocked: true } });
     res.redirect("/admin/products");
@@ -165,7 +155,7 @@ const productUnBlocked = async (req, res) => {
   }
 };
 
-const loadProductsEditPage = async (req, res) => {
+const renderProductsEditPage = async (req, res) => {
   try {
     console.log("edit age loaded");
 
@@ -186,64 +176,170 @@ const loadProductsEditPage = async (req, res) => {
 
 // const updateProduct = async (req, res) => {
 //   try {
-//     const { productId, name, category, brand, description, basePrice, discount, stock, existingImages } = req.body;
-    
-//     const newImages = req.files ? req.files.map(file => file.path) : [];
+//     const { id } = req.params;
+//     const { 
+//       name, 
+//       description, 
+//       category, 
+//       basePrice, 
+//       discount, 
+//       stock, 
+//       brand 
+//     } = req.body;
 
-//     if (!productId) {
-//       return res.status(400).json({ message: 'Product ID is required' });
+//     // Find existing product
+//     const existingProduct = await Product.findById(id);
+//     if (!existingProduct) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Product not found"
+//       });
 //     }
 
-//     const product = await Product.findOne({ productId });
-//     if (!product) {
-//       return res.status(404).json({ message: 'Product not found' });
+//     // Get new image URLs if uploaded, otherwise keep existing ones
+//     let imageUrls = existingProduct.productImage;
+//     if (req.files && req.files.length > 0) {
+//       imageUrls = req.files.map((file) => file.path || file.url);
+//       // Ensure we have exactly 4 images by filling with existing ones if needed
+//       for (let i = imageUrls.length; i < 4; i++) {
+//         if (existingProduct.productImage[i]) {
+//           imageUrls.push(existingProduct.productImage[i]);
+//         }
+//       }
+//       // Trim to 4 images if more are uploaded
+//       imageUrls = imageUrls.slice(0, 4);
 //     }
 
-//     // Use existingImages if provided, otherwise use current product images
-//     const keptImages = existingImages ? [].concat(existingImages) : product.productImage;
+//     // Find category by ID
+//     const categoryFind = await Category.findById(category);
+//     if (!categoryFind) {
+//       return res.status(400).json({ 
+//         success: false,
+//         message: "Invalid category" 
+//       });
+//     }
 
-//     // Combine kept images with new images
-//     const updatedImages = [...keptImages, ...newImages];
+//     // Update category count if category changed
+//     if (existingProduct.category.toString() !== category) {
+//       await Category.findByIdAndUpdate(existingProduct.category, { $inc: { count: -1 } });
+//       await Category.findByIdAndUpdate(category, { $inc: { count: 1 } });
+//     }
 
-//     // Update the product
+//     // Update product
 //     const updatedProduct = await Product.findByIdAndUpdate(
-//       product._id,
+//       id,
 //       {
 //         name,
+//         description,
 //         category,
 //         brand,
-//         description,
 //         salePrice: basePrice,
 //         productOffer: discount,
 //         quantity: stock,
-//         productImage: updatedImages,
+//         productImage: imageUrls,
 //       },
 //       { new: true, runValidators: true }
 //     );
 
-//     res.status(200).json({
-//       message: 'Product updated successfully',
-//       product: updatedProduct,
+//     res.status(200).json({ 
+//       success: true,
+//       message: "Product updated successfully",
+//       redirect: "/admin/products"
 //     });
+    
 //   } catch (error) {
-//     console.error('Error in updateProduct:', error.message);
-//     res.status(500).json({
-//       message: 'Server error while updating product',
-//       error: error.message,
+//     console.error("Error:", error);
+//     res.status(500).json({ 
+//       success: false,
+//       message: "Error updating product",
+//       error: error.message 
 //     });
 //   }
 // };
+
+const updateProduct = async (req, res) => {
+  try {
+      const { id } = req.params;
+      const { 
+          name, 
+          description, 
+          category, 
+          basePrice, 
+          discount, 
+          stock, 
+          brand 
+      } = req.body;
+
+      const existingProduct = await Product.findById(id);
+      if (!existingProduct) {
+          return res.status(404).json({
+              success: false,
+              message: "Product not found"
+          });
+      }
+
+      let imageUrls = existingProduct.productImage || [];
+      if (req.files && req.files.length > 0) {
+          imageUrls = req.files.map((file) => file.path || file.url);
+          while (imageUrls.length < 4 && existingProduct.productImage.length > imageUrls.length) {
+              imageUrls.push(existingProduct.productImage[imageUrls.length]);
+          }
+          imageUrls = imageUrls.slice(0, 4);
+      }
+
+      const categoryFind = await Category.findById(category);
+      if (!categoryFind) {
+          return res.status(400).json({ 
+              success: false,
+              message: "Invalid category" 
+          });
+      }
+
+      if (existingProduct.category.toString() !== category) {
+          await Category.findByIdAndUpdate(existingProduct.category, { $inc: { count: -1 } });
+          await Category.findByIdAndUpdate(category, { $inc: { count: 1 } });
+      }
+  
+      const updatedProduct = await Product.findByIdAndUpdate(
+          id,
+          {
+              name,
+              description,
+              category,
+              brand,
+              salePrice: basePrice,
+              productOffer: discount,
+              quantity: stock,
+              productImage: imageUrls,
+          },
+          { new: true, runValidators: true }
+      );
+
+      res.status(200).json({ 
+          success: true,
+          message: "Product updated successfully",
+          redirect: "/admin/products"
+      });
+      
+  } catch (error) {
+      console.error("Error updating product:", error);
+      res.status(500).json({ 
+          success: false,
+          message: "Error updating product: " + error.message
+      });
+  }
+};
 
 
 
 
 
 export default {
-  loadproductAddPage,
-  loadProductsPage,
-  loadProductsEditPage,
+  renderProductAddPage,
+  renderProductsListPage,
+  renderProductsEditPage,
   addProduct,
-  // updateProduct,
+  updateProduct,
   productBlocked,
   productUnBlocked,
 };

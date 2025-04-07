@@ -2,7 +2,7 @@ import { renderFile } from "ejs";
 import User from "../../models/userSchema.js";
 import STATUS_CODE from "../../helpers/statusCode.js";
 
-const customerInfo = async (req, res) => {
+const renderCustomerInfo = async (req, res) => {
   try {
     let search = "";
 
@@ -66,4 +66,4 @@ const customerUnBlocked = async (req, res) => {
   }
 };
 
-export default { customerInfo, customerBlocked, customerUnBlocked };
+export default { renderCustomerInfo, customerBlocked, customerUnBlocked };

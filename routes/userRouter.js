@@ -34,7 +34,7 @@ router.post("/resendOtp", userController.resendOtp);
 router.get("/logout", userController.logout);
 
 //products details page
-router.get("/loadProductsDetailsPage", userController.loadProductsDetails);
+router.get("/loadProductsDetailsPage/:id", userController.loadProductsDetails);
 
 // forgot password
 router.get('/forgotPassword',userController.loadForgotPassword)

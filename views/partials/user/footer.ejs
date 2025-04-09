@@ -57,7 +57,16 @@
         </div>
     </div>
 </footer>
-
+<script>
+    window.addEventListener('load', function() {
+        const loader = document.querySelector('.loader-wrapper');
+        const content = document.querySelector('.content');
+        setTimeout(function() {
+            loader.classList.add('loader-hidden');
+            content.classList.add('content-loaded');
+        }, 2000);
+    });
+</script>
 <!-- Js Plugins -->
 <script src="../../js/jquery-3.3.1.min.js"></script>
 <script src="../../js/bootstrap.min.js"></script>

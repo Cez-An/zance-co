@@ -486,7 +486,7 @@ ol {
 	font-size: 18px;
 	color: #ffffff;
 	display: block;
-	font-weight: 600;
+	/* font-weight: 600; */
 	position: relative;
 	padding: 3px 0;
 }

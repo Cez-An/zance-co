@@ -83,8 +83,8 @@ app.use("/admin", adminRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running at:`);
-  console.log(`http://localhost:${PORT}/user`);
   console.log(`http://localhost:${PORT}`);
   console.log(`http://localhost:${PORT}/admin/login`);
   console.log(`http://localhost:${PORT}/user/testing`);
+  console.log(`http://localhost:${PORT}/user/userProfile`);
 });

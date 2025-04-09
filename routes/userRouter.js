@@ -1,6 +1,9 @@
 import express from "express";
 import userController from "../controllers/user/userController.js";
 import userAuth from "../middlewares/userAuth.js";
+import profileController from '../controllers/user/profileController.js'
+import uploads from '../helpers/multer.js'
+
 const router = express.Router();
 
 router.get("/pagenotfound", userController.pageNotFound);
@@ -44,6 +47,9 @@ router.post('/forgotPasswordOtp',userController.FPotpVarification)
 router.get('/newPassword',userController.renderNewPassPage)
 router.post('/changePassword',userController.newPassword)
 
+router.get('/userProfile',profileController.renderProfileInfo)
+router.get('/userProfile/:id',profileController.renderProfileEdit)
+router.put('/userProfile', uploads.single('profilePic'), profileController.updateProfile)
 
 
 

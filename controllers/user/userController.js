@@ -57,7 +57,6 @@ const loadLogin = async (req, res) => {
   }
 };
 
-
 const loadShop = async (req, res) => {
   try {
     res.render("user/shop");
@@ -66,7 +65,6 @@ const loadShop = async (req, res) => {
     res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).send("Server Error");
   }
 };
-
 
  function generateOtp() {
   return Math.floor(1000 + Math.random() * 9000).toString();
@@ -301,7 +299,6 @@ const logout = (req, res) => {
   res.redirect("/user");
 };
 
-
 const loadProductsDetails = async (req, res) => {
   try { 
     const {id} = req.params;
@@ -317,7 +314,6 @@ const loadProductsDetails = async (req, res) => {
   }
 };
 
-
 const loadForgotPassword = async (req, res) => {
   try {
     res.render("user/forgotPassword");
@@ -328,7 +324,6 @@ const loadForgotPassword = async (req, res) => {
       .redirect("/error-admin");
   }
 };
-
 
 const loadForgotPasswordOtp = async (req, res) => {
   try {
@@ -394,6 +389,7 @@ const FPotpVarification = async (req,res)=>{
       res.json({ success: true,message:"Otp Verified Succefully",redirectUrl:'/user/newPassword'})
 }
 }
+
 const renderNewPassPage = async (req,res)=>{
   try {
     if(req.session.passwordUpdated){
@@ -510,15 +506,17 @@ const renderShopPage = async (req, res) => {
 
   } catch (error) {
       console.error("Error loading shop:", error);
-      res.status(INTERNAL_SERVER_ERROR).send("Error fetching products");
+      res.status(INTERNAL_SERVER_ERROR);
   }
 };
+
+
 
 const testing = async (req,res)=>{
   try {
     const product = await Product.find({isBlocked:false}).limit(12)
 
-    let page = 'productDetailsPage'
+    let page = 'testing'
 
     res.render(`user/${page}`,{product})
     
@@ -527,6 +525,8 @@ const testing = async (req,res)=>{
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
+
+
 
 export default {
   loadHomepage,
@@ -548,6 +548,10 @@ export default {
   renderNewPassPage,
   newPassword,
   renderShopPage,
+ 
+
+
+
 
   testing,
 };

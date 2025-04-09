@@ -8,8 +8,8 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    userId:{
-      type:String,
+    userId: {
+      type: String,
       required: false,
     },
     email: {
@@ -20,14 +20,18 @@ const userSchema = new Schema(
     phone: {
       type: String,
       default: null,
-      required:false
+      required: false,
     },
     gender: {
       type: String,
-      enum: ["male", "female"],
+      required: false,
+    },
+    profilePic: {
+      type: String,
+      required: false,
     },
     googleId: {
-      type: String,      
+      type: String,
     },
     password: {
       type: String,
@@ -37,33 +41,20 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    cart: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Cart",
-      },
-    ],
+    cart: [{
+      type: Schema.Types.ObjectId,
+      ref: "Cart"
+    }]
+    ,
     wallet: {
       type: Number,
       default: 0,
-    },
-    wishList: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Wishlist",
-      },
-    ],
-    orderHistory: {
-      type: [Schema.Types.ObjectId],
-      ref: "Order",
-    },
-    createdOn: {
-      type: Date,
-      default: Date.now,
-    },
-    referralCode: {
-      type: String,
-    },
+    },    
+    referalCode : {
+      type : String,
+      unique : true,
+      required : false
+  },
     redeemed: {
       type: Boolean,
       default: false,
@@ -73,22 +64,11 @@ const userSchema = new Schema(
         type: Schema.Types.ObjectId,
         ref: "User",
       },
-    ],
-    searchHistory: [
-      {
-        category: {
-          type: Schema.Types.ObjectId,
-          ref: "Category",
-        },
-        brand: {
-          type: String,
-        },
-        searchOn: {
-          type: Date,
-          default: Date.now,
-        },
-      },
-    ],
+    ],        
+    orderHistory: [{
+      type: Schema.Types.ObjectId,
+      ref: "Order"
+  }],    
   },
   { timestamps: true }
 );

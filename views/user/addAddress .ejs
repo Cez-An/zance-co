@@ -1,0 +1,379 @@
+<%-include("../../views/partials/user/header") %> 
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="/css/profile-section.css">  
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+
+
+
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+        }
+        a {
+        text-decoration: none;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: #000000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: 20px;
+            transition: width 0.3s;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #ffffff;
+            font-size: 16px;
+        }
+
+        .sidebar a:hover {
+            background-color: #6510DC;
+        }
+
+        /* Active tab styling */
+        .sidebar a.active {
+            background-color: #6510DC; /* Highlight color for active tab */
+            color: #ffffff;
+        }
+
+        .sidebar i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        /* Mobile view */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+
+            .sidebar a {
+                justify-content: center;
+                padding: 15px 0;
+            }
+
+            .sidebar a span {
+                display: none;
+            }
+
+            .sidebar i {
+                margin-right: 0;
+            }
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            color: #ffffff;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                margin-left: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <!-- Add 'active' class to My Orders --> 
+         <br><br><br>
+        <a href="#my-orders"><i class="fas fa-shopping-cart"></i><span>My Orders</span></a>
+        <a href="/user/userProfile"><i class="fas fa-user"></i><span>Profile Information</span></a>
+        <a href="/user/address" class="active"><i class="fas fa-map-marker-alt"></i><span>Manage Addresses</span></a>
+        <a href="#privacy-settings"><i class="fas fa-lock"></i><span>Privacy Settings</span></a>
+        <a href="#my-coupons"><i class="fas fa-ticket-alt"></i><span>My Coupons</span></a>
+        <a href="#my-wallet"><i class="fas fa-wallet"></i><span>My Wallet</span></a>
+    </div>
+
+
+    <main class="container mt-4">
+        <div class="row g-5">
+
+            <!-- Add New Address Form -->
+            <div class="col-md-9">
+                <div class="py-3 px-5 h-100" style="border-radius: 12px; background-color: #1a1a1a;">
+                    <h4 class="mb-4" style="color: #ffffff;">Add New Address</h4>
+                    <form id="addAddressForm">
+                        <div class="form-group-pair">
+                            <div class="mb-3">
+                                <label for="fullName" class="form-label required">Full Name</label>
+                                <input type="text" id="fullName" name="fullName" class="form-control form-control-sm" placeholder="Enter your full name">
+                                <div id="fullNameError" style="font-size: 0.8em; color: #ff0101;"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label required">Phone Number</label>
+                                <input type="tel" id="phone" name="phone" class="form-control form-control-sm" placeholder="e.g. 9876543210" pattern="[0-9]{10}">
+                                <div id="phoneError" style="font-size: 0.8em; color: #ff0101;"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group-pair">
+                            <div class="mb-3">
+                                <label for="addressLine1" class="form-label required">Address Line 1</label>
+                                <input type="text" id="addressLine1" name="addressLine1" class="form-control form-control-sm" placeholder="House No., Street Name">
+                                <div id="addressLine1Error" style="font-size: 0.8em; color: #ff0101;"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="addressLine2" class="form-label">Address Line 2 (Optional)</label>
+                                <input type="text" id="addressLine2" name="addressLine2" class="form-control form-control-sm" placeholder="Apartment, Floor">
+                            </div>
+                        </div>
+
+                        <div class="form-group-pair">
+                            <div class="mb-3">
+                                <label for="landmark" class="form-label">Landmark (Optional)</label>
+                                <input type="text" id="landmark" name="landmark" class="form-control form-control-sm" placeholder="e.g., Near XYZ School">
+                            </div>
+                            <div class="mb-3">
+                                <label for="city" class="form-label required">City</label>
+                                <input type="text" id="city" name="city" class="form-control form-control-sm" placeholder="Enter your city">
+                                <div id="cityError" style="font-size: 0.8em; color: #ff0101;"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group-pair">
+                            <div class="mb-5">
+                                <label for="state" class="form-label required">State</label>
+                                <select id="state" name="state" class="form-select form-control form-control-sm">
+                                    <option value="" disabled selected>Select your state</option>
+                                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                    <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                    <option value="Assam">Assam</option>
+                                    <option value="Bihar">Bihar</option>
+                                    <option value="Chhattisgarh">Chhattisgarh</option>
+                                    <option value="Goa">Goa</option>
+                                    <option value="Gujarat">Gujarat</option>
+                                    <option value="Haryana">Haryana</option>
+                                    <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                    <option value="Jharkhand">Jharkhand</option>
+                                    <option value="Karnataka">Karnataka</option>
+                                    <option value="Kerala">Kerala</option>
+                                    <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                    <option value="Maharashtra">Maharashtra</option>
+                                    <option value="Manipur">Manipur</option>
+                                    <option value="Meghalaya">Meghalaya</option>
+                                    <option value="Mizoram">Mizoram</option>
+                                    <option value="Nagaland">Nagaland</option>
+                                    <option value="Odisha">Odisha</option>
+                                    <option value="Punjab">Punjab</option>
+                                    <option value="Rajasthan">Rajasthan</option>
+                                    <option value="Sikkim">Sikkim</option>
+                                    <option value="Tamil Nadu">Tamil Nadu</option>
+                                    <option value="Telangana">Telangana</option>
+                                    <option value="Tripura">Tripura</option>
+                                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                    <option value="Uttarakhand">Uttarakhand</option>
+                                    <option value="West Bengal">West Bengal</option>
+                                </select>
+                                <div id="stateError" style="font-size: 0.8em; color: #ff0101;"></div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="zipCode" class="form-label required">Zip Code</label>
+                                <input type="text" id="zipCode" name="zipCode" class="form-control form-control-sm" placeholder="e.g. 123456">
+                                <div id="zipCodeError" style="font-size: 0.8em; color: #ff0101;"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group-pair">
+                            <div class="mb-5">
+                                <label for="country" class="form-label required">Country</label>
+                                <select id="country" name="country" class="form-select form-control form-control-sm">
+                                    <option value="India" selected>India</option>
+                                    <!-- Add more countries if needed -->
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="altNumber" class="form-label">Alternate Phone Number (Optional)</label>
+                                <input type="tel" id="altNumber" name="altNumber" class="form-control form-control-sm" placeholder="e.g., 9876543210">
+                            </div>
+                        </div>
+
+                        <div class="d-flex  gap-4">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="addressType" id="addressHome" value="home">
+                              <label class="form-check-label" for="addressHome">Home</label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="addressType" id="addressWork" value="work">
+                              <label class="form-check-label" for="addressWork">Work</label>
+                            </div>
+                          </div>
+                          <div id="addressTypeError" style="font-size: 0.8em; color: #ff0101;"></div>
+                          
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn" style="background-color: #6510DC; color: #ffffff;">Save Address</button>
+                                <button type="button" class="btn btn-secondary" onclick="window.history.back();">Cancel</button>
+                            </div>
+                            <!-- <div class="d-flex align-items-center gap-2">
+                                <input type="radio" name="addressType" id="addressHome" value="home">
+                                <label for="addressType">Home</label>
+                                <input type="radio" name="addressType" id="addressWork" value="work">
+                                <label for="addressType">Work</label>
+                                <div id="addressTypeError" style="font-size: 0.8em; color: #ff0101;"></div>
+                            </div> -->                      
+                                                   
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        document.getElementById("addAddressForm").addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const fullName = document.getElementById('fullName').value;
+            const addressLine1 = document.getElementById('addressLine1').value;
+            const addressLine2 = document.getElementById('addressLine2').value;
+            const phone = document.getElementById('phone').value;
+            const landmark = document.getElementById('landmark').value;
+            const city = document.getElementById('city').value;
+            const state = document.getElementById('state').value;
+            const country = document.getElementById('country').value;
+            const altNumber = document.getElementById('altNumber').value;
+            const zipCode = document.getElementById('zipCode').value;
+            const addressType = document.querySelector('input[name="addressType"]:checked')?.value;
+
+            const errors = {
+                fullName: document.getElementById("fullNameError"),
+                addressLine1: document.getElementById("addressLine1Error"),
+                phone: document.getElementById("phoneError"),
+                city: document.getElementById("cityError"),
+                state: document.getElementById("stateError"),
+                zipCode: document.getElementById("zipCodeError"),
+                addressType: document.getElementById("addressTypeError"),
+            };
+
+            Object.values(errors).forEach((el) => el.innerText = "");
+
+            let hasError = false;
+
+            if (!fullName) {
+                errors.fullName.innerText = "Full name is required";
+                hasError = true;
+            } else if (fullName.length < 3) {
+                errors.fullName.innerText = "Full name must be at least 3 characters";
+                hasError = true;
+            }
+
+            if (!addressLine1) {
+                errors.addressLine1.innerText = "Address Line 1 is required";
+                hasError = true;
+            }
+
+            if (!phone) {
+                errors.phone.innerText = "Phone number is required";
+                hasError = true;
+            } else if (!/^\d{10}$/.test(phone)) {
+                errors.phone.innerText = "Phone number must be 10 digits";
+                hasError = true;
+            }
+
+            if (altNumber && !/^\d{10}$/.test(altNumber)) {
+                errors.phone.innerText = "Alternate number must be 10 digits";
+                hasError = true;
+            }
+
+            if (!city) {
+                errors.city.innerText = "City is required";
+                hasError = true;
+            }
+
+            if (!state) {
+                errors.state.innerText = "State is required";
+                hasError = true;
+            }
+
+            if (!zipCode) {
+                errors.zipCode.innerText = "Zip Code is required";
+                hasError = true;
+            } else if (!/^\d{5,6}$/.test(zipCode)) {
+                errors.zipCode.innerText = "Zip Code must be 5-6 digits";
+                hasError = true;
+            }
+
+            if (!addressType) {
+                errors.addressType.innerText = "Address type is required";
+                hasError = true;
+            }
+
+            // Stop if validation fails
+            if (hasError) return;
+
+            const formData = { fullName, phone, addressLine1, addressLine2, landmark, city, state, country, altNumber, zipCode, addressType }
+
+            try {
+                const response = await fetch('/user/address', {
+                    method : 'POST',
+                    headers : { 'Content-Type' : 'application/json'},
+                    body : JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || "Something went wrong");
+                }
+
+                Swal.fire({
+                    icon: "success",
+                    text: data.message,
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(()=>{
+                    window.location.href = "/user/address";
+                });
+            } catch (error) {
+                console.log(error);
+                    Swal.fire({
+                    icon: "error",
+                    text: "An error occurred. Please try again.",
+                });
+            };
+        });
+    </script>
+
+
+
+    <script>
+        window.addEventListener('load', function() {
+            const loader = document.querySelector('.loader-wrapper');
+            const content = document.querySelector('.content');
+            setTimeout(function() {
+                loader.classList.add('loader-hidden');
+                content.classList.add('content-loaded');
+            }, 1500);
+        });
+    </script>
+    <!-- Js Plugins -->
+    <script src="../../js/jquery-3.3.1.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/jquery.nice-select.min.js"></script>
+    <script src="../../js/jquery.nicescroll.min.js"></script>
+    <script src="../../js/jquery.magnific-popup.min.js"></script>
+    <script src="../../js/jquery.countdown.min.js"></script>
+    <script src="../../js/jquery.slicknav.js"></script>
+    <script src="../../js/mixitup.min.js"></script>
+    <script src="../../js/owl.carousel.min.js"></script>
+    <script src="../../js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+
+</body>
+</html>

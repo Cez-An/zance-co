@@ -16,14 +16,11 @@ const loadHomepage = async (req, res) => {
   try {
     const product = await Product.find({isBlocked:false}).limit(12)
 
-    console.log("ACCESSED LOADHOMEPAGE");
-
     const user = req.session.user;
 
     if (user) {
       res.render("user/home", { user: user,product });
     } else {
-      console.log("ELSE ACCESSED ");
 
       return res.render("user/home",{product,user});
     }
@@ -45,7 +42,6 @@ const loadSignUp = async (req, res) => {
 
 const loadLogin = async (req, res) => {
   try {
-    console.log("ACCESSED loadlogin");
 
     if (!req.session.user) {
       return res.render("user/login");

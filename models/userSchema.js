@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 
 const { Schema } = mongoose;
 
@@ -41,20 +41,20 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    cart: [{
-      type: Schema.Types.ObjectId,
-      ref: "Cart"
-    }]
-    ,
+    cart: {
+      type:Types.ObjectId,
+      ref: "Cart",
+      required:false,
+    },
     wallet: {
       type: Number,
       default: 0,
-    },    
-    referalCode : {
-      type : String,
-      unique : true,
-      required : false
-  },
+    },
+    referalCode: {
+      type: String,
+      unique: true,
+      required: false,
+    },
     redeemed: {
       type: Boolean,
       default: false,
@@ -64,11 +64,13 @@ const userSchema = new Schema(
         type: Schema.Types.ObjectId,
         ref: "User",
       },
-    ],        
-    orderHistory: [{
-      type: Schema.Types.ObjectId,
-      ref: "Order"
-  }],    
+    ],
+    orderHistory: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Order",
+      },
+    ],
   },
   { timestamps: true }
 );

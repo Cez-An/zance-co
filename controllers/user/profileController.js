@@ -204,8 +204,7 @@ const loadAddress = async (req, res) => {
   try {
       const addresses = await Address.find({ userId : userId });
 
-      res.render('user/manageAddrress', {
-          title: 'Manage Addresses',
+      res.render('user/addrress', {          
           addresses,
           user,
           name, 
@@ -213,7 +212,7 @@ const loadAddress = async (req, res) => {
 
   } catch (error) {
       console.error('Error loading addresses:', error);
-      res.render('user/manageAddrress', { title : "address", addresses: [], user: req.session.user });
+      res.render('user/addrress', { title : "address", addresses: [], user: req.session.user });
   }
 };
 
@@ -300,11 +299,7 @@ const loadEditAddress = async (req, res) => {
           return res.status(STATUS_CODE.UNAUTHORIZED).json({ error: "Unauthorized" });
       }
 
-      const [firstName, lastName] = user.name.split(' ');
-
-      const address = await Address.findOne({ 
-          userId: id,
-      });
+      const address = await Address.findOne({userId: id});
 
       if (!address) {
           return res.status(STATUS_CODE.NOT_FOUND).json({ error: "Address not found" });
@@ -316,12 +311,11 @@ const loadEditAddress = async (req, res) => {
           return res.status(STATUS_CODE.NOT_FOUND).json({ error: "Address details not found" });
       }
 
-      res.render('user/editaddress', { 
-          title: "Edit Address",
+      res.render('user/editAddress', { 
           address: selectedAddress,
           user,
           addressId: id,
-          index, firstName, lastName,
+          index,
           from
       });
   } catch (error) {
@@ -333,6 +327,47 @@ const loadEditAddress = async (req, res) => {
   }
 };
 
+const editAddress = async (req,res) => {
+  try {
+      const { fullName, phone, addressLine1, addressLine2, landmark, city, state, country, altNumber, addressType, zipCode, index, from } = req.body;
+
+
+      const userId = req.session.user?.id ?? req.session.user?._id ?? null;
+
+
+      if (!fullName || !phone || !addressLine1 || !city || !state || !country) {
+          return res.status(STATUS_CODE.BAD_REQUEST).json({ error: "All required fields must be filled." });
+      }
+
+      let userAddress = await Address.findOne({ userId });
+
+      userAddress.details[index] = {
+          addressType,
+          name: fullName,
+          addressLine1,
+          addressLine2,
+          city,
+          landmark,
+          state,
+          pincode: zipCode,
+          phone,
+          altPhone: altNumber,
+      };
+
+      await userAddress.save();
+
+      if(from === 'checkout'){
+          return res.status(STATUS_CODE.SUCCESS).json({ message: "Address updated successfully", redirectUrl: `/user/checkout?userId=${userId}` });
+      }else{
+          return res.status(STATUS_CODE.SUCCESS).json({ message: "Address updated successfully", redirectUrl: '/user/address' });
+
+      }
+
+  } catch (error) {
+      console.error("Error updating address:", error);
+      return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: error.message || "Address editing error" });
+  }
+}
 
 export default {
     renderProfileInfo,
@@ -348,5 +383,6 @@ export default {
     addAddress,
     deleteAddress,
     loadEditAddress,
+    editAddress,
 
 }

@@ -59,7 +59,7 @@ router.get('/address',profileController.loadAddress);
 router.post('/address',profileController.addAddress);
 router.get('/addAddress',profileController.loadAddAddress);
 router.get('/editaddress', profileController.loadEditAddress);
-// router.put('/address', profileController.editAddress);
+router.put('/address', profileController.editAddress);
 router.delete('/address', profileController.deleteAddress);
 // router.get('/coupons', profileController.loadCoupons);
 // router.get('/privacy', profileController.loadPrivacy);

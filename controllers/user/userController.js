@@ -258,7 +258,6 @@ const pageNotFound = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    console.log("login route accesed");
 
     const { email, password } = req.body;
 
@@ -278,7 +277,6 @@ const login = async (req, res) => {
     }
 
     req.session.user = findUser;
-    console.log(req.session.user);
 
     res.redirect("/user");
   } catch (error) {
@@ -298,11 +296,13 @@ const logout = (req, res) => {
 const loadProductsDetails = async (req, res) => {
   try { 
     const {id} = req.params;
-    const user = req.session.user;
-
-    console.log(`id of the product is ${id}`);    
+    const userId = req.session.user?.id ?? req.session.user?._id ?? null;
+    const user = await User.findOne({ _id: userId });
+    console.log(`user is `,user);
+    
     const product = await Product.findOne({_id:id});
-    return res.render("user/productDetailsPage",{product,user});
+    const relatedProducts = await Product.find({category:product.category}).limit(4);    
+    return res.render("user/productDetailsPage",{product,user,relatedProducts});
 
   } catch (error) {
     console.error("Error loading product details:", error);
@@ -420,7 +420,8 @@ const newPassword = async (req,res)=>{
 }
 
 const renderShopPage = async (req, res) => {
-  try { console.log(`renderShopPage ACCESS`);
+  try { 
+    console.log(`renderShopPage ACCESS`);
   
       const userId = req.session.user?.id ?? req.session.user?._id ?? null;
       console.log(userId);

@@ -369,6 +369,72 @@ const editAddress = async (req,res) => {
   }
 }
 
+const loadPrivacy = async (req, res) => {
+  try {
+    const userId = req.session.user?.id ?? req.session.user?._id ?? null;
+
+    if (!userId) {
+      return res.status(400).send("User ID not found in session.");
+    }
+
+    const user = await User.findOne({ _id: userId });
+
+    if (!user) {
+      return res.status(404).render('partials/404');
+    }
+
+    const firstName = user.name;
+
+    if (user.password != null) {
+      res.render('user/privacySettings', {
+        title: "Privacy settings",
+        user,
+        firstName
+      });
+    } else {
+      res.render('user/privacySettingsGoogle', {
+        title: "Privacy settings",
+        user,
+        firstName
+      });
+    }
+  } catch (error) {
+    console.error("Error loading privacy settings:", error);
+    res.status(500).render('partials/404');
+  }
+};
+
+
+const updatePassword = async (req, res) => {
+  try {
+      const { oldPassword, newPassword } = req.body;
+      const userId = req.session.user?.id ?? req.session.user?._id ?? null;
+
+      if (!userId) {
+          return res.status(STATUS_CODE.UNAUTHORIZED).json({ error: "User not authenticated" });
+      }
+
+      const user = await User.findOne({ _id: userId });
+      if (!user) {
+          return res.status(STATUS_CODE.NOT_FOUND).json({ error: "User not found" });
+      }
+
+      const isMatch = await bcrypt.compare(oldPassword, user.password);
+      if (!isMatch) {
+          return res.status(STATUS_CODE.UNAUTHORIZED).json({ error: "Old password is incorrect" });
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+      await user.save();
+
+      return res.status(STATUS_CODE.SUCCESS).json({ message: "Password changed successfully" });
+  } catch (error) {
+      console.error("Error updating password:", error);
+      return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: "An error occurred while updating the password" });
+  }
+};
+
 export default {
     renderProfileInfo,
     renderProfileEdit,
@@ -384,5 +450,7 @@ export default {
     deleteAddress,
     loadEditAddress,
     editAddress,
+    loadPrivacy,
+    updatePassword,
 
 }

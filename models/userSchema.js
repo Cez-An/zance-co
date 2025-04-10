@@ -52,7 +52,6 @@ const userSchema = new Schema(
     },
     referalCode: {
       type: String,
-      unique: true,
       required: false,
     },
     redeemed: {

@@ -3,6 +3,7 @@ import userController from "../controllers/user/userController.js";
 import userAuth from "../middlewares/userAuth.js";
 import profileController from '../controllers/user/profileController.js'
 import uploads from '../helpers/multer.js'
+import cartControlller from '../controllers/user/cartControlller.js'
 
 const router = express.Router();
 
@@ -61,9 +62,15 @@ router.get('/addAddress',profileController.loadAddAddress);
 router.get('/editaddress', profileController.loadEditAddress);
 router.put('/address', profileController.editAddress);
 router.delete('/address', profileController.deleteAddress);
-// router.get('/coupons', profileController.loadCoupons);
-// router.get('/privacy', profileController.loadPrivacy);
-// router.post('/privacy', profileController.updatePassword);
 
+//privacy settings
+router.get('/privacy', profileController.loadPrivacy);
+router.post('/privacy', profileController.updatePassword);
+
+//cart routes
+router.post('/cart', cartControlller.addItemToCart);
+router.get('/cart', cartControlller.loadCart);
+// router.patch('/cart', cartControlller.updateQuantity);
+// router.delete('/cart', cartControlller.deleteFromcart);
 
 export default router;

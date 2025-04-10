@@ -1,12 +1,28 @@
-<%-include("../../views/partials/user/header") %> 
+<%-include("../../views/partials/user/header") %>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/css/profile-section.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+
     <style>
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background-color: #252525;
+            background-color: #000000;
             color: #ffffff;
+        }
+
+        a {
+            text-decoration: none;
+        }
+        .form-control {
+         background-color: #b4b0d8; /* Change the background color */
+         color: #000000; /* Change the text color */
+         padding: 10px;
+         border-radius: 5px;
         }
 
         .sidebar {
@@ -35,7 +51,8 @@
 
         /* Active tab styling */
         .sidebar a.active {
-            background-color: #6510DC; /* Highlight color for active tab */
+            background-color: #6510DC;
+            /* Highlight color for active tab */
             color: #ffffff;
         }
 
@@ -78,43 +95,169 @@
             }
         }
     </style>
-</head>
-<body>
-    <div class="sidebar">
-        <!-- Add 'active' class to My Orders --> 
-         <br><br><br>
-        <a href="#my-orders"><i class="fas fa-shopping-cart"></i><span>My Orders</span></a>
-        <a href="#profile-info"><i class="fas fa-user"></i><span>Profile Information</span></a>
-        <a href="#manage-addresses"><i class="fas fa-map-marker-alt"></i><span>Manage Addresses</span></a>
-        <a href="#privacy-settings" class="active"><i class="fas fa-lock"></i><span>Privacy Settings</span></a>
-        <a href="#my-coupons"><i class="fas fa-ticket-alt"></i><span>My Coupons</span></a>
-        <a href="#my-wallet"><i class="fas fa-wallet"></i><span>My Wallet</span></a>
-    </div>
+    </head>
 
-    <div class="content">
-        <h1>User Profile Page</h1>
-        <p>This is the main content area. Select an option from the sidebar.</p>
-    </div>
-    <script>
-        window.addEventListener('load', function() {
-            const loader = document.querySelector('.loader-wrapper');
-            const content = document.querySelector('.content');
-            setTimeout(function() {
-                loader.classList.add('loader-hidden');
-                content.classList.add('content-loaded');
-            }, 2000);
-        });
-    </script>
-    <!-- Js Plugins -->
-    <script src="../../js/jquery-3.3.1.min.js"></script>
-    <script src="../../js/bootstrap.min.js"></script>
-    <script src="../../js/jquery.nice-select.min.js"></script>
-    <script src="../../js/jquery.nicescroll.min.js"></script>
-    <script src="../../js/jquery.magnific-popup.min.js"></script>
-    <script src="../../js/jquery.countdown.min.js"></script>
-    <script src="../../js/jquery.slicknav.js"></script>
-    <script src="../../js/mixitup.min.js"></script>
-    <script src="../../js/owl.carousel.min.js"></script>
-    <script src="../../js/main.js"></script>
-</body>
-</html>
+    <body>
+        <div class="sidebar">
+            <!-- Add 'active' class to My Orders -->
+            <br><br><br>
+            <a href="#my-orders"><i class="fas fa-shopping-cart"></i><span>My Orders</span></a>
+            <a href="/user/userProfile"><i class="fas fa-user"></i><span>Profile Information</span></a>
+            <a href="/user/address" ><i class="fas fa-map-marker-alt"></i><span>Manage
+                    Addresses</span></a>
+            <a href="/user/privacy" class="active"><i class="fas fa-lock"></i><span>Privacy Settings</span></a>
+            <a href="#my-coupons"><i class="fas fa-ticket-alt"></i><span>My Coupons</span></a>
+            <a href="#my-wallet"><i class="fas fa-wallet"></i><span>My Wallet</span></a>
+        </div>
+
+        
+            <main class="container mt-4">
+                <div class="row g-5">
+        
+                    <!-- Privacy Settings Section -->
+                    <div class="col-md-9">
+                        <div class="card p-4 h-100" style="border-radius: 12px; background-color: #1a1a1a; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);">
+                            <h4 class="mb-4" style="color: #ffffff;">Change Password</h4>
+                            <form id="changePasswordForm">
+                                <!-- Old Password -->
+                                <div class="mb-4">
+                                    <label for="oldPassword" class="form-label" style="color: #ffffff;">Old Password</label>
+                                    <input type="password" id="oldPassword" name="oldPassword" class="form-control" placeholder="Enter your old password">
+                                    <div id="oldPasswordError" style="font-size: 0.8em; color: #ff0101;"></div>
+                                </div>
+            
+                                <!-- New Password -->
+                                <div class="mb-4">
+                                    <label for="newPassword" class="form-label" style="color: #ffffff;">New Password</label>
+                                    <input type="password" id="newPassword" name="newPassword" class="form-control" placeholder="Enter your new password">
+                                    <div id="newPasswordError" style="font-size: 0.8em; color: #ff0101;"></div>
+                                </div>
+            
+                                <!-- Confirm New Password -->
+                                <div class="mb-4">
+                                    <label for="confirmPassword" class="form-label" style="color: #ffffff;">Confirm New Password</label>
+                                    <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Confirm your new password">
+                                    <div id="confirmPasswordError" style="font-size: 0.8em; color: #ff0101;"></div>
+                                </div>
+            
+                                <!-- Buttons -->
+                                <div class="d-flex gap-3 align-items-between" style="margin-top: 50px;">
+                                    <button type="submit" class="btn btn-primary" style="background-color: #6510DC; border: none;">Change Password</button>
+                                    <button type="button" class="btn btn-secondary" onclick="window.history.back();">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <script>
+                document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+            
+                    const oldPassword = document.getElementById('oldPassword').value.trim();
+                    const newPassword = document.getElementById('newPassword').value.trim();
+                    const confirmPassword = document.getElementById('confirmPassword').value.trim();
+            
+                    const errors = {
+                        oldPassword: document.getElementById("oldPasswordError"),
+                        newPassword: document.getElementById("newPasswordError"),
+                        confirmPassword: document.getElementById("confirmPasswordError"),
+                    };
+            
+                    Object.values(errors).forEach((el) => el.innerText = "");
+            
+                    let hasError = false;
+            
+                    if (!oldPassword) {
+                        errors.oldPassword.innerText = "Please enter old password";
+                        hasError = true;
+                    }
+            
+                    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^])[A-Za-z\d@$!%*?&#^]{6,}$/;
+                    if (!newPassword) {
+                        errors.newPassword.innerText = "Please enter a new password";
+                        hasError = true;
+                    } else if (!strongPasswordRegex.test(newPassword)) {
+                        errors.newPassword.innerText = 
+                        errors.newPassword.innerText = "Password must be 6+ chars, incl. uppercase, lowercase, number & special (@$!%*?&#^)";
+                        hasError = true;
+                    }
+            
+                    if (!confirmPassword) {
+                        errors.confirmPassword.innerText = "Please confirm your new password";
+                        hasError = true;
+                    } else if (newPassword !== confirmPassword) {
+                        errors.confirmPassword.innerText = "Passwords do not match";
+                        hasError = true;
+                    }
+            
+                    if (hasError) return;
+            
+                    const privacyData = { oldPassword, newPassword };
+            
+                    try {
+                        const response = await fetch('/user/privacy', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(privacyData)
+                        });
+            
+                        const data = await response.json();
+            
+                        if (!response.ok) {
+                            Swal.fire({
+                                icon: "error",
+                                text: data.error,
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: "success",
+                                text: data.message,
+                                timer: 2000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = '/user/userProfile'
+                            });
+                        }
+                    } catch (error) {
+                        console.error(error);
+                        Swal.fire({
+                            icon: "error",
+                            text: "An error occurred. Please try again.",
+                        });
+                    }
+                });
+            </script>    
+      
+
+
+        <script>
+            window.addEventListener('load', function () {
+                const loader = document.querySelector('.loader-wrapper');
+                const content = document.querySelector('.content');
+                setTimeout(function () {
+                    loader.classList.add('loader-hidden');
+                    content.classList.add('content-loaded');
+                }, 2000);
+            });
+        </script>
+        <!-- Js Plugins -->
+        <script src="../../js/jquery-3.3.1.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script src="../../js/jquery.nice-select.min.js"></script>
+        <script src="../../js/jquery.nicescroll.min.js"></script>
+        <script src="../../js/jquery.magnific-popup.min.js"></script>
+        <script src="../../js/jquery.countdown.min.js"></script>
+        <script src="../../js/jquery.slicknav.js"></script>
+        <script src="../../js/mixitup.min.js"></script>
+        <script src="../../js/owl.carousel.min.js"></script>
+        <script src="../../js/main.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    </body>
+
+    </html>

@@ -18,6 +18,12 @@
         a {
         text-decoration: none;
         }
+        .form-control {
+         background-color: #b4b0d8; /* Change the background color */
+         color: #000000; /* Change the text color */
+         padding: 10px;
+         border-radius: 5px;
+        }
 
         .sidebar {
             width: 250px;
@@ -96,7 +102,7 @@
         <a href="#my-orders"><i class="fas fa-shopping-cart"></i><span>My Orders</span></a>
         <a href="/user/userProfile"><i class="fas fa-user"></i><span>Profile Information</span></a>
         <a href="/user/address" class="active"><i class="fas fa-map-marker-alt"></i><span>Manage Addresses</span></a>
-        <a href="#privacy-settings"><i class="fas fa-lock"></i><span>Privacy Settings</span></a>
+        <a href="/user/privacy"><i class="fas fa-lock"></i><span>Privacy Settings</span></a>
         <a href="#my-coupons"><i class="fas fa-ticket-alt"></i><span>My Coupons</span></a>
         <a href="#my-wallet"><i class="fas fa-wallet"></i><span>My Wallet</span></a>
     </div>
@@ -111,7 +117,7 @@
                 <div class="col-md-9">
                     <div class="py-3 px-5 h-100" style="border-radius: 12px; background-color: #1a1a1a;">
                         <h4 class="mb-4" style="color: #ffffff;">Edit Address</h4>
-                        
+
                         <form id="editAddressForm">
                             <input type="hidden" name="addressId" id="addressId" value="<%= addressId %>">
                             <input type="hidden" name="index" id="index" value="<%= index %>">

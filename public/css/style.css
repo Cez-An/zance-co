@@ -3919,3 +3919,8 @@ ol {
 	color: white;
 
 }
+.custom-selected{
+	background-color: black !important;
+	color: white !important;
+	
+}

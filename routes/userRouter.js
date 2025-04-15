@@ -49,28 +49,28 @@ router.get('/newPassword',userController.renderNewPassPage)
 router.post('/changePassword',userController.newPassword)
 
 //user profile
-router.get('/userProfile',profileController.renderProfileInfo)
-router.get('/userProfile/:id',profileController.renderProfileEdit)
+router.get('/userProfile',userAuth.checkStatus,profileController.renderProfileInfo)
+router.get('/userProfile/:id',userAuth.checkStatus,profileController.renderProfileEdit)
 router.put('/userProfile', uploads.single('profilePic'), profileController.updateProfile)
 router.post('/sendotp', profileController.sendOTP);
 router.post('/verifymail', profileController.verifyOTP);
 
 //address management
-router.get('/address',profileController.loadAddress);
+router.get('/address',userAuth.checkStatus,profileController.loadAddress);
 router.post('/address',profileController.addAddress);
-router.get('/addAddress',profileController.loadAddAddress);
-router.get('/editaddress', profileController.loadEditAddress);
+router.get('/addAddress',userAuth.checkStatus,profileController.loadAddAddress);
+router.get('/editaddress', userAuth.checkStatus,profileController.loadEditAddress);
 router.put('/address', profileController.editAddress);
 router.delete('/address', profileController.deleteAddress);
 
 //privacy settings
-router.get('/privacy', profileController.loadPrivacy);
+router.get('/privacy', userAuth.checkStatus,profileController.loadPrivacy);
 router.post('/privacy', profileController.updatePassword);
 
 //cart routes
 router.post('/cart', cartControlller.addItemToCart);
 router.get('/cart', cartControlller.loadCart);
-// router.patch('/cart', cartControlller.updateQuantity);
-// router.delete('/cart', cartControlller.deleteFromcart);
+router.patch('/cart', cartControlller.updateQuantity);
+router.delete('/cart', cartControlller.deleteFromcart);
 
 export default router;

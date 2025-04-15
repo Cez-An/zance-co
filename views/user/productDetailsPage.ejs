@@ -136,7 +136,20 @@
             background-color: #000000;
         }
         .nice-select .option:hover, .nice-select .option.focus, .nice-select .option.selected.focus {
-            background-color: #707070; }
+            background-color: #707070; 
+        }
+        .stock {
+        color: green;
+        }
+        .stock.out-of-stock {
+        color: red;
+        }
+        .labellink{
+            opacity: 0;
+            background-color: red;
+            width: 300px;
+            height: 250px;
+        }
        
     </style>
 <body> <br>
@@ -185,8 +198,10 @@
                     <span class="discounted-price fw-bold text-success">₹ <%=product.salePrice %></span>
                     <!-- <span class="savings text-warning">Save $30 (23% off)</span> -->
                 </div>
-                <div class="stock mb-3">In Stock – Ships in 1-2 days</div>
-                <br><br>
+                <div class="stock mb-3 <%= product.quantity === 0 ? 'out-of-stock' : '' %>">
+                    <%= product.quantity > 0 ? `In Stock (${product.quantity}) Ships in 1-2 days` : 'Item is Out of Stock' %>
+                  </div>
+                <br><br> 
                 
                 <div class="d-flex gap-2">
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -201,7 +216,7 @@
                     
                     <!-- <button class="btn btn-outline-light">Buy Now</button> -->
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <button class="btn btn-primary btn-lg w-50" id="addtocartBtn">Add to Cart</button>
+                    <button class="btn btn-primary btn-lg w-50" id="addtocartBtn" <%= product.quantity === 0 ? 'disabled' : '' %>>Add to Cart</button>
 
                 </div> <br>
 
@@ -270,7 +285,7 @@
                         <div class="product__item">
                             <a href="/user/loadProductsDetailsPage/<%=element._id %>">
                                 <div class="product__item__pic set-bg" data-setbg="<%=element.productImage[2]%>">
-                                <span class="label">New</span>
+                                <div class="labellink">New</div>
                                 <ul class="product__hover">
                                     <li><a href="#"><i class="wishlist bi bi-suit-heart-fill fs-3"></i></a></li>                                    
                                 </ul>
@@ -280,7 +295,7 @@
                         
                             <div class="product__item__text">
                                 <h6><%=element.name %></h6>
-                                <a href="#" class="add-cart">+ Add To Cart</a>
+                                <a href="/user/loadProductsDetailsPage/<%=element._id %>" class="add-cart"><%=element.name %></a>
                                 <div class="rating">
                                     <i class="fa fa-star-o"></i>
                                     <i class="fa fa-star-o"></i>

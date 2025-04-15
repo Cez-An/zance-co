@@ -61,7 +61,6 @@ const renderProductsListPage = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    // Destructure fields from req.body matching the form field names
     const { 
       name, 
       description, 
@@ -69,13 +68,19 @@ const addProduct = async (req, res) => {
       basePrice, 
       discount, 
       stock, 
-      brand 
+      brand,
+      visibilityStatus, 
     } = req.body;
-
-    // Map image URLs from uploaded files - field name matches 'variantImages' from form
+    
+    let status;
+    if (visibilityStatus === "Active") {
+       status = false;
+    } else {
+       status = true;
+    }
+    
     const imageUrls = req.files.map((file) => file.path || file.url);
 
-    // Generate unique product ID
     const generateProductId = async () => {
       const randomNumber = Math.floor(100000 + Math.random() * 900000);
       const id = `ZNCP${randomNumber}`;
@@ -86,7 +91,6 @@ const addProduct = async (req, res) => {
       return id;
     };
 
-    // Find category by name
     const categoryFind = await Category.findOne({ name: category });
     if (!categoryFind) {
       return res.status(400).json({ 
@@ -96,33 +100,32 @@ const addProduct = async (req, res) => {
     }
     const categoryId = categoryFind._id;
 
-    // Increment category count
+    
     await Category.findOneAndUpdate({ _id: categoryId }, { $inc: { count: 1 } });
 
-    // Generate product ID
+    
     const productId = await generateProductId();
 
-    // Create new product with form data
+    
     const newProduct = new Product({
       name,
       productId,
       category: categoryId,
       description,
       brand,
-      salePrice: basePrice,    // Matches 'basePrice' from form
-      productOffer: discount,   // Matches 'discount' from form
-      quantity: stock,          // Matches 'stock' from form
-      productImage: imageUrls,  // Matches 'variantImages' from form
+      salePrice: basePrice,   
+      productOffer: discount,   
+      quantity: stock,         
+      isBlocked:status,
+      productImage: imageUrls,  
     });
 
-    // Save product to database
     await newProduct.save();
 
-    // Send response matching frontend expectations
     res.status(200).json({ 
       success: true,
       message: "Product added successfully",
-      redirect: "/admin/products"  // Changed 'location' to 'redirect' to match frontend
+      redirect: "/admin/products"  
     });
     
   } catch (error) {
@@ -257,79 +260,187 @@ const renderProductsEditPage = async (req, res) => {
 //   }
 // };
 
+// const updateProduct = async (req, res) => {
+//   try {
+//       const { id } = req.params;
+//       const { 
+//           name, 
+//           description, 
+//           category, 
+//           basePrice, 
+//           discount, 
+//           stock, 
+//           visibilityStatus,
+//           brand 
+//       } = req.body;
+
+       
+//     let status;
+//     if (visibilityStatus === "Active") {
+//        status = false;
+//     } else {
+//        status = true;
+//     }
+    
+
+//       const existingProduct = await Product.findById(id);
+//       if (!existingProduct) {
+//           return res.status(404).json({
+//               success: false,
+//               message: "Product not found"
+//           });
+//       }
+
+//       let imageUrls = existingProduct.productImage || [];
+//       if (req.files && req.files.length > 0) {
+//           imageUrls = req.files.map((file) => file.path || file.url);
+//           while (imageUrls.length < 4 && existingProduct.productImage.length > imageUrls.length) {
+//               imageUrls.push(existingProduct.productImage[imageUrls.length]);
+//           }
+//           imageUrls = imageUrls.slice(0, 4);
+//       }
+
+//       const categoryFind = await Category.findById(category);
+//       if (!categoryFind) {
+//           return res.status(400).json({ 
+//               success: false,
+//               message: "Invalid category" 
+//           });
+//       }
+
+//       if (existingProduct.category.toString() !== category) {
+//           await Category.findByIdAndUpdate(existingProduct.category, { $inc: { count: -1 } });
+//           await Category.findByIdAndUpdate(category, { $inc: { count: 1 } });
+//       }
+  
+//       const updatedProduct = await Product.findByIdAndUpdate(
+//           id,
+//           {
+//               name,
+//               description,
+//               category,
+//               brand,
+//               salePrice: basePrice,
+//               productOffer: discount,
+//               isBlocked:status,
+//               quantity: stock,
+//               productImage: imageUrls,
+//           },
+//           { new: true, runValidators: true }
+//       );
+
+//       res.status(200).json({ 
+//           success: true,
+//           message: "Product updated successfully",
+//           redirect: "/admin/products"
+//       });
+      
+//   } catch (error) {
+//       console.error("Error updating product:", error);
+//       res.status(500).json({ 
+//           success: false,
+//           message: "Error updating product: " + error.message
+//       });
+//   }
+// };
+
 const updateProduct = async (req, res) => {
   try {
-      const { id } = req.params;
-      const { 
-          name, 
-          description, 
-          category, 
-          basePrice, 
-          discount, 
-          stock, 
-          brand 
-      } = req.body;
+    const { id } = req.params;
+    const {
+      name,
+      description,
+      category,
+      basePrice,
+      discount,
+      stock,
+      visibilityStatus,
+      brand,
+    } = req.body;
 
-      const existingProduct = await Product.findById(id);
-      if (!existingProduct) {
-          return res.status(404).json({
-              success: false,
-              message: "Product not found"
-          });
-      }
+    // Set status based on visibilityStatus
+    let status = visibilityStatus === 'Active' ? false : true;
 
-      let imageUrls = existingProduct.productImage || [];
-      if (req.files && req.files.length > 0) {
-          imageUrls = req.files.map((file) => file.path || file.url);
-          while (imageUrls.length < 4 && existingProduct.productImage.length > imageUrls.length) {
-              imageUrls.push(existingProduct.productImage[imageUrls.length]);
+    // Find the existing product
+    const existingProduct = await Product.findById(id);
+    if (!existingProduct) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found',
+      });
+    }
+
+    // Initialize imageUrls with existing images (Cloudinary URLs)
+    let imageUrls = existingProduct.productImage || ['', '', '', '']; // Ensure 4 slots, empty if missing
+
+    // Handle new image uploads from Cloudinary
+    if (req.files && req.files.length > 0) {
+      // Map uploaded files to their slots
+      req.files.forEach((file) => {
+        // Extract slot index from fieldname (e.g., variantImages[0])
+        const match = file.fieldname.match(/variantImages\[(\d)\]/);
+        if (match) {
+          const slot = parseInt(match[1]);
+          if (slot >= 0 && slot < 4) {
+            imageUrls[slot] = file.path; // Cloudinary URL
           }
-          imageUrls = imageUrls.slice(0, 4);
-      }
-
-      const categoryFind = await Category.findById(category);
-      if (!categoryFind) {
-          return res.status(400).json({ 
-              success: false,
-              message: "Invalid category" 
-          });
-      }
-
-      if (existingProduct.category.toString() !== category) {
-          await Category.findByIdAndUpdate(existingProduct.category, { $inc: { count: -1 } });
-          await Category.findByIdAndUpdate(category, { $inc: { count: 1 } });
-      }
-  
-      const updatedProduct = await Product.findByIdAndUpdate(
-          id,
-          {
-              name,
-              description,
-              category,
-              brand,
-              salePrice: basePrice,
-              productOffer: discount,
-              quantity: stock,
-              productImage: imageUrls,
-          },
-          { new: true, runValidators: true }
-      );
-
-      res.status(200).json({ 
-          success: true,
-          message: "Product updated successfully",
-          redirect: "/admin/products"
+        }
       });
-      
+    }
+
+    // Ensure exactly 4 images
+    if (imageUrls.length !== 4 || imageUrls.some(url => !url)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Exactly four images are required',
+      });
+    }
+
+    // Validate category
+    const categoryFind = await Category.findById(category);
+    if (!categoryFind) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid category',
+      });
+    }
+
+    // Update category count if changed
+    if (existingProduct.category.toString() !== category) {
+      await Category.findByIdAndUpdate(existingProduct.category, { $inc: { count: -1 } });
+      await Category.findByIdAndUpdate(category, { $inc: { count: 1 } });
+    }
+
+    // Update the product
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id,
+      {
+        name,
+        description,
+        category,
+        brand,
+        salePrice: basePrice,
+        productOffer: discount,
+        isBlocked: status,
+        quantity: stock,
+        productImage: imageUrls,
+      },
+      { new: true, runValidators: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: 'Product updated successfully',
+      redirect: '/admin/products',
+    });
   } catch (error) {
-      console.error("Error updating product:", error);
-      res.status(500).json({ 
-          success: false,
-          message: "Error updating product: " + error.message
-      });
+    console.error('Error updating product:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating product: ' + error.message,
+    });
   }
 };
-
 
 
 

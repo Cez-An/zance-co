@@ -489,6 +489,14 @@
                             <p class="error-message" id="stock-error">Please enter a valid stock quantity (0 or more)
                             </p>
                         </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="visibilityStatus" class="form-label">Visibility Status</label>
+                            <select class="form-select" id="visibilityStatus" name="visibilityStatus">
+                                <option selected>Active</option>
+                                <option>Inactive</option>
+                            </select>
+                            <div id="visibilityStatus-error" class="error-message"></div>
+                        </div>
                     </div>
                     <div class="d-flex justify-content-end">
                         <a href="/admin/products"><button type="button"
@@ -630,6 +638,7 @@
             const description = document.querySelector('textarea[name="description"]').value.trim();
             const basePrice = document.querySelector('input[name="basePrice"]').value;
             const discount = document.querySelector('input[name="discount"]').value;
+            let visibilityStatus = document.getElementById('visibilityStatus').value.trim();
             const stock = document.querySelector('input[name="stock"]').value;
             const imageInputs = document.querySelectorAll('input[name="variantImages"]');
             let hasImage = false;

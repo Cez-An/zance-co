@@ -467,6 +467,14 @@
                             <input type="number" class="form-control" placeholder="Enter stock limit" name="stock" min="0" value="<%= product.quantity %>">
                             <p class="error-message" id="stock-error">Please enter a valid stock quantity (0 or more)</p>
                         </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="visibilityStatus" class="form-label">Visibility Status</label>
+                            <select class="form-select" id="visibilityStatus" name="visibilityStatus">
+                                <option selected>Active</option>
+                                <option>Inactive</option>
+                            </select>
+                            <div id="visibilityStatus-error" class="error-message"></div>
+                        </div>
                     </div>
                     <div class="d-flex justify-content-end">
                         <a href="/admin/products"><button type="button" class="btn btn-outline-secondary me-2">Cancel</button></a>
@@ -499,205 +507,225 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.5.12/dist/cropper.min.js"></script>
     <script>
-        let cropper;
-        let currentSlot;
+  let cropper;
+  let currentSlot;
 
-        document.querySelectorAll('.image-upload-slot').forEach(slot => {
-            const dropzone = slot.querySelector('.image-upload-dropzone');
-            const input = slot.querySelector('input[type="file"]');
-            const preview = slot.querySelector('.image-preview');
+  document.querySelectorAll('.image-upload-slot').forEach(slot => {
+    const dropzone = slot.querySelector('.image-upload-dropzone');
+    const input = slot.querySelector('input[type="file"]');
+    const preview = slot.querySelector('.image-preview');
 
-            dropzone.addEventListener('click', () => input.click());
+    dropzone.addEventListener('click', () => input.click());
 
-            input.addEventListener('change', (e) => {
-                if (e.target.files && e.target.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        const modal = new bootstrap.Modal(document.getElementById('cropper-modal'));
-                        const image = document.getElementById('cropper-image');
-                        image.src = event.target.result;
-                        modal.show();
-
-                        image.onload = () => {
-                            if (cropper) {
-                                cropper.destroy();
-                            }
-                            cropper = new Cropper(image, {
-                                aspectRatio: 1,
-                                viewMode: 1,
-                                autoCropArea: 1,
-                                responsive: true,
-                                restore: true,
-                                dragMode: 'move',
-                                cropBoxResizable: true,
-                                minContainerWidth: 1000,
-                                minContainerHeight: 600,
-                            });
-                        };
-
-                        currentSlot = slot;
-                        input.value = '';
-                    };
-                    reader.readAsDataURL(e.target.files[0]);
-                }
-            });
-
-            preview.addEventListener('click', (e) => {
-                if (e.target.classList.contains('close-btn')) {
-                    preview.style.display = 'none';
-                    preview.innerHTML = '';
-                    dropzone.style.display = 'flex';
-                    input.value = '';
-                }
-            });
-        });
-
-        document.getElementById('crop-button').addEventListener('click', () => {
-            if (cropper && currentSlot) {
-                const canvas = cropper.getCroppedCanvas({
-                    width: 800,
-                    height: 800,
-                });
-
-                const preview = currentSlot.querySelector('.image-preview');
-                const dropzone = currentSlot.querySelector('.image-upload-dropzone');
-
-                canvas.toBlob((blob) => {
-                    const url = URL.createObjectURL(blob);
-                    preview.innerHTML = `
-                        <img src="${url}" alt="Preview">
-                        <button class="close-btn" type="button">×</button>
-                    `;
-                    dropzone.style.display = 'none';
-                    preview.style.display = 'block';
-
-                    const input = currentSlot.querySelector('input[type="file"]');
-                    const file = new File([blob], 'cropped-image.jpg', { type: 'image/jpeg' });
-                    const dataTransfer = new DataTransfer();
-                    dataTransfer.items.add(file);
-                    input.files = dataTransfer.files;
-
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('cropper-modal'));
-                    modal.hide();
-                }, 'image/jpeg');
-            }
-        });
-
-        document.getElementById('cropper-modal').addEventListener('hidden.bs.modal', () => {
-            if (cropper) {
-                cropper.destroy();
-                cropper = null;
-            }
-        });
-
-        document.getElementById('productForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
-            let isValid = true;
-
-            // Reset all error messages and styles
-            document.querySelectorAll('.error-message').forEach(error => error.style.display = 'none');
-            document.querySelectorAll('.form-control, .form-select').forEach(input => input.classList.remove('is-invalid'));
-
-            // Get form values
-            const name = document.querySelector('input[name="name"]').value.trim();
-            const category = document.querySelector('select[name="category"]').value;
-            const brand = document.querySelector('input[name="brand"]').value.trim();
-            const description = document.querySelector('textarea[name="description"]').value.trim();
-            const basePrice = document.querySelector('input[name="basePrice"]').value;
-            const discount = document.querySelector('input[name="discount"]').value;
-            const stock = document.querySelector('input[name="stock"]').value;
-            const imageInputs = document.querySelectorAll('input[name="variantImages"]');
-            const productId = document.querySelector('input[name="productId"]').value;
-
-            // Count images (existing + new)
-            let imageCount = 0;
-            document.querySelectorAll('.image-preview').forEach(preview => {
-                if (preview.style.display === 'block' && preview.querySelector('img')) {
-                    imageCount++;
-                }
-            });
-
-            // Validation checks
-            if (!name) {
-                document.getElementById('name-error').style.display = 'block';
-                document.querySelector('input[name="name"]').classList.add('is-invalid');
-                isValid = false;
-            }
-            if (!category) {
-                document.getElementById('category-error').style.display = 'block';
-                document.querySelector('select[name="category"]').classList.add('is-invalid');
-                isValid = false;
-            }
-            if (!brand) {
-                document.getElementById('brand-error').style.display = 'block';
-                document.querySelector('input[name="brand"]').classList.add('is-invalid');
-                isValid = false;
-            }
-            if (!description) {
-                document.getElementById('description-error').style.display = 'block';
-                document.querySelector('textarea[name="description"]').classList.add('is-invalid');
-                isValid = false;
-            }
-            if (imageCount !== 4) {
-                document.getElementById('images-error').style.display = 'block';
-                isValid = false;
-            }
-            if (!basePrice || basePrice <= 0) {
-                document.getElementById('basePrice-error').style.display = 'block';
-                document.querySelector('input[name="basePrice"]').classList.add('is-invalid');
-                isValid = false;
-            }
-            if (discount === '' || discount < 0 || discount > 100) {
-                document.getElementById('discount-error').style.display = 'block';
-                document.querySelector('input[name="discount"]').classList.add('is-invalid');
-                isValid = false;
-            }
-            if (stock === '' || stock < 0) {
-                document.getElementById('stock-error').style.display = 'block';
-                document.querySelector('input[name="stock"]').classList.add('is-invalid');
-                isValid = false;
-            }
-
-            if (isValid) {
-                try {
-                    const formData = new FormData(this);
-
-                    const response = await fetch(`/admin/products/${productId}`, {
-                        method: 'PUT',
-                        body: formData
-                    });
-
-                    const result = await response.json();
-
-                    if (!response.ok) {
-                        throw new Error(result.message || 'Failed to update product');
-                    }
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success!',
-                        text: result.message || 'Product updated successfully!',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        window.location.href = result.redirect || '/admin/products';
-                    });
-
-                } catch (error) {
-                    console.error('Error:', error);
-                    await Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: error.message || 'An error occurred while updating the product',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            }
-        });
-
-        function toggleSidebar() {
-            document.querySelector('.sidebar').classList.toggle('active');
+    input.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        const file = e.target.files[0];
+        // Client-side file type validation
+        const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+        if (!validTypes.includes(file.type)) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Invalid File Type',
+            text: 'Only JPEG, JPG, PNG, and WEBP images are allowed',
+          });
+          input.value = '';
+          return;
         }
-    </script>
+        // Client-side file size validation (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+          Swal.fire({
+            icon: 'error',
+            title: 'File Too Large',
+            text: 'Image size must be less than 5MB',
+          });
+          input.value = '';
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          const modal = new bootstrap.Modal(document.getElementById('cropper-modal'));
+          const image = document.getElementById('cropper-image');
+          image.src = event.target.result;
+          modal.show();
+
+          image.onload = () => {
+            if (cropper) {
+              cropper.destroy();
+            }
+            cropper = new Cropper(image, {
+              aspectRatio: 1,
+              viewMode: 1,
+              autoCropArea: 1,
+              responsive: true,
+              restore: true,
+              dragMode: 'move',
+              cropBoxResizable: true,
+              minContainerWidth: 1000,
+              minContainerHeight: 600,
+            });
+          };
+
+          currentSlot = slot;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    preview.addEventListener('click', (e) => {
+      if (e.target.classList.contains('close-btn')) {
+        preview.style.display = 'none';
+        preview.innerHTML = '';
+        dropzone.style.display = 'flex';
+        input.value = '';
+      }
+    });
+  });
+
+  document.getElementById('crop-button').addEventListener('click', () => {
+    if (cropper && currentSlot) {
+      const canvas = cropper.getCroppedCanvas({
+        width: 800,
+        height: 800,
+      });
+
+      const preview = currentSlot.querySelector('.image-preview');
+      const dropzone = currentSlot.querySelector('.image-upload-dropzone');
+
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        preview.innerHTML = `
+          <img src="${url}" alt="Preview">
+          <button class="close-btn" type="button">×</button>
+        `;
+        dropzone.style.display = 'none';
+        preview.style.display = 'block';
+
+        const input = currentSlot.querySelector('input[type="file"]');
+        const file = new File([blob], `cropped-image-${currentSlot.dataset.slot}.jpg`, { type: 'image/jpeg' });
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        input.files = dataTransfer.files;
+
+        const modal = bootstrap.Modal.getInstance(document.getElementById('cropper-modal'));
+        modal.hide();
+      }, 'image/jpeg', 0.8); // Optimize image quality
+    }
+  });
+
+  document.getElementById('cropper-modal').addEventListener('hidden.bs.modal', () => {
+    if (cropper) {
+      cropper.destroy();
+      cropper = null;
+    }
+  });
+
+  document.getElementById('productForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    let isValid = true;
+
+    // Reset error messages and styles
+    document.querySelectorAll('.error-message').forEach(error => error.style.display = 'none');
+    document.querySelectorAll('.form-control, .form-select').forEach(input => input.classList.remove('is-invalid'));
+
+    // Get form values
+    const name = document.querySelector('input[name="name"]').value.trim();
+    const category = document.querySelector('select[name="category"]').value;
+    const brand = document.querySelector('input[name="brand"]').value.trim();
+    const description = document.querySelector('textarea[name="description"]').value.trim();
+    const basePrice = document.querySelector('input[name="basePrice"]').value;
+    const discount = document.querySelector('input[name="discount"]').value;
+    const stock = document.querySelector('input[name="stock"]').value;
+    const productId = document.querySelector('input[name="productId"]').value;
+
+    // Count images (existing + new)
+    let imageCount = 0;
+    document.querySelectorAll('.image-preview').forEach(preview => {
+      if (preview.style.display === 'block' && preview.querySelector('img')) {
+        imageCount++;
+      }
+    });
+
+    // Validation checks
+    if (!name) {
+      document.getElementById('name-error').style.display = 'block';
+      document.querySelector('input[name="name"]').classList.add('is-invalid');
+      isValid = false;
+    }
+    if (!category) {
+      document.getElementById('category-error').style.display = 'block';
+      document.querySelector('select[name="category"]').classList.add('is-invalid');
+      isValid = false;
+    }
+    if (!brand) {
+      document.getElementById('brand-error').style.display = 'block';
+      document.querySelector('input[name="brand"]').classList.add('is-invalid');
+      isValid = false;
+    }
+    if (!description) {
+      document.getElementById('description-error').style.display = 'block';
+      document.querySelector('textarea[name="description"]').classList.add('is-invalid');
+      isValid = false;
+    }
+    if (imageCount !== 4) {
+      document.getElementById('images-error').style.display = 'block';
+      isValid = false;
+    }
+    if (!basePrice || basePrice <= 0) {
+      document.getElementById('basePrice-error').style.display = 'block';
+      document.querySelector('input[name="basePrice"]').classList.add('is-invalid');
+      isValid = false;
+    }
+    if (discount === '' || discount < 0 || discount > 100) {
+      document.getElementById('discount-error').style.display = 'block';
+      document.querySelector('input[name="discount"]').classList.add('is-invalid');
+      isValid = false;
+    }
+    if (stock === '' || stock < 0) {
+      document.getElementById('stock-error').style.display = 'block';
+      document.querySelector('input[name="stock"]').classList.add('is-invalid');
+      isValid = false;
+    }
+
+    if (isValid) {
+      try {
+        const formData = new FormData(this);
+
+        const response = await fetch(`/admin/products/${productId}`, {
+          method: 'PUT',
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.message || 'Failed to update product');
+        }
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: result.message || 'Product updated successfully!',
+          confirmButtonText: 'OK',
+        }).then(() => {
+          window.location.href = result.redirect || '/admin/products';
+        });
+      } catch (error) {
+        console.error('Error:', error);
+        await Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: error.message || 'An error occurred while updating the product',
+          confirmButtonText: 'OK',
+        });
+      }
+    }
+  });
+
+  function toggleSidebar() {
+    document.querySelector('.sidebar').classList.toggle('active');
+  }
+</script>
 </body>
 
 </html>

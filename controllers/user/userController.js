@@ -17,7 +17,8 @@ const loadHomepage = async (req, res) => {
     const product = await Product.find({isBlocked:false}).limit(12)
 
     const user = req.session.user;
-
+    console.log(`the user is:`,user);
+    
     if (user) {
       res.render("user/home", { user: user,product });
     } else {
@@ -301,7 +302,8 @@ const loadProductsDetails = async (req, res) => {
     console.log(`user is `,user);
     
     const product = await Product.findOne({_id:id});
-    const relatedProducts = await Product.find({category:product.category}).limit(4);    
+    const relatedProducts = await Product.find({category:product.category}).limit(4); 
+    const category = await Category.findOne({})   
     return res.render("user/productDetailsPage",{product,user,relatedProducts});
 
   } catch (error) {
@@ -507,13 +509,11 @@ const renderShopPage = async (req, res) => {
   }
 };
 
-
-
 const testing = async (req,res)=>{
   try {
     const product = await Product.find({isBlocked:false}).limit(12)
 
-    let page = 'testing'
+    let page = 'shopcopy'
 
     res.render(`user/${page}`,{product})
     
@@ -522,8 +522,6 @@ const testing = async (req,res)=>{
     res.status(500).json({ error: "Internal Server Error" });
   }
 }
-
-
 
 export default {
   loadHomepage,

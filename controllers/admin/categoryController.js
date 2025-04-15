@@ -54,9 +54,9 @@ const addCategory = async (req, res) => {
     let status;
 
     if (visibilityStatus === "Active") {
-      let status = true;
+       status = true;
     } else {
-      let status = false;
+       status = false;
     }
 
     const newCategory = new Category({

@@ -48,7 +48,8 @@ const renderCustomerInfo = async (req, res) => {
 const customerBlocked = async (req, res) => { 
   try {
     let {param:id} = req.body;
-    await User.updateOne({ _id: id }, { $set: { isBlocked: true } });
+    await User.updateOne({ _id: id }, { $set: { isBlocked: true } }); 
+    req.session.user = false;   
     return res.status(STATUS_CODE.SUCCESS).json({message:"User Blocked Successfully"});
   } catch (error) {
     return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({error:'User not blocked'})

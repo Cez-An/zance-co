@@ -423,19 +423,19 @@ const newPassword = async (req,res)=>{
 
 const renderShopPage = async (req, res) => {
   try { 
-    console.log(`renderShopPage ACCESS`);
+      console.log(`renderShopPage ACCESS`);
   
       const userId = req.session.user?.id ?? req.session.user?._id ?? null;
-      console.log(userId);
+      console.log('user id is',userId);
       
       const user = await User.findOne({ _id: userId });
-
       const page = parseInt(req.query.page) || 1;
       
       const limit = 9;
       const skip = (page - 1) * limit;
 
       let filter = { isBlocked: false };
+
       if (req.query.result) {
           filter.name = { $regex: req.query.result, $options: "i" };
       }
@@ -458,6 +458,7 @@ const renderShopPage = async (req, res) => {
 
       const sortOption = req.query.sort || "newest";
       let sortQuery = {};
+
       switch (sortOption) {
           case "priceLowToHigh":
               sortQuery = { salePrice: 1 };
@@ -480,19 +481,39 @@ const renderShopPage = async (req, res) => {
       
       const products = await Product.aggregate([
           { $match: filter },
+          {
+            $lookup:{
+            from:'categories',
+            localField:'category',
+            foreignField:'_id',
+            as:'category'
+          }
+          },{
+            $unwind:{
+              path:'$category'
+            }
+          },
           { $sort: sortQuery },
           { $skip: skip },
-          { $limit: limit }
+          
+          
       ]);
 
+      console.log(products.length);
 
+      const filterProduct = products.filter(product=>{
+        return product.category.isListed === true;
+      }).slice(0,limit)
+
+      console.log(filterProduct.length);
+      
       const categories = await Category.find({ isListed: true });
       const totalProducts = await Product.countDocuments(filter);
       const totalPages = Math.ceil(totalProducts / limit);
 
       res.render("user/shop", {
-          title: "Shop",
-          product: products,
+          
+          product: filterProduct,
           category: categories,
           appliedFilters: req.query,
           currentPage: page,
@@ -505,7 +526,7 @@ const renderShopPage = async (req, res) => {
 
   } catch (error) {
       console.error("Error loading shop:", error);
-      res.status(INTERNAL_SERVER_ERROR);
+      res.status(STATUS_CODE.INTERNAL_SERVER_ERROR);
   }
 };
 
@@ -513,7 +534,7 @@ const testing = async (req,res)=>{
   try {
     const product = await Product.find({isBlocked:false}).limit(12)
 
-    let page = 'shopcopy'
+    let page = 'selectAddress'
 
     res.render(`user/${page}`,{product})
     

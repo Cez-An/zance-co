@@ -1,75 +1,55 @@
 import mongoose from "mongoose";
-import { v4 as uuidv4 } from "uuid";
 
-const { Schema } = mongoose;
+const Schema = mongoose.Schema;
 
-const orderSchema = new Schema(
+const OrderSchema = new Schema(
   {
-    orderId: {
+    orderId: { type: String, required: true, unique: true },
+    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    status: {
       type: String,
-      default: () => uuidv4(),
-      unique: true,
+      enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
+      default: "pending",
     },
-    orderedItems: [
-      {
-        product: {
-          type: Schema.Types.ObjectId,
-          ref: "Product",
-          required: true,
-        },
-        quantity: {
-          type: Number,
-          required: true,
-        },
-        price: {
-          type: Number,
-          default: 0,
-        },
-      },
-    ],
-    totalPrice: {
-      type: Number,
-      required: true,
-    },
-    discount: {
-      type: Number,
-      default: 0,
-    },
-    finalAmount: {
-      type: Number,
-      required: true,
-    },
-    address: {
+
+    shippingAddress: {
       type: Schema.Types.ObjectId,
       ref: "Address",
       required: true,
     },
-    invoiceDate: {
-      type: Date,
-      default: Date.now, // aded by me. it sets the current date for the invoice if not provided
-    },
-    status: {
-      type: String,
-      required: true,
-      enum: [
-        "Pending",
-        "Processing",
-        "Shipped",
-        "Delivered",
-        "Cancelled",
-        "Return Request",
-        "Returned",
-      ],
-      default: "Pending", //Set a default status (Pending) to avoid errors if no status is assigned.
-    },
-    couponApplied: {
-      type: Boolean,
-      default: false,
+
+    items: [
+      {
+        productId: {
+          type: Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
+        productName: { type: String, required: true },
+        quantity: { type: Number, required: true },
+        price: { type: Number, required: true },
+        total: { type: Number, required: true },
+      },
+    ],
+
+    shippingCost: { type: Number, required: false },
+    tax: { type: Number, required: true },
+    totalAmount: { type: Number, required: true },
+
+    paymentInfo: {
+      method: { type: String, required: true },
+      transactionId: { type: String },
+      paymentStatus: {
+        type: String,
+        enum: ["paid", "unpaid", "failed", "refunded"],
+        default: "unpaid",
+      },
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
-const Order = mongoose.model("Order", orderSchema);
-
+const Order = mongoose.model("Order", OrderSchema);
 export default Order;

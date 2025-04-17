@@ -288,16 +288,27 @@
                         
                             <% if (element.isBlocked===false) { %>
                             <td>
-                                <button class="status-btn btn btn-success"><a class="block-unblock">ACTIVE</a></button>
+                                <button class="status-btn btn btn-success" disabled><a class="block-unblock">ACTIVE</a></button>
                                 <!-- <button class="view-btn btn btn-secondary block-unblock "">View</button> -->
                             </td>
                             <% } else { %>
 
-                                <td><button class="status-btn btn btn-danger"><a>BLOCKED</a></button>
+                                <td><button class="status-btn btn btn-danger" disabled><a>BLOCKED</a></button>
                                 <!-- <button class="view-btn btn btn-secondary block-unblock ">View</button> -->
                                     
                         <% } %>
                     </td>
+
+                    <% if (element.isBlocked===false) { %>
+                        <td>
+                            <button class="status-btn btn btn-danger"
+                                onclick="blockCustomer('<%=element._id%>')">Block</button>
+                        </td>
+                        <% } else { %>
+                            <td><button class="status-btn btn btn-success"
+                                    onclick="unblockCustomer('<%=element._id%>')">Unblock</button>
+                            </td>
+                            <% } %>
                         
                     <td><a href="/admin/products/<%=element._id %>"><button class="btn btn-dark">Edit</button></a></td>                                                                        
          

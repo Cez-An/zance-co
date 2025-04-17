@@ -4,6 +4,7 @@ import userAuth from "../middlewares/userAuth.js";
 import profileController from '../controllers/user/profileController.js'
 import uploads from '../helpers/multer.js'
 import cartControlller from '../controllers/user/cartControlller.js'
+import checkoutController from "../controllers/user/checkoutController.js";
 
 const router = express.Router();
 
@@ -72,5 +73,16 @@ router.post('/cart', cartControlller.addItemToCart);
 router.get('/cart', cartControlller.loadCart);
 router.patch('/cart', cartControlller.updateQuantity);
 router.delete('/cart', cartControlller.deleteFromcart);
+
+// payment and checkout routes
+router.get('/checkout', checkoutController.loadCheckout);
+// router.post('/checkout', checkoutController.checkoutDetails);
+router.post('/shoppingAddress', checkoutController.addShoppingAddress);
+router.put('/shoppingAddress', checkoutController.editshoppingAddress);
+
+// wishlist routes
+// router.get('/wishlist', wishlistController.getWishlist);
+// router.post('/wishlist', wishlistController.addToWishlist);
+// router.delete('/wishlist', wishlistController.removeFromWishlist);
 
 export default router;

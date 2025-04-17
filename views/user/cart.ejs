@@ -28,10 +28,19 @@
     <link rel="stylesheet" href="../../css/nice-select.css" type="text/css">
     <link rel="stylesheet" href="../../css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="../../css/slicknav.min.css" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <link rel="stylesheet" href="../../css/style.css" type="text/css">
     <link rel="stylesheet" href="../../css/headerpartials.css">
+    
 </head>
-
+<style>
+a {
+    text-decoration: none;
+}
+.text-muted {
+color: #6c757d!important;
+}
+</style>
 <body>
     <!-- Page Preloder -->
     
@@ -41,7 +50,7 @@
     <div class="offcanvas-menu-wrapper">
        
         <div class="offcanvas__nav__option">
-            <a href="#"><i class="bi bi-suit-heart"></i></a>
+            <a href="/user/wishlist"><i class="bi bi-suit-heart"></i></a>
             <a href="/user/cart"><i class="bi bi-bag"></i></a>
             <a href="/user/signup">SIGN UP</a> 
             <a href="/user/login">LOG IN</a>
@@ -85,7 +94,7 @@
                 </div>
                 <div class="col-lg-3 col-md-3">
                     <div class="header__nav__option">
-                        <a href="#"><i class="bi bi-suit-heart"></i></a>
+                        <a href="/user/wishlist"><i class="bi bi-suit-heart"></i></a>
                         <a href="/user/cart"><i class="bi bi-bag"></i></a>
 
                         <% if (locals.user) { %>
@@ -200,18 +209,18 @@
             <h4 class="fw-bold mb-0 text-white">Discover Items in your Cart</h4>
             <div class="d-flex justify-content-center align-items-center gap-3">
                 <div class="progress-step active">
-                    <i class="fas fa-shopping-cart text-white me-1" style="font-size: 1rem;"></i>
-                    <span class="fw-medium " style="font-size: 0.8rem; color: white;">Cart</span>
+                    &nbsp;&nbsp;<i class="fas fa-shopping-cart text-white me-1" style="font-size: 1rem;"></i>
+                    <span class="fw-medium " style="font-size: 0.9rem; color: white;">Cart</span>
                 </div>
                 <i class="fas fa-arrow-right progress-arrow text-muted"></i>
                 <div class="progress-step">
                     <i class="fas fa-truck me-1 text-muted" style="font-size: 0.9rem;"></i>
-                    <span style="font-size: 0.9rem;" class="text-muted">Shipping</span>
+                    <span style="font-size: 0.8rem;" class="text-muted">Shipping</span>
                 </div>
                 <i class="fas fa-arrow-right progress-arrow text-muted"></i>
                 <div class="progress-step">
                     <i class="fas fa-credit-card text-muted me-1" style="font-size: 0.9rem;"></i>
-                    <span class="fw-medium text-muted" style="font-size: 0.9rem;">Payments</span>
+                    <span class="fw-medium text-muted" style="font-size: 0.8rem;">Payments</span>
                 </div>
             </div>
         </div>
@@ -258,7 +267,7 @@
                                                 </button>
                                             </div>
                                             <p class="mb-0 fw-bold text-dark"
-                                                style="font-size: 15px; width: 70px; flex-shrink: 0;"> &nbsp;
+                                                style="font-size: 15px; width: 70px; flex-shrink: 0;">
                                                 ₹ <%= (item.quantity * item.basePrice).toLocaleString('en-IN') %>
                                             </p>
                                             <button class="btn btn-outline-danger btn-sm rounded-circle remove-btn"
@@ -329,7 +338,7 @@
 
                             <button class="btn checkout-btn w-100 mt-4"
                                 onclick="goToCheckout('<%= cart._id %>', '<%= user._id %>')"
-                                style="border-radius: 12px; padding: 12px; font-size: 1.1rem; color: #FFFFFF;">
+                                style="border-radius: 12px; padding: 12px; font-size: 1.1rem; color: #000000;background-color: rgb(255, 255, 255);">
                                 Continue to Checkout
                             </button>
                         <% } else { %>
@@ -340,83 +349,7 @@
         </div>
     </main>
 <br><br><br><br><br><br><br><br><br>
-    <script>
 
-        // Update Quantity
-        async function updateQuantity(productId, change) {
-        try {
-        const response = await fetch('/user/cart', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ productId, change }),
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            window.location.reload();
-        } else {
-            Swal.fire({
-                icon: 'error',
-                text: data.error || 'Failed to update quantity',
-            });
-        }
-        } catch (error) {
-        console.error('Error updating quantity:', error);
-        Swal.fire({
-            icon: 'error',
-            text: 'Something went wrong. Please try again later.',
-        });
-        }
-        }
-
-        // remove from Cart
-
-        async function removeFromCart(productId) {
-            const userId = document.getElementById('userId').value;
-
-            const result = await Swal.fire({
-                text: "Do you really want to remove this item from your cart?",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Yes, remove it!',
-                cancelButtonText: 'Cancel'
-            });
-
-            if (result.isConfirmed) {
-                const response = await fetch(`/user/cart?userId=${userId}`, {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ productId })
-                });
-
-                if (response.ok) {
-                    Swal.fire({
-                        text: 'The item has been removed from your cart.',
-                        icon: 'success',
-                        showConfirmButton: false,
-                        timer: 2000,
-                    }).then(() => {
-                        window.location.reload();
-                    });
-                } else {
-                    Swal.fire({
-                        text: 'Failed to remove the item from the cart.',
-                        icon: 'error',
-                        showConfirmButton: false,
-                        timer: 2000,
-                    });
-                }
-            }
-        }
-
-        // Go to Checkout
-        function goToCheckout(cartId, userId) {
-            window.location.href = `/user/checkout?cartId=${cartId}&userId=${userId}`;
-        }
-    </script>
 
 
 <!-- Footer Section Begin -->
@@ -479,6 +412,85 @@
     </div>
 </footer>
 
+<script>
+
+    // Update Quantity
+    async function updateQuantity(productId, change) {
+    try {
+    const response = await fetch('/user/cart', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productId, change }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+        window.location.reload();
+    } else {
+        Swal.fire({
+            icon: 'error',
+            text: data.error || 'Failed to update quantity',
+        });
+    }
+    } catch (error) {
+    console.error('Error updating quantity:', error);
+    Swal.fire({
+        icon: 'error',
+        text: 'Something went wrong. Please try again later.',
+    });
+    }
+    }
+
+    // remove from Cart
+
+    async function removeFromCart(productId) {
+        const userId = document.getElementById('userId').value;
+
+        const result = await Swal.fire({
+            text: "Do you really want to remove this item from your cart?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, remove it!',
+            cancelButtonText: 'Cancel'
+        });
+
+        if (result.isConfirmed) {
+            const response = await fetch(`/user/cart?userId=${userId}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productId })
+            });
+
+            if (response.ok) {
+                Swal.fire({
+                    text: 'The item has been removed from your cart.',
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 2000,
+                }).then(() => {
+                    window.location.reload();
+                });
+            } else {
+                Swal.fire({
+                    text: 'Failed to remove the item from the cart.',
+                    icon: 'error',
+                    showConfirmButton: false,
+                    timer: 2000,
+                });
+            }
+        }
+    }
+
+    // Go to Checkout
+    function goToCheckout(cartId, userId) {
+        window.location.href = `/user/checkout?cartId=${cartId}&userId=${userId}`;
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 <!-- Js Plugins -->
 <script src="../../js/jquery-3.3.1.min.js"></script>
 <script src="../../js/bootstrap.min.js"></script>

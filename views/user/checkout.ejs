@@ -1,0 +1,982 @@
+<%-include("../../views/partials/user/header") %>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/profileSection.css">
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: #000000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding-top: 20px;
+            transition: width 0.3s;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: #ffffff;
+            font-size: 16px;
+        }
+
+        .sidebar a:hover {
+            background-color: #6510DC;
+        }
+
+        /* Active tab styling */
+        .sidebar a.active {
+            background-color: #6510DC; /* Highlight color for active tab */
+            color: #ffffff;
+        }
+
+        .sidebar i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        /* Mobile view */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+            }
+
+            .sidebar a {
+                justify-content: center;
+                padding: 15px 0;
+            }
+
+            .sidebar a span {
+                display: none;
+            }
+
+            .sidebar i {
+                margin-right: 0;
+            }
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            color: #ffffff;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                margin-left: 60px;
+            }
+        }
+        
+    </style>
+
+    <style>
+    /* Progress Bar */
+    .progress-step {
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+    .progress-step.active i,
+    .progress-step.active span {
+        
+        font-weight: 600;
+    }
+    .progress-arrow {
+        
+        font-size: 1.2rem;
+        margin: 0 20px;
+    }
+
+    /* Address Card */
+    .address-card {
+        background-color: #eae2fc;
+        border-radius: 12px;
+    }
+
+    .address-card .form-check-input:checked + .form-check-label {
+        font-weight: 600;
+        color: #5B3F64;
+    }
+    .address-card .badge {
+        background-color: #5B3F64;
+        color: #FFFFFF;
+        padding: 5px 10px;
+        border-radius: 8px;
+    }
+
+    /* Add New Address Link */
+    .add-address {
+        font-weight: 500;
+        color: #c2bbc4;
+        transition: color 0.2s ease;
+    }
+    .add-address:hover {
+        color: #7a3bd3;
+        text-decoration: none;
+    }
+
+    /* Order Summary */
+    .order-summary {
+        background:#343a40;
+        border-radius: 12px;
+        position: sticky;
+        top: 20px;
+    }
+    .order-summary .btn-primary {
+        background: linear-gradient(90deg, #5B3F64, #3C1549);
+        border: none;
+        border-radius: 12px;
+        padding: 12px;
+        font-size: 1.1rem;
+        transition: transform 0.2s ease;
+    }
+    .order-summary .btn-primary:hover {
+        transform: scale(1.02);
+    }
+    .coupon-input .btn-outline-secondary {
+        border-radius: 0 5px 5px 0;
+        transition: background-color 0.2s ease;
+    }
+    .coupon-input .btn-outline-secondary:hover {
+        background-color: #5B3F64;
+        color: #FFFFFF;
+        border-color: #5B3F64;
+    }
+    .coupon-status {
+        color: #03d10d;
+        font-size: 0.85rem;
+        margin-top: 5px;
+    }
+    .applied-coupon-tag {
+        display: inline-flex;
+        align-items: center;
+        background-color: #e8f5e9;
+        padding: 4px 10px;
+        border-radius: 16px;
+        margin-top: 8px;
+        font-size: 0.85rem;
+    }
+    .applied-coupon-tag .coupon-code {
+        color: #2e7d32;
+        font-weight: 500;
+        margin-right: 8px;
+    }
+    .remove-coupon-sm {
+        color: #c62828;
+        cursor: pointer;
+        font-size: 0.8rem;
+        display: inline-flex;
+        align-items: center;
+    }
+    .view-coupons-link {
+        display: inline-block;
+        margin-top: 8px;
+        color: #5B3F64;
+        font-weight: 500;
+        text-decoration: underline;
+    }
+    .nice-select .list {
+    background-color: #000000;
+    }
+    .nice-select .option:hover, .nice-select .option.focus, .nice-select .option.selected.focus {
+    background-color: #707070; 
+    }
+    .nice-select {
+        background-color: #585858;
+    }
+    a {
+        text-decoration: none;
+    }
+    .text-muted {
+    color: #6c757d!important;
+    }
+    </style>
+
+
+<body>
+    <div class="sidebar">
+         <br><br><br>
+         <a href="#my-orders"><i class="fas fa-shopping-cart"></i><span>My Orders</span></a>
+         <a href="/user/userProfile" class="active"><i class="fas fa-user"></i><span>Profile Information</span></a>
+         <a href="/user/address"><i class="fas fa-map-marker-alt"></i><span>Manage Addresses</span></a>
+         <a href="/user/privacy"><i class="fas fa-lock"></i><span>Privacy Settings</span></a>
+         <a href="#my-coupons"><i class="fas fa-ticket-alt"></i><span>My Coupons</span></a>
+         <a href="#my-wallet"><i class="fas fa-wallet"></i><span>My Wallet</span></a>
+    </div>
+
+       
+        <!-- Main Section -->
+        <main class="container my-5">
+            <div class="row gx-5 gy-2">
+                <!-- Delivery Address Section Header -->
+                <div class="d-flex justify-content-between w-100 align-items-center" style="padding: 16px; border-radius: 10px;">
+                    <h4 class="fw-bold mb-0 text-white">Select Delivery Address</h4>
+                    <div class="d-flex justify-content-center align-items-center gap-3">
+                        <div class="progress-step">
+                            <i class="fas fa-shopping-cart text-muted me-1" style="font-size: 1rem;"></i>
+                            <span class="fw-medium" style="font-size: 0.8rem;">Cart</span>
+                        </div>
+                        <i class="fas fa-arrow-right progress-arrow text-muted"></i>
+                        <div class="progress-step active">
+                            <i class="fas fa-truck me-1" style="font-size: 0.9rem;"></i>
+                            <span style="font-size: 0.9rem;">Shipping</span>
+                        </div>
+                        <i class="fas fa-arrow-right progress-arrow text-muted"></i>
+                        <div class="progress-step">
+                            <i class="fas fa-credit-card text-muted me-1" style="font-size: 0.9rem;"></i>
+                            <span class="fw-medium" style="font-size: 0.8rem;">Payments</span>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Form wrapping the entire row -->
+                <form action="/user/checkout" method="post" id="checkoutForm">
+                    <div class="row gx-5 gy-2">
+                        <!-- Address Selection -->
+                        <div class="col-md-8">
+                            <% if (address.length > 0) { %>
+                                <% address.forEach((address) => { %>
+                                    <% address.details.forEach((detail, index) => { %>
+                                        <div class="card p-4 mb-4 border-0 shadow-sm address-card">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="selectedAddress" 
+                                                    id="address<%= detail._id %>" value="<%= detail._id %>" 
+                                                    <%= index === 0 ? 'checked' : '' %>>
+                                                <label class="form-check-label w-100" for="address<%= detail._id %>">
+                                                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                                        <div>
+                                                            <strong class="text-dark"><%= detail.name.toUpperCase() %></strong> 
+                                                            <span class="text-muted"><%= detail.phone %></span>
+                                                            <p class="mb-0 text-muted mt-1" style="font-size: 0.95rem; line-height: 1.4;">
+                                                                <%= detail.addressLine1 %>, <%= detail.addressLine2 %>,<br>
+                                                                <%= detail.city %>, <%= detail.state %> - <%= detail.pincode %>
+                                                                <% if (detail.landmark) { %>
+                                                                    <br>Landmark: <%= detail.landmark %>
+                                                                <% } %>
+                                                            </p>
+                                                            <% if (detail.altPhone) { %>
+                                                                <p class="mb-0 text-muted" style="font-size: 0.95rem;">
+                                                                    Alt Phone: <%= detail.altPhone %>
+                                                                </p>
+                                                            <% } %>
+                                                        </div>
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <span class="badge">
+                                                                <%= detail.addressType.charAt(0).toUpperCase() + detail.addressType.slice(1) %>
+                                                            </span>
+                                                            <div class="dropdown">
+                                                                <button class="btn btn-light border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                                                </button>
+                                                                <ul class="dropdown-menu">
+                                                                    <li>
+                                                                        <button class="btn edit-address-btn"
+                                                                            type="button"
+                                                                            data-id="<%= detail._id %>"
+                                                                            data-fullname="<%= detail.name %>"
+                                                                            data-phone="<%= detail.phone %>"
+                                                                            data-addressline1="<%= detail.addressLine1 %>"
+                                                                            data-addressline2="<%= detail.addressLine2 %>"
+                                                                            data-landmark="<%= detail.landmark %>"
+                                                                            data-city="<%= detail.city %>"
+                                                                            data-state="<%=detail.state %>"
+                                                                            data-zipcode="<%= detail.pincode %>"
+                                                                            data-altnumber="<%= detail.altNumber %>"
+                                                                            data-type="<%= detail.addressType %>"
+                                                                            data-index="<%= index %>"
+                                                                            data-bs-toggle="modal"
+                                                                            data-bs-target="#editAddressModal">
+                                                                            Edit
+                                                                        </button>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    <% }) %>
+                                <% }) %>
+                                <a href="#" data-bs-toggle="modal" class="d-block add-address text-decoration-none" id="addAddressLink" data-bs-target="#addAddressModal">
+                                    <i class="fas fa-plus me-2"></i>Add a new address
+                                </a>
+                            <% } else { %>
+                                <div class="text-center py-5">
+                                    <i class="fa-solid fa-map-location-dot fa-3x mb-3" style="color: #5B3F64;"></i>
+                                    <p class="fs-5 text-muted">No addresses found. Add a new address to get started!</p>
+                                    <a href="#" data-bs-toggle="modal" class="d-block add-address" id="addAddressLink" data-bs-target="#addAddressModal">
+                                        <i class="fas fa-plus me-2"></i>Add a new address
+                                    </a>
+                                </div>
+                            <% } %>
+                        </div>
+    
+                        <!-- Order Summary -->
+                        <div class="col-md-4">
+                            <div class="card p-3 shadow-sm border-0 order-summary">
+                                <h5 class="fw-bold text-white mb-4">Order Summary</h5>
+                                <% if (cart && cart.items && cart.items.length > 0) { %>
+    
+                                    <% let total = calculatedValues.cartTotal; %>
+                                    <% let deliveryCharge = calculatedValues.deliveryCharge; %>
+                                    <% let grandTotal = calculatedValues.grandTotal; %>
+    
+                                    <% cart.items.forEach(item => { %>
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <span class="text-white text-truncate" 
+                                                style="font-size: 0.95rem; max-width: 70%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                                <%= item.quantity %> x <%= item.productId.name %>
+                                            </span>
+                                            <span class="text-white fw-medium flex-shrink-0">
+                                                ₹ <%= (item.quantity * item.basePrice).toLocaleString('en-IN') %>
+                                            </span>
+                                        </div>
+                                    <% }) %>
+                        
+                                    <!-- Delivery Charges -->
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <span class="text-white" style="font-size: 0.95rem;">Delivery Charges</span>
+                                        <span class="<%= deliveryCharge ? 'text-danger' : 'text-success' %> flex-shrink-0">
+                                            <%= deliveryCharge ? `₹ ${deliveryCharge}` : 'Free' %>
+                                        </span>
+                                    </div>
+    
+                                    
+                                    
+                                    <hr class="my-2" style="border-color: #E0E0E0;">
+                        
+                                    <!-- Coupon Code -->                                   
+                        
+                                    <!-- Total Amount (Including GST and Delivery) -->
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold text-white" style="font-size: 1.2rem;">Total</span>
+                                        <span class="fw-bold text-white flex-shrink-0" style="font-size: 1.2rem;">
+                                            ₹ <%= grandTotal.toLocaleString('en-IN') %>
+                                        </span>
+                                    </div>
+                        
+                                    <input type="hidden" name="userId" value="<%= user._id %>">
+                                    <button type="submit" class="btn btn-light checkout-btn w-100 mt-4" id="proceedToPayment"
+                                        <%= (cart.items.length === 0 || address.length === 0) ? 'disabled' : '' %>>
+                                        Proceed to Payment
+                                    </button>
+                                <% } else { %>
+                                    <p class="text-white text-center fs-5">No items in your cart.</p>
+                                <% } %>
+                            </div>
+                        </div>                                        
+                    </div>
+                </form>
+            </div>
+    
+            
+            <!-- Add address Modal -->
+            <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content border-0 rounded-4">
+                        <div class="modal-header text-white" style="background-color: #32086e; height: 50px; padding-bottom: 20px;">
+                            <h5 class="modal-title fw-bold text-white" id="couponsModalLabel">Add Address</h5>
+                            <button type="button" class="btn-close" style="background-color: white;" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+            
+                        <form id="addAddressForm" class="p-4">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="addfullName" class="form-label required text-white">Full Name</label>
+                                    <input type="text" id="addfullName" name="addfullName" class="form-control">
+                                    <div id="addfullNameError" style="font-size: 0.8em; color: #ff0101;"></div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="addphone" class="form-label text-white">Phone Number</label>
+                                    <input type="tel" id="addphone" name="addphone" class="form-control" pattern="[0-9]{10}">
+                                    <div id="addphoneError" style="font-size: 0.8em; color: #ff0101;"></div>
+                                </div>
+                            </div>
+            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="addaddressLine1" class="form-label text-white">Address Line 1</label>
+                                    <input type="text" id="addaddressLine1" name="addaddressLine1" class="form-control">
+                                    <div id="addaddressLine1Error" style="font-size: 0.8em; color: #ff0101;"></div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="addaddressLine2" class="form-label text-white">Address Line 2 (Optional)</label>
+                                    <input type="text" id="addaddressLine2" name="addaddressLine2" class="form-control">
+                                </div>
+                            </div>
+            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="addlandmark" class="form-label text-white">Landmark (Optional)</label>
+                                    <input type="text" id="addlandmark" name="addlandmark" class="form-control">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="addcity" class="form-label required text-white">City</label>
+                                    <input type="text" id="addcity" name="addcity" class="form-control">
+                                    <div id="addcityError" style="font-size: 0.8em; color: #ff0101;"></div>
+                                </div>
+                            </div>
+            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="addstate" class="form-label required text-white">&nbsp;&nbsp;State</label>
+                                    <select id="addstate" name="addstate" class="form-select form-control-sm text-white">
+                                        <option value="" disabled selected>Select your state</option>
+                                        <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                        <option value="Assam">Assam</option>
+                                        <option value="Bihar">Bihar</option>
+                                        <option value="Chhattisgarh">Chhattisgarh</option>
+                                        <option value="Goa">Goa</option>
+                                        <option value="Gujarat">Gujarat</option>
+                                        <option value="Haryana">Haryana</option>
+                                        <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                        <option value="Jharkhand">Jharkhand</option>
+                                        <option value="Karnataka">Karnataka</option>
+                                        <option value="Kerala">Kerala</option>
+                                        <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                        <option value="Maharashtra">Maharashtra</option>
+                                        <option value="Manipur">Manipur</option>
+                                        <option value="Meghalaya">Meghalaya</option>
+                                        <option value="Mizoram">Mizoram</option>
+                                        <option value="Nagaland">Nagaland</option>
+                                        <option value="Odisha">Odisha</option>
+                                        <option value="Punjab">Punjab</option>
+                                        <option value="Rajasthan">Rajasthan</option>
+                                        <option value="Sikkim">Sikkim</option>
+                                        <option value="Tamil Nadu">Tamil Nadu</option>
+                                        <option value="Telangana">Telangana</option>
+                                        <option value="Tripura">Tripura</option>
+                                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                        <option value="Uttarakhand">Uttarakhand</option>
+                                        <option value="West Bengal">West Bengal</option>
+                                    </select>
+                                    <div id="addstateError" style="font-size: 0.8em; color: #ff0101;"></div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="addzipCode" class="form-label required text-white">Zip Code</label>
+                                    <input type="text" id="addzipCode" name="addzipCode" class="form-control" placeholder="e.g., 123456" pattern="[0-9]{6}">
+                                    <div id="addzipCodeError" style="font-size: 0.8em; color: #ff0101;"></div>
+                                </div>
+                            </div>
+            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="addcountry" class="form-label required text-white">Country</label>
+                                    <select id="addcountry" name="addcountry" class="form-select form-control-sm">
+                                        <option value="India" selected>India</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="addaltNumber" class="form-label text-white">Alternate Phone Number (Optional)</label>
+                                    <input type="tel" id="addaltNumber" name="addaltNumber" class="form-control" pattern="[0-9]{10}">
+                                </div>
+                            </div>
+            
+                            <div class="row mt-3">
+                                <div class="col-md-6 d-flex gap-2">
+                                    <button type="submit" class="btn btn-dark">Save Address</button>&nbsp;&nbsp;&nbsp;
+                                    <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
+                                </div>
+                                <div class="col-md-6 d-flex gap-3 align-items-center justify-content-end">
+                                    <div class="form-check">
+                                        <input type="radio" id="home" name="addaddressType" value="home" class="form-check-input">
+                                        <label for="home" class="form-check-label">Home</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="radio" id="work" name="addaddressType" value="work" class="form-check-input">
+                                        <label for="work" class="form-check-label">Work</label>
+                                    </div>
+                                    <div id="addaddressTypeError" style="font-size: 0.8em; color: #ff0101;"></div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Edit Address Modal -->
+            <div class="modal fade" id="editAddressModal" tabindex="-1" aria-labelledby="editAddressModal" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content border-0 rounded-4">
+                        <div class="modal-header text-white" style="background-color: #32086e; height: 50px; padding-bottom: 20px;">
+                            <h5 class="modal-title fw-bold text-white" id="editAddressModalLabel">Edit Address</h5>
+                            <button type="button" class="btn-close" style="background-color: white;" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+    
+                        <form id="editAddressForm" class="p-4">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="editfullName" class="form-label required text-white">Full Name</label>
+                                    <input type="hidden" name="editAddressId" id="editAddressId">
+                                    <input type="hidden" name="index" id="index">
+                                    <input type="text" id="editfullName" name="editfullName" class="form-control">
+                                    <div id="editfullNameError" style="font-size: 0.8em; color: #ff0101;"></div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="editphone" class="form-label text-white">Phone Number</label>
+                                    <input type="tel" id="editphone" name="editphone" class="form-control" pattern="[0-9]{10}">
+                                    <div id="editphoneError" style="font-size: 0.8em; color: #ff0101;"></div>
+                                </div>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="editaddressLine1" class="form-label text-white">Address Line 1</label>
+                                    <input type="text" id="editaddressLine1" name="editaddressLine1" class="form-control">
+                                    <div id="editaddressLine1Error" style="font-size: 0.8em; color: #ff0101;"></div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="editaddressLine2" class="form-label text-white">Address Line 2 (Optional)</label>
+                                    <input type="text" id="editaddressLine2" name="editaddressLine2" class="form-control">
+                                </div>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="editlandmark" class="form-label text-white">Landmark (Optional)</label>
+                                    <input type="text" id="editlandmark" name="editlandmark" class="form-control">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="editcity" class="form-label required text-white">City</label>
+                                    <input type="text" id="editcity" name="editcity" class="form-control">
+                                    <div id="editcityError" style="font-size: 0.8em; color: #ff0101;"></div>
+                                </div>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="editstate" class="form-label required text-white">&nbsp;&nbsp;State</label>
+                                    <select id="editstate" name="editstate" class="form-select form-control-sm text-white">
+                                        <option value="" disabled>Select State</option>
+                                        <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                        <option value="Assam">Assam</option>
+                                        <option value="Bihar">Bihar</option>
+                                        <option value="Chhattisgarh">Chhattisgarh</option>
+                                        <option value="Goa">Goa</option>
+                                        <option value="Gujarat">Gujarat</option>
+                                        <option value="Haryana">Haryana</option>
+                                        <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                        <option value="Jharkhand">Jharkhand</option>
+                                        <option value="Karnataka">Karnataka</option>
+                                        <option value="Kerala">Kerala</option>
+                                        <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                        <option value="Maharashtra">Maharashtra</option>
+                                        <option value="Manipur">Manipur</option>
+                                        <option value="Meghalaya">Meghalaya</option>
+                                        <option value="Mizoram">Mizoram</option>
+                                        <option value="Nagaland">Nagaland</option>
+                                        <option value="Odisha">Odisha</option>
+                                        <option value="Punjab">Punjab</option>
+                                        <option value="Rajasthan">Rajasthan</option>
+                                        <option value="Sikkim">Sikkim</option>
+                                        <option value="Tamil Nadu">Tamil Nadu</option>
+                                        <option value="Telangana">Telangana</option>
+                                        <option value="Tripura">Tripura</option>
+                                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                        <option value="Uttarakhand">Uttarakhand</option>
+                                        <option value="West Bengal">West Bengal</option>
+                                    </select>
+                                    <div id="editstateError" style="font-size: 0.8em; color: #ff0101;"></div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="editzipCode" class="form-label required text-white">Zip Code</label>
+                                    <input type="text" id="editzipCode" name="editzipCode" class="form-control" placeholder="e.g., 123456" pattern="[0-9]{6}">
+                                    <div id="editzipCodeError" style="font-size: 0.8em; color: #ff0101;"></div>
+                                </div>
+                            </div>
+    
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="editcountry" class="form-label required text-white">&nbsp;&nbsp;&nbsp;Country</label>
+                                    <select id="editcountry" name="editcountry" class="form-select form-control-sm">
+                                        <option value="India" selected>India</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="editaltNumber" class="form-label text-white">Alternate Phone Number (Optional)</label>
+                                    <input type="tel" id="editaltNumber" name="editaltNumber" class="form-control" pattern="[0-9]{10}">
+                                </div>
+                            </div>
+    
+                            <div class="row mt-3">
+                                <div class="col-md-6 d-flex gap-2">
+                                    <button type="submit" class="btn btn-dark text-white">Update Address</button>&nbsp;&nbsp;&nbsp;
+                                    <button type="button" class="btn btn-dark text-white" data-bs-dismiss="modal">Cancel</button>
+                                </div>
+                                <div class="col-md-6 d-flex gap-3 align-items-center justify-content-end">
+                                    <div class="form-check">
+                                        <input type="radio" id="editHome" name="editaddressType" value="home" class="form-check-input">
+                                        <label for="edithome" class="form-check-label">Home</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="radio" id="editWork" name="editaddressType" value="work" class="form-check-input">
+                                        <label for="editwork" class="form-check-label">Work</label>
+                                    </div>
+                                    <div id="editaddressTypeError" style="font-size: 0.8em; color: #ff0101;"></div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+    
+        </main>
+    
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+    
+                const editButtons = document.querySelectorAll(".edit-address-btn");
+                editButtons.forEach((btn) => {
+                    btn.addEventListener("click", (event) => {
+                        event.preventDefault();
+                        document.getElementById("editAddressId").value = btn.dataset.id;
+                        document.getElementById("index").value = btn.dataset.index;
+                        document.getElementById("editfullName").value = btn.dataset.fullname;
+                        document.getElementById("editphone").value = btn.dataset.phone;
+                        document.getElementById("editaddressLine1").value = btn.dataset.addressline1;
+                        document.getElementById("editaddressLine2").value = btn.dataset.addressline2;
+                        document.getElementById("editlandmark").value = btn.dataset.landmark;
+                        document.getElementById("editcity").value = btn.dataset.city;
+                        document.getElementById("editstate").value = btn.dataset.state;
+                        document.getElementById("editzipCode").value = btn.dataset.zipcode;
+                        document.getElementById("editaltNumber").value = btn.dataset.altnumber;
+    
+                    if (btn.dataset.type === "home") {
+                        document.getElementById("editHome").checked = true;
+                    } else if (btn.dataset.type === "work") {
+                        document.getElementById("editWork").checked = true;
+                    }
+                    });
+                });
+    
+    
+                document.getElementById("addAddressForm").addEventListener('submit', async (event) => {
+                    event.preventDefault();
+    
+                    const fullName = document.getElementById('addfullName').value;
+                    const addressLine1 = document.getElementById('addaddressLine1').value;
+                    const addressLine2 = document.getElementById('addaddressLine2').value;
+                    const phone = document.getElementById('addphone').value;
+                    const landmark = document.getElementById('addlandmark').value;
+                    const city = document.getElementById('addcity').value;
+                    const state = document.getElementById('addstate').value;
+                    const country = document.getElementById('addcountry').value;
+                    const altNumber = document.getElementById('addaltNumber').value;
+                    const zipCode = document.getElementById('addzipCode').value;
+                    const addressType = document.querySelector('input[name="addaddressType"]:checked')?.value;
+                    
+    
+                    const errors = {
+                        fullName: document.getElementById("addfullNameError"),
+                        addressLine1: document.getElementById("addaddressLine1Error"),
+                        phone: document.getElementById("addphoneError"),
+                        city: document.getElementById("addcityError"),
+                        state: document.getElementById("addstateError"),
+                        zipCode: document.getElementById("addzipCodeError"),
+                        addressType: document.getElementById("addaddressTypeError"),
+                    };
+    
+                    Object.values(errors).forEach((el) => el.innerText = "");
+    
+                    let hasError = false;
+    
+                    if (!fullName) {
+                        errors.fullName.innerText = "Full name is required";
+                        hasError = true;
+                    } else if (fullName.length < 3) {
+                        errors.fullName.innerText = "Full name must be at least 3 characters";
+                        hasError = true;
+                    }
+    
+                    if (!addressLine1) {
+                        errors.addressLine1.innerText = "Address Line 1 is required";
+                        hasError = true;
+                    }
+    
+                    if (!phone) {
+                        errors.phone.innerText = "Phone number is required";
+                        hasError = true;
+                    } else if (!/^\d{10}$/.test(phone)) {
+                        errors.phone.innerText = "Phone number must be 10 digits";
+                        hasError = true;
+                    }
+    
+                    if (altNumber && !/^\d{10}$/.test(altNumber)) {
+                        errors.phone.innerText = "Alternate number must be 10 digits";
+                        hasError = true;
+                    }
+    
+                    if (!city) {
+                        errors.city.innerText = "City is required";
+                        hasError = true;
+                    }
+    
+                    if (!state) {
+                        errors.state.innerText = "State is required";
+                        hasError = true;
+                    }
+    
+                    if (!zipCode) {
+                        errors.zipCode.innerText = "Zip Code is required";
+                        hasError = true;
+                    } else if (!/^\d{5,6}$/.test(zipCode)) {
+                        errors.zipCode.innerText = "Zip Code must be 5-6 digits";
+                        hasError = true;
+                    }
+    
+                    if (!addressType) {
+                        errors.addressType.innerText = "Address type is required";
+                        hasError = true;
+                    }
+    
+                    if (hasError) return;
+    
+                    const formData = {
+                        fullName, phone, addressLine1, addressLine2, landmark, city, state, country, altNumber, zipCode, addressType,
+                    }
+    
+                    console.log("done");
+    
+                    try {
+                        const response = await fetch('/user/shoppingAddress', {
+                            method : 'POST',
+                            headers : {'Content-Type' : 'application/json'},
+                            body : JSON.stringify(formData)
+                        });
+    
+                        const data = await response.json();
+    
+                        if (!response.ok) {
+                            throw new Error(data.error || "Something went wrong");
+                        }
+    
+                        Swal.fire({
+                            icon: "success",
+                            text: data.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(()=>{                            
+                            window.location.reload()
+                        })
+    
+                    } catch (error) {
+                        console.log(error);
+                        Swal.fire({
+                        icon: "error",
+                        text: "An error occurred. Please try again.",
+                    })
+                    }
+                });
+    
+    
+                document.getElementById("editAddressForm").addEventListener('submit', async (event) => {
+                    event.preventDefault();
+    
+                    const fullName = document.getElementById('editfullName').value;
+                    const addressLine1 = document.getElementById('editaddressLine1').value;
+                    const addressLine2 = document.getElementById('editaddressLine2').value;
+                    const phone = document.getElementById('editphone').value;
+                    const landmark = document.getElementById('editlandmark').value;
+                    const city = document.getElementById('editcity').value;
+                    const state = document.getElementById('editstate').value;
+                    const country = document.getElementById('editcountry').value;
+                    const altNumber = document.getElementById('editaltNumber').value;
+                    const zipCode = document.getElementById('editzipCode').value;
+                    const addressType = document.querySelector('input[name="editaddressType"]:checked')?.value;
+                    const index = document.getElementById('index').value;
+    
+                    const errors = {
+                        fullName: document.getElementById("editfullNameError"),
+                        addressLine1: document.getElementById("editaddressLine1Error"),
+                        phone: document.getElementById("editphoneError"),
+                        city: document.getElementById("editcityError"),
+                        state: document.getElementById("editstateError"),
+                        zipCode: document.getElementById("editzipCodeError"),
+                        addressType: document.getElementById("editaddressTypeError"),
+                    };
+    
+                    Object.values(errors).forEach((el) => el.innerText = "");
+    
+                    let hasError = false;
+    
+                    if (!fullName) {
+                        errors.fullName.innerText = "Full name is required";
+                        hasError = true;
+                    } else if (fullName.length < 3) {
+                        errors.fullName.innerText = "Full name must be at least 3 characters";
+                        hasError = true;
+                    }
+    
+                    if (!addressLine1) {
+                        errors.addressLine1.innerText = "Address Line 1 is required";
+                        hasError = true;
+                    }
+    
+                    if (!phone) {
+                        errors.phone.innerText = "Phone number is required";
+                        hasError = true;
+                    } else if (!/^\d{10}$/.test(phone)) {
+                        errors.phone.innerText = "Phone number must be 10 digits";
+                        hasError = true;
+                    }
+    
+                    if (altNumber && !/^\d{10}$/.test(altNumber)) {
+                        errors.phone.innerText = "Alternate number must be 10 digits";
+                        hasError = true;
+                    }
+    
+                    if (!city) {
+                        errors.city.innerText = "City is required";
+                        hasError = true;
+                    }
+    
+                    if (!state) {
+                        errors.state.innerText = "State is required";
+                        hasError = true;
+                    }
+    
+                    if (!zipCode) {
+                        errors.zipCode.innerText = "Zip Code is required";
+                        hasError = true;
+                    } else if (!/^\d{5,6}$/.test(zipCode)) {
+                        errors.zipCode.innerText = "Zip Code must be 5-6 digits";
+                        hasError = true;
+                    }
+    
+                    if (!addressType) {
+                        errors.addressType.innerText = "Address type is required";
+                        hasError = true;
+                    }
+    
+                    if (hasError) return;
+    
+                    const formData = {
+                        fullName, phone, addressLine1, addressLine2, landmark, city, state, country, altNumber, zipCode, addressType, index
+                    }
+    
+                    console.log("done");
+    
+                    try {
+                        const response = await fetch('/user/shoppingAddress', {
+                            method : 'PUT',
+                            headers : {'Content-Type' : 'application/json'},
+                            body : JSON.stringify(formData)
+                        });
+    
+                        const data = await response.json();
+    
+                        if (!response.ok) {
+                            throw new Error(data.error || "Something went wrong");
+                        }
+    
+                        Swal.fire({
+                            icon: "success",
+                            text: data.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(()=>{  
+                            window.location.reload();
+                        })
+    
+                    } catch (error) {
+                        console.log(error);
+                        Swal.fire({
+                        icon: "error",
+                        text: "An front end error occurred. Please try again.",
+                    })
+                    }
+                });
+                
+                // const grandTotal = <%= calculatedValues.grandTotal %>;
+                let currentDiscount = 0;
+                let currentCoupon = null;
+                
+                const addressInputs = document.querySelectorAll('input[name="selectedAddress"]');
+                const proceedButton = document.querySelector('#proceedToPayment');
+                const checkoutForm = document.getElementById('checkoutForm');
+                const totalPriceElement = document.querySelector('.order-summary .fw-bold.text-dark:last-child');
+                
+                // Coupon elements
+                const applyButton = document.querySelector('.apply-coupon');
+                const couponInput = document.getElementById('coupon');
+                const couponStatus = document.getElementById('couponStatus');
+                const appliedCoupon = document.getElementById('appliedCoupon');
+                const removeCouponBtn = document.querySelector('.remove-coupon-sm');
+                const availableCouponLink = document.getElementById('availableCouponLink');
+    
+                function toggleProceedButton() {
+                    if (addressInputs.length === 0) {
+                        proceedButton.disabled = true;
+                    } else {
+                        const isAnySelected = Array.from(addressInputs).some(input => input.checked);
+                        proceedButton.disabled = !isAnySelected;
+                    }
+                }
+        
+                function updateTotalPrice() {
+                    if (totalPriceElement) {
+                        const discountedTotal = grandTotal - currentDiscount;
+                        totalPriceElement.textContent = `₹ ${discountedTotal.toLocaleString('en-IN')}`;
+                    }
+                }
+    
+               
+                // Event listeners
+                addressInputs.forEach(input => {
+                    input.addEventListener('change', toggleProceedButton);
+                });
+        
+                toggleProceedButton();
+        
+        
+                checkoutForm.addEventListener('submit', (e) => {
+                    const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+                    if (!selectedAddress) {
+                        e.preventDefault();
+                        alert('Please select a delivery address');
+                    }
+                });
+            });
+        </script>
+    </body>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+    <!-- Js Plugins -->
+    <script src="../../js/jquery-3.3.1.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/jquery.nice-select.min.js"></script>
+    <script src="../../js/jquery.nicescroll.min.js"></script>
+    <script src="../../js/jquery.magnific-popup.min.js"></script>
+    <script src="../../js/jquery.countdown.min.js"></script>
+    <script src="../../js/jquery.slicknav.js"></script>
+    <script src="../../js/mixitup.min.js"></script>
+    <script src="../../js/owl.carousel.min.js"></script>
+    <script src="../../js/main.js"></script>
+</body>
+</html>
+
+
+
+
+
+    

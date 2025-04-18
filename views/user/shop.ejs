@@ -2,6 +2,7 @@
 <!-- <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css"> -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+
     <style>
         .card {
             background-color: #000000;
@@ -144,12 +145,32 @@
         }
         
         .labellink{
+        position: relative;
             opacity: 0;
             background-color: red;
-            width: 300px;
+            width: 200px;
             height: 250px;
         }
-
+    .wishlist-btn{
+        position: absolute;
+        
+        top: 5px;
+        right: 45px;
+    }
+    ul {
+    list-style-type: none;
+    }
+    .add-to-wishlist-btn{
+        
+        width: 39px;
+        height: 39px;
+        padding: 0px;
+    }
+    .to-wishlist-btn{
+        width: 39px;
+        height: 39px;
+        padding: 0px;
+    }
     </style>
 
     <!-- Breadcrumb Section Begin -->
@@ -287,10 +308,29 @@
                                     <a href="/user/loadProductsDetailsPage/<%=element._id %>">
                                         <div class="product__item__pic set-bg" data-setbg="<%=element.productImage[2]%>">
                                         <div class="labellink">New</div>
-                                        <ul class="product__hover">
-                                            <li><a href="#"><i class="wishlist bi bi-suit-heart-fill fs-3"></i></a></li>                                    
-                                        </ul>
                                     </a>
+                                    <ul class="wishlist-btn">
+                                    <li>
+                                      <% if (user) { const isWishlisted = wishlistProductIds && wishlistProductIds.includes(element._id.toString());%>
+                                      
+                                        <button 
+                                          class="btn position-absolute add-to-wishlist-btn"
+                                          style="background-color: rgba(255, 255, 255, 0.9);" 
+                                          data-userId="<%= user?._id %>" 
+                                          data-productId="<%= element?._id %>" 
+                                          data-is-wishlisted="<%= isWishlisted ? 'true' : 'false' %>">
+                                          <i class="<%= isWishlisted ? 'wishlist2' : 'wishlist' %> bi bi-suit-heart-fill fs-3"></i>
+                                        </button>
+                                      <% } else { %>
+                                        <button 
+                                          class="btn position-absolute to-wishlist-btn" 
+                                          style="background-color: rgba(255, 255, 255, 0.9);">
+                                          <i class="wishlist bi bi-suit-heart-fill fs-3"></i>
+                                        </button>
+                                      <% } %>
+                                    </li>
+                                  </ul>
+                                    
                                         
                                     </div>
                                 
@@ -349,6 +389,106 @@
         });
 
     </script>
-   
+
+<script>
+
+
+    document.querySelectorAll('.to-wishlist-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        Swal.fire({
+            icon: 'warning',
+            text: 'Please log in to add to wishlist',
+            showConfirmButton: true,
+            confirmButtonText: 'okay'
+        })
+    });
+});
+
+
+document.querySelectorAll('.add-to-wishlist-btn').forEach(btn => {
+    const icon = btn.querySelector('i');
+
+    // On load: set heart based on data-is-wishlisted
+    if (btn.dataset.isWishlisted === 'true') {
+        icon.classList.remove('wishlist');
+        icon.classList.add('wishlist2');
+    } else {
+        icon.classList.remove('wishlist2');
+        icon.classList.add('wishlist');
+    }
+
+    btn.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        const userId = btn.dataset.userid;
+        const productId = btn.dataset.productid;
+
+        const productDetails = { userId, productId };
+
+        try {
+            const response = await fetch('/user/wishlist', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(productDetails)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                Swal.fire({
+                    icon: 'warning',
+                    text: data.error || 'Something went wrong',
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            } else {
+                const isCurrentlyWishlisted = btn.dataset.isWishlisted === 'true';
+
+                if (isCurrentlyWishlisted) {
+                                        
+                    icon.classList.remove('wishlist2');
+                    icon.classList.add('wishlist');
+                    btn.dataset.isWishlisted = 'false';
+
+                    Swal.fire({
+                        icon: 'info',
+                        text: 'Removed from wishlist',
+                        showConfirmButton: true,
+                        cancelButtonText: 'Continue Shopping'
+                    });
+                } else {
+                    
+                    icon.classList.remove('wishlist');
+                    icon.classList.add('wishlist2');
+                    btn.dataset.isWishlisted = 'true';
+
+                    Swal.fire({
+                        icon: 'success',
+                        text: 'Added to wishlist',
+                        showConfirmButton: true,
+                        confirmButtonText: 'Go to wishlist',
+                        showCancelButton: true,
+                        cancelButtonText: 'Continue Shopping'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '/user/wishlist';
+                        }
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('Error toggling wishlist:', error);
+            Swal.fire({
+                icon: 'error',
+                text: 'An error occurred',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+    });
+});
+
+
+   </script>
 
     <%-include("../../views/partials/user/footer") %>

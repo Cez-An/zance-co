@@ -302,7 +302,7 @@
                     <% if (element.isBlocked===false) { %>
                         <td>
                             <button class="status-btn btn btn-danger"
-                                onclick="blockCustomer('<%=element._id%>')">Block</button>
+                                onclick="blockProduct('<%=element._id%>')">Block</button>
                         </td>
                         <% } else { %>
                             <td><button class="status-btn btn btn-success"
@@ -343,6 +343,15 @@
                 document.querySelector('.sidebar').classList.toggle('active');
             }
         </script>
+        <script>
+            function blockProduct(id) {
+              window.location.href = `/admin/blockProduct?id=${id}`;
+            }
+            function unblockCustomer(id) {
+              window.location.href = `/admin/unBlockProduct?id=${id}`;
+            }
+          </script>
+          
 </body>
 
 </html>

@@ -1,0 +1,296 @@
+body {
+    background-color: #000000;
+}
+
+
+.container-fluid {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.buy-now-btn, .add-to-cart-btn {
+    background-color: #6c30b9; 
+    border: none;
+    font-size: 0.8em;
+    transition: all 0.3s ease-in-out;
+}
+
+.buy-now-btn:hover, .add-to-cart-btn:hover {
+    background-color: #884cd6;
+}
+
+.nav-tabs {
+    border-bottom: 2px solid #ddd;
+}
+
+.nav-tabs .nav-link {
+    color: #555;
+    font-weight: bold;
+}
+
+.nav-tabs .nav-link.active {
+    color: #000;
+    border-bottom: 2px solid #007bff;
+    border-radius: 8px 8px 0 0;
+}
+
+.card {
+    border-radius: 10px;
+    background: #ffffff;
+    box-shadow: none;
+}
+
+.card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.product-details .card, #product-container .card {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+}
+
+.thumbnail {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 8px;
+}
+
+.thumbnail:hover {
+    transform: scale(1.01);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.zoom-container {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.zoom-image {
+    transition: transform 0.1s ease;
+    cursor: zoom-in;
+}
+
+.zoom-lens {
+    position: absolute;
+    border: 1px solid #ddd;
+    background: rgba(255, 255, 255, 0.184);
+    pointer-events: none;
+    display: none;
+    width: 150px;
+    height: 150px;
+}
+
+.color-btn.active {
+    background-color: #6c757d;
+    color: white;
+    border-color: #6c757d;
+}
+
+.breadcrumb {
+    font-size: 0.8em;
+}
+
+.product-img {
+    width: 100%;
+    height: 150px;
+    object-fit: contain;
+}
+
+.badge {
+    font-size: 0.8rem;
+}
+
+.form-range, #priceRange {
+    width: 100%;
+}
+
+
+
+.pagination .page-link {
+    color: #3C1549;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #7a1ba9;
+    border-color: #7a1ba9;
+}
+
+.pagination .page-link:hover {
+    background-color: #7a1ba9;
+    color: white;
+}
+
+footer {
+    background-color: #3B3389;
+}
+
+/* Custom Range Slider Styling */
+
+
+
+.variant-btn {
+    padding: 5px 15px;
+    margin: 5px;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.variant-btn.active {
+    border-color: #4D44AD;
+    background: #E0DBFC;
+    color: #4D44AD;
+}
+.variant-btn:hover:not(.active) {
+    border-color: #9c3ec8;
+}
+.color-swatch {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+.image-upload-slot {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.image-upload-dropzone {
+    text-align: center;
+    color: #666;
+}
+
+.image-preview {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.image-preview.filled {
+    display: block;
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.remove-image-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+
+input[type="range"]::-webkit-slider-thumb {
+    pointer-events: all;
+    position: relative;
+    z-index: 1;
+}
+input[type="range"] {
+    pointer-events: none;
+}
+
+.form-range {
+    margin-top: 2rem;
+}
+
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 8px;
+    background: transparent;
+    pointer-events: none;
+    position: relative;
+    z-index: 1;
+}
+
+/* Track styles (Chrome, Safari) */
+input[type="range"]::-webkit-slider-runnable-track {
+    height: 8px;
+    background: #dee2e6; /* default track */
+    border-radius: 5px;
+    z-index: 3;
+}
+
+/* Thumb styles */
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #5B3F64; /* green thumb */
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    pointer-events: all;
+    position: relative;
+    z-index: 3;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+/* First slider (min range) - shows track color */
+.range-1::-webkit-slider-runnable-track {
+    height: 8px;
+    background: #5B3F64; /* Your colored track */
+    border-radius: 5px;
+}
+
+.range-1::-moz-range-track {
+    height: 8px;
+    background: #5B3F64;
+    border-radius: 5px;
+}
+
+.range-2::-webkit-slider-runnable-track {
+    height: 8px;
+    background: transparent !important;
+    border-radius: 5px;
+}
+
+.range-2::-moz-range-track {
+    height: 8px;
+    background: transparent !important;
+    border-radius: 5px;
+}
+
+
+input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: #4caf50;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    pointer-events: all;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}

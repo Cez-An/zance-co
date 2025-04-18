@@ -5,6 +5,7 @@ import profileController from '../controllers/user/profileController.js'
 import uploads from '../helpers/multer.js'
 import cartControlller from '../controllers/user/cartControlller.js'
 import checkoutController from "../controllers/user/checkoutController.js";
+import wishlistController from "../controllers/user/wishlistController.js"
 
 const router = express.Router();
 
@@ -76,13 +77,15 @@ router.delete('/cart', cartControlller.deleteFromcart);
 
 // payment and checkout routes
 router.get('/checkout', checkoutController.loadCheckout);
-// router.post('/checkout', checkoutController.checkoutDetails);
+router.post('/checkout', checkoutController.checkoutDetails);
 router.post('/shoppingAddress', checkoutController.addShoppingAddress);
 router.put('/shoppingAddress', checkoutController.editshoppingAddress);
 
 // wishlist routes
-// router.get('/wishlist', wishlistController.getWishlist);
-// router.post('/wishlist', wishlistController.addToWishlist);
-// router.delete('/wishlist', wishlistController.removeFromWishlist);
+router.get('/wishlist',userAuth.checkStatus, wishlistController.getWishlist);
+router.post('/wishlist', wishlistController.toggleWishlist);
+router.delete('/wishlist', wishlistController.removeFromWishlist);
+router.post('/wishlist-to-cart',wishlistController.wishlistToCart)
+
 
 export default router;

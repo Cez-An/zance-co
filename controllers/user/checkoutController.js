@@ -104,8 +104,18 @@ const editshoppingAddress = async (req,res) =>{
     }
 }
 
+const checkoutDetails = async (req,res) => {
+    const {selectedAddress} = req.body
+
+    req.session.deliveryAddress = selectedAddress;
+
+    res.redirect('/payments')
+}
+
+
 export default {
     loadCheckout,
     addShoppingAddress,
     editshoppingAddress,
+    checkoutDetails,
 }

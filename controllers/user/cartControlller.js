@@ -5,7 +5,7 @@ import Address from "../../models/addressSchema.js";
 import Order from "../../models/orderSchema.js"
 import STATUS_CODE from "../../helpers/statusCode.js";
 import Category from "../../models/categorySchema.js";
-
+import Wishlist from "../../models/wishListSchema.js"
 
 const loadCart = async (req, res) => {
     try {
@@ -75,17 +75,15 @@ const addItemToCart = async (req, res) => {
             productImage: product.productImage[0]
         };
 
-        // First attempt to update existing item in cart
         const cart = await Cart.findOneAndUpdate(
             { userId, 'items.productId': product._id},
             {
                 $inc: { 'items.$.quantity': quantity },
-                $set: { 'items.$.basePrice': basePrice }  // Changed price to basePrice
+                $set: { 'items.$.basePrice': basePrice }  
             },
             { new: true }
         );
 
-        // If item doesn't exist in cart, add new item
         if (!cart) {
             await Cart.findOneAndUpdate(
                 { userId },
@@ -95,7 +93,7 @@ const addItemToCart = async (req, res) => {
         }
 
         await Promise.all([
-            // Wishlist.findOneAndDelete({ product: productId }),
+            Wishlist.findOneAndDelete({ product: productId }),
             User.findByIdAndUpdate(userId, { $set: { cart: cart?._id } })
         ]);
 

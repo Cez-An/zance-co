@@ -1,55 +1,87 @@
 import mongoose from "mongoose";
+const {Schema} = mongoose;
 
-const Schema = mongoose.Schema;
-
-const OrderSchema = new Schema(
-  {
-    orderId: { type: String, required: true, unique: true },
-    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    status: {
-      type: String,
-      enum: ["pending", "processing", "shipped", "delivered", "cancelled"],
-      default: "pending",
-    },
-
-    shippingAddress: {
-      type: Schema.Types.ObjectId,
-      ref: "Address",
-      required: true,
-    },
-
-    items: [
-      {
-        productId: {
-          type: Schema.Types.ObjectId,
-          ref: "Product",
-          required: true,
-        },
-        productName: { type: String, required: true },
-        quantity: { type: Number, required: true },
-        price: { type: Number, required: true },
-        total: { type: Number, required: true },
-      },
-    ],
-
-    shippingCost: { type: Number, required: false },
-    tax: { type: Number, required: true },
-    totalAmount: { type: Number, required: true },
-
-    paymentInfo: {
-      method: { type: String, required: true },
-      transactionId: { type: String },
-      paymentStatus: {
+const orderSchema = new Schema({
+    orderId: {
         type: String,
-        enum: ["paid", "unpaid", "failed", "refunded"],
-        default: "unpaid",
-      },
     },
-  },
-  {
-    timestamps: true,
-  }
-);
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+    },
+    product: {
+        type: Schema.Types.ObjectId,
+        ref: "Products",
+        required: true
+    },
+    quantity: {
+        type: Number,
+        required: true,
+    },
+    basePrice : {
+        type : Number
+    },
+    price: {
+        type: Number,
+        required: true,
+    },
+    discountPrice: {
+        type: Number,
+        required: true,
+    },
+    discount: {
+        type: Number,
+        default: 0,
+    },
+    address: {
+        type: Schema.Types.ObjectId,
+        ref: 'Address',
+        required: true
+    },
+    paymentStatus : {
+        type: String,
+        required : true,
+        enum: ['Pending', 'Paid','Failed']
+    },
+    status : {
+        type : String,
+        enum: ['Pending', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled','Returned'] 
+    },
+    paymentId : {
+        type: String,
+    },
+    cancelReason : {
+        type : String
+    },
+    coupon : {
+        type : Number
+    },
+    paymentMethod: {
+        type: String,
+        enum: ['cod', 'card', 'wallet', 'netbanking']
+    },
+    orderItemCount: { 
+        type: Number,
+        required: true 
+    },
+    delivery : {
+        type : Number
+    },
+    statusHistory: [{
+        status: { 
+            type: String,
+            required: true,
+            enum: ['Pending', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled','Returned'] 
+        },
+        timestamp: { 
+            type: Date, 
+            default: Date.now 
+        }
+    }],
+}, { timestamps: true });
 
-const Order = mongoose.model("Order", OrderSchema);
+
+
+const Order = mongoose.model("Order", orderSchema)
+
 export default Order;

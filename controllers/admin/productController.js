@@ -358,10 +358,8 @@ const updateProduct = async (req, res) => {
       brand,
     } = req.body;
 
-    // Set status based on visibilityStatus
     let status = visibilityStatus === 'Active' ? false : true;
-
-    // Find the existing product
+    
     const existingProduct = await Product.findById(id);
     if (!existingProduct) {
       return res.status(404).json({
@@ -370,25 +368,22 @@ const updateProduct = async (req, res) => {
       });
     }
 
-    // Initialize imageUrls with existing images (Cloudinary URLs)
-    let imageUrls = existingProduct.productImage || ['', '', '', '']; // Ensure 4 slots, empty if missing
-
-    // Handle new image uploads from Cloudinary
+    let imageUrls = existingProduct.productImage || ['', '', '', '']; 
+  
     if (req.files && req.files.length > 0) {
-      // Map uploaded files to their slots
+      
       req.files.forEach((file) => {
-        // Extract slot index from fieldname (e.g., variantImages[0])
+       
         const match = file.fieldname.match(/variantImages\[(\d)\]/);
         if (match) {
           const slot = parseInt(match[1]);
           if (slot >= 0 && slot < 4) {
-            imageUrls[slot] = file.path; // Cloudinary URL
+            imageUrls[slot] = file.path; 
           }
         }
       });
     }
 
-    // Ensure exactly 4 images
     if (imageUrls.length !== 4 || imageUrls.some(url => !url)) {
       return res.status(400).json({
         success: false,
@@ -396,7 +391,6 @@ const updateProduct = async (req, res) => {
       });
     }
 
-    // Validate category
     const categoryFind = await Category.findById(category);
     if (!categoryFind) {
       return res.status(400).json({
@@ -405,13 +399,11 @@ const updateProduct = async (req, res) => {
       });
     }
 
-    // Update category count if changed
     if (existingProduct.category.toString() !== category) {
       await Category.findByIdAndUpdate(existingProduct.category, { $inc: { count: -1 } });
       await Category.findByIdAndUpdate(category, { $inc: { count: 1 } });
     }
 
-    // Update the product
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
       {

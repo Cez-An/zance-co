@@ -1,0 +1,187 @@
+<%-include("../../views/partials/user/header") %> 
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        /* Order Summary */
+        .order-summary {
+            background:#343a40;
+            border-radius: 12px;
+            position: sticky;
+            top: 20px;
+        }
+        .order-summary .btn-primary {
+            background: linear-gradient(90deg, #6C5DD3, #8A7DE8);
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 1.1rem;
+            transition: transform 0.2s ease;
+        }
+        .order-summary .btn-primary:hover {
+            transform: scale(1.02);
+        }
+        .coupon-input .btn-outline-secondary {
+            border-radius: 0 5px 5px 0;
+            transition: background-color 0.2s ease;
+        }
+        .coupon-input .btn-outline-secondary:hover {
+            background-color: #6C5DD3;
+            color: #FFFFFF;
+            border-color: #6C5DD3;
+        }
+        .nice-select .list {
+    background-color: #000000;
+    }
+    .nice-select .option:hover, .nice-select .option.focus, .nice-select .option.selected.focus {
+    background-color: #707070; 
+    }
+    .nice-select {
+        background-color: #585858;
+    }
+    a {
+        text-decoration: none;
+    }
+    .text-muted {
+    color: #6c757d!important;
+    }
+    body{
+        background-color: #000000;
+    }
+    </style>
+
+
+    
+
+    <!-- Payment Section -->
+    <main class="container mt-4">
+        <form id="paymentForm">
+            <div class="d-flex justify-content-between w-100 align-items-center" style="padding: 16px; border-radius: 10px;">
+                <h4 class="fw-bold mb-0 text-white">Select Payment Method</h4>
+                <div class="d-flex justify-content-center align-items-center gap-3">
+                    <div class="progress-step">
+                        <i class="fas fa-shopping-cart text-muted me-1" style="font-size: 1rem;"></i>
+                        <span class="fw-medium text-muted" style="font-size: 0.8rem;">Cart</span>
+                    </div>
+                    <i class="fas fa-arrow-right progress-arrow text-muted"></i>
+                    <div class="progress-step active">
+                        <i class="fas fa-truck me-1 text-muted" style="font-size: 0.9rem;"></i>
+                        <span style="font-size: 0.9rem;" class="text-muted">Shipping</span>
+                    </div>
+                    <i class="fas fa-arrow-right progress-arrow text-muted"></i>
+                    <div class="progress-step">
+                        <i class="fas fa-credit-card text-white me-1" style="font-size: 0.9rem;"></i>
+                        <span class="fw-medium text-white" style="font-size: 0.8rem;">Payments</span>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-4">
+                
+                <!-- Payment Methods -->
+                <div class="col-md-8">
+            
+                    <!-- Cash on Delivery -->
+                    <div class="card p-3 mb-3 border-0 shadow-sm" style="background-color: #eae2fc;">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="paymentMethod" value="cod" id="cod">
+                            <label class="form-check-label w-100" for="cod">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-money-bill-wave me-3" style="font-size: 24px;"></i>
+                                    <div>
+                                        <strong>Cash on Delivery</strong>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Price Summary -->
+                <div class="col-md-4">
+                    <div class="card p-3 shadow-sm border-0 order-summary mb-3" >
+                        <h5 class="fw-bold text-white mb-4">Price Details</h5>
+                        <% if (cart && cart.items && cart.items.length > 0) { %>
+                            <% let total = 0; %>
+                            <% cart.items.forEach(item => { %>
+                                <% total += item.quantity * item.basePrice; %>
+                                <div class="d-flex justify-content-between mb-3">
+                                    <span class="text-white" style="font-size: 0.95rem;"><%= item.quantity %>x <%= item.productId.name %></span>
+                                    <span class="text-white fw-medium">₹<%= (item.quantity * item.basePrice)%></span>
+                                </div>
+                            <% }) %>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-white" style="font-size: 0.95rem;">Delivery Charges</span>
+                                <span class="text-success fw-semibold">Free</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-white" style="font-size: 0.95rem;">Platform Fee</span>
+                                <span class="text-success fw-semibold">₹ 0</span>
+                            </div>
+                            <hr class="my-2" style="border-color: #E0E0E0;">
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-bold text-white" style="font-size: 1.2rem;">Grand Total</span>
+                                <span class="fw-bold text-white" style="font-size: 1.2rem;">₹ <%= total%></span>
+                            </div>
+                            
+                            <!-- Combined submit button -->
+                            <button type="submit" class="btn btn-primary w-100 mt-4">Place Order</button>
+                        <% } else { %>
+                            <p class="text-white text-center fs-5">No items in your cart.</p>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </main>
+    <br><br>
+
+    <script>
+        document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+            try{
+                const response = await fetch('/payments',{
+                    method : 'POST',
+                    headers : {
+                        'content-type' : 'application/json',
+                    },
+                    body : JSON.stringify({paymentMethod : paymentMethod})
+                })
+                const data = await response.json();
+
+                if(!response.ok){
+                    Swal.fire({
+                    text : data.error,
+                    icon : "warning",
+                    timer: 2000,
+                    showConfirmButton: false
+                })
+                }else{
+                    Swal.fire({
+                        text : data.message,
+                        icon : "success",
+                        timer: 2000,
+                        showConfirmButton: false
+                    })
+                }
+            } catch(error) {
+                console.log(error)
+                Swal.fire({
+                    text : data.message,
+                    icon : "error",
+                    timer: 2000,
+                    showConfirmButton: false
+                })
+            }
+        })
+    </script>
+    
+</body>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+<%-include("../../views/partials/user/footer") %> 

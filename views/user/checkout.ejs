@@ -209,17 +209,7 @@
 
 
 <body>
-    <div class="sidebar">
-         <br><br><br>
-         <a href="#my-orders"><i class="fas fa-shopping-cart"></i><span>My Orders</span></a>
-         <a href="/user/userProfile" class="active"><i class="fas fa-user"></i><span>Profile Information</span></a>
-         <a href="/user/address"><i class="fas fa-map-marker-alt"></i><span>Manage Addresses</span></a>
-         <a href="/user/privacy"><i class="fas fa-lock"></i><span>Privacy Settings</span></a>
-         <a href="#my-coupons"><i class="fas fa-ticket-alt"></i><span>My Coupons</span></a>
-         <a href="#my-wallet"><i class="fas fa-wallet"></i><span>My Wallet</span></a>
-    </div>
-
-       
+          
         <!-- Main Section -->
         <main class="container my-5">
             <div class="row gx-5 gy-2">
@@ -907,7 +897,7 @@
                 
                 // const grandTotal = <%= calculatedValues.grandTotal %>;
                 let currentDiscount = 0;
-                let currentCoupon = null;
+                // let currentCoupon = null;
                 
                 const addressInputs = document.querySelectorAll('input[name="selectedAddress"]');
                 const proceedButton = document.querySelector('#proceedToPayment');
@@ -915,12 +905,12 @@
                 const totalPriceElement = document.querySelector('.order-summary .fw-bold.text-dark:last-child');
                 
                 // Coupon elements
-                const applyButton = document.querySelector('.apply-coupon');
-                const couponInput = document.getElementById('coupon');
-                const couponStatus = document.getElementById('couponStatus');
-                const appliedCoupon = document.getElementById('appliedCoupon');
-                const removeCouponBtn = document.querySelector('.remove-coupon-sm');
-                const availableCouponLink = document.getElementById('availableCouponLink');
+                // const applyButton = document.querySelector('.apply-coupon');
+                // const couponInput = document.getElementById('coupon');
+                // const couponStatus = document.getElementById('couponStatus');
+                // const appliedCoupon = document.getElementById('appliedCoupon');
+                // const removeCouponBtn = document.querySelector('.remove-coupon-sm');
+                // const availableCouponLink = document.getElementById('availableCouponLink');
     
                 function toggleProceedButton() {
                     if (addressInputs.length === 0) {

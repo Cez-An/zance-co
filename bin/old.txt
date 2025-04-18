@@ -1,52 +1,77 @@
-const addProduct = async (req, res) => {
-  try {
-    console.log(`Add product Clicked
-      `);
-
-    console.log("Add product Clicked");
-
-    const { name, description, category, basePrice, discount, stock, brand } =
-      req.body;
-
-      const imageUrls = req.files.map((file) => file.path || file.url);
-
-    const generateProductId = async () => {
-      const randomNumber = Math.floor(100000 + Math.random() * 900000);
-      const id = `ZNCP${randomNumber}`;
-      const ifExists = await Product.findOne({ productId: id });
-      if (ifExists) {
-        return generateProductId();
-      }
-      return id;
-    };
-
-    const categoryfind = await Category.findOne({name:category})
-    const catogoryId = categoryfind._id
-
-    console.log(catogoryId);
-    await Category.findOneAndUpdate({_id:catogoryId},{$inc:{count:1}})
-
-    const productId = await generateProductId();
-      
-    const newProduct = new Product({
-      name,
-      productId,
-      category:catogoryId,
-      description,
-      brand: brand,
-      salePrice: basePrice,
-      productOffer: discount,
-      quantity: stock,
-      productImage: imageUrls,
+<script>
+    document.querySelectorAll('.to-wishlist-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        Swal.fire({
+            icon: 'warning',
+            text: 'Please log in to add to wishlist',
+            showConfirmButton: true,
+            confirmButtonText: 'okay'
+        })
     });
+});
 
-    await newProduct.save();
-    // res.json({ message: "Product added successfully", product: newProduct });
 
-    res.redirect("/admin/products");
+    document.querySelectorAll('.add-to-wishlist-btn').forEach(btn => {
+            const icon = btn.querySelector('i');
 
-  } catch (error) {
-    console.error("Error:", error);
-    res.status(500).json({ message: "Error saving product", error: error.message });
-}
-};
+            // On load: set heart based on data-is-wishlisted
+            if (btn.dataset.isWishlisted === 'true') {
+                icon.classList.remove('wishlist');
+                icon.classList.add('wishlist2');
+            }
+
+            btn.addEventListener('click', async (e) => {
+                e.preventDefault();
+
+                const userId = btn.dataset.userId;
+                const productId = btn.dataset.productId;
+                
+
+                const productDetails = { userId, productId};
+                console.log(`heeeee`,productDetails);
+                
+                try {
+                    const response = await fetch('/user/wishlist', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(productDetails)
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        Swal.fire({
+                            icon: 'warning',
+                            text: data.error,
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    } else {
+                        // Set icon to solid heart
+                        icon.classList.remove('wishlist');
+                        icon.classList.add('wishlist2');
+                        btn.dataset.isWishlisted = 'true';
+
+                        Swal.fire({
+                            icon: 'success',
+                            text: 'Added to wishlist successfully',
+                            showConfirmButton: true,
+                            confirmButtonText: 'Go to wishlist',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '/user/wishlist';
+                            }
+                        });
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'An error occurred',
+                        showConfirmButton: false,
+                        timer: 2000
+                    });
+                }
+            });
+        });
+
+   </script>

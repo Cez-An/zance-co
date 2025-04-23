@@ -49,9 +49,9 @@ const loadPayments = async (req, res) => {
 const paymentSuccess = async (req,res) => {
     const userId = req.session.user?.id ?? req.session.user?._id ?? null;
 
-    const { couponApplied, paymentMethod } = req.body;
+    const { paymentMethod } = req.body;
 
-    const addressId = req.session.deliveryAddress;
+    const addressId = req.session.selectedAddress;
     const objectId = new mongoose.Types.ObjectId(addressId);
 
     const cart = await Cart.findOne({ userId : userId }).populate('items.productId');
@@ -71,19 +71,17 @@ const paymentSuccess = async (req,res) => {
                     name : item.name,
                     quantity: item.quantity,
                     price: item.productId.price,
-                    variants : item.variants,
                     brand : item.brand,
                     productImage : item.productImage
                 })),
-                totalPrice: cart.items.reduce((sum, item) => sum + item.quantity * item.productId.price, 0),
+                totalPrice: cart.items.reduce((sum, item) => sum + item.quantity * item.basePrice, 0),
                 paymentMethod,
                 address : addressId,
                 status: 'Pending',
-                couponApplied
+                
                 });
 
             await order.save();
-
 
             await Cart.findByIdAndDelete(cart._id);
 
@@ -109,11 +107,12 @@ const confirmOrder = async (req, res) => {
 
         const order = await Order.findOne({ userId }).populate({
             path: 'orderItems.product',
-            select: 'name price brand variants'
+            select: 'name price brand'
         }).sort({ createdAt: -1 });
 
         const addressId = order.address
         const orderItems = order.orderItems
+        
 
         const address = await Address.findOne(
             { 'details._id': addressId },
@@ -122,7 +121,7 @@ const confirmOrder = async (req, res) => {
 
         const shippingAddress = address.details[0];
 
-        return res.render('user/confirmOrder', {title : "Checkout", user, shippingAddress, order, orderItems});
+        return res.render('user/orderConfirmation', {title : "Checkout", user, shippingAddress, order, orderItems});
     } catch (error) {
         console.error(`Error confirming order: ${error.message}`);
         return res.status(500).render('error', { message: 'Something went wrong. Please try again later.' });

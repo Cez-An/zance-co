@@ -895,22 +895,13 @@
                     }
                 });
                 
-                // const grandTotal = <%= calculatedValues.grandTotal %>;
+               
                 let currentDiscount = 0;
-                // let currentCoupon = null;
-                
                 const addressInputs = document.querySelectorAll('input[name="selectedAddress"]');
                 const proceedButton = document.querySelector('#proceedToPayment');
                 const checkoutForm = document.getElementById('checkoutForm');
                 const totalPriceElement = document.querySelector('.order-summary .fw-bold.text-dark:last-child');
-                
-                // Coupon elements
-                // const applyButton = document.querySelector('.apply-coupon');
-                // const couponInput = document.getElementById('coupon');
-                // const couponStatus = document.getElementById('couponStatus');
-                // const appliedCoupon = document.getElementById('appliedCoupon');
-                // const removeCouponBtn = document.querySelector('.remove-coupon-sm');
-                // const availableCouponLink = document.getElementById('availableCouponLink');
+            
     
                 function toggleProceedButton() {
                     if (addressInputs.length === 0) {
@@ -928,14 +919,12 @@
                     }
                 }
     
-               
-                // Event listeners
+
                 addressInputs.forEach(input => {
                     input.addEventListener('change', toggleProceedButton);
                 });
         
                 toggleProceedButton();
-        
         
                 checkoutForm.addEventListener('submit', (e) => {
                     const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
@@ -945,6 +934,51 @@
                     }
                 });
             });
+
+            
+            
+        document.addEventListener("DOMContentLoaded", () => {
+        const addressRadios = document.querySelectorAll("input[name='selectedAddress']");
+
+        function updateSelectedAddress(selectedAddressId) {
+            fetch("/user/select-address", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Requested-With": "XMLHttpRequest"
+                },
+                body: JSON.stringify({ selectedAddress: selectedAddressId })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to update selected address");
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Address updated in session:", data);
+            })
+            .catch(error => {
+                console.error("Error updating address:", error);
+            });
+        }
+
+        addressRadios.forEach(radio => {
+            radio.addEventListener("change", function () {
+                updateSelectedAddress(this.value);
+            });
+        });
+
+        const checkedRadio = document.querySelector("input[name='selectedAddress']:checked");
+        if (checkedRadio) {
+            updateSelectedAddress(checkedRadio.value);
+        }
+    });
+
+
+</script>
+
+
         </script>
     </body>
 

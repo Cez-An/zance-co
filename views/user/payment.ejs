@@ -161,11 +161,14 @@
                 })
                 }else{
                     Swal.fire({
+                        icon: 'success',
                         text : data.message,
-                        icon : "success",
-                        timer: 2000,
-                        showConfirmButton: false
-                    })
+                        showConfirmButton: true,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '/payments/confirmOrder';
+                        }
+                    });
                 }
             } catch(error) {
                 console.log(error)

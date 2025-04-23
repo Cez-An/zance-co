@@ -6,6 +6,7 @@ import Category from '../../models/categorySchema.js'
 import nodemailer from "nodemailer";
 import env from "dotenv";
 import bcrypt from "bcrypt";
+import Order from "../../models/orderSchema.js"
 
 env.config();
 
@@ -435,6 +436,73 @@ const updatePassword = async (req, res) => {
   }
 };
 
+const loadOrders = async (req,res) => {
+  try {
+    console.log(`order loading accessed`);
+    
+      const userId = req.session.user?.id ?? req.session.user?._id ?? null;
+
+      const user = await User.findOne({_id : userId})
+
+      if (!userId) {
+          return res.status(401).redirect('/user/login');
+      }
+      const [firstName, lastName] = user.name.split(' ');
+      const orders = await Order.find({ userId })
+              .populate({
+                  path: 'orderItems.product',
+                  select: 'name price brand variants'
+              })
+              .sort({ createdAt: -1 });
+
+      console.log(orders)
+
+      res.render('user/myOrders',{title : "My Orders",orders, user, firstName});
+
+  } catch (error) {
+      console.error('Error loading orders:', error.message);
+  }
+}
+
+
+const loadOrderDetails = async (req,res)=> {
+  try {
+      const userId = req.session.user?.id ?? req.session.user?._id ?? null;
+      
+      const orderId = req.query.id;
+
+
+
+      if (!userId) {
+          return res.status(401).redirect('/user/login');
+      }
+
+      const user = await User.findOne({_id : userId})
+
+      const [firstName, lastName] = user.name.split(' ');
+
+      const order = await Order.findOne({ orderId });
+
+      const addressId = order.address
+
+      console.log(addressId)
+
+      const addresses = await Address.findOne(
+          { 'details._id': addressId },
+          { details: { $elemMatch: { _id: addressId } } }
+      );
+      
+      const address = addresses?.details?.[0] || null;
+      
+
+      res.render('user/orderdetails',{title : "My Orders",order, address, user, firstName});
+
+  } catch (error) {
+      console.error('Error loading orders:', error.message);
+  }
+}
+
+
 export default {
     renderProfileInfo,
     renderProfileEdit,
@@ -452,5 +520,7 @@ export default {
     editAddress,
     loadPrivacy,
     updatePassword,
+    loadOrders,
+    loadOrderDetails,
 
 }

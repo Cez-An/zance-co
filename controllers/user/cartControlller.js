@@ -45,6 +45,7 @@ const addItemToCart = async (req, res) => {
         }
 
         const product = await Product.findOne({ productId: productId, isBlocked: false });
+
         if (!product) {
             return res.status(STATUS_CODE.NOT_FOUND).json({ error: 'Product not found.' });
         }
@@ -93,7 +94,7 @@ const addItemToCart = async (req, res) => {
         }
 
         await Promise.all([
-            Wishlist.findOneAndDelete({ product: productId }),
+            Wishlist.updateOne({ userId: userId },{ $pull: { product: product._id } }),
             User.findByIdAndUpdate(userId, { $set: { cart: cart?._id } })
         ]);
 

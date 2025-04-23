@@ -80,6 +80,7 @@ router.get('/checkout', checkoutController.loadCheckout);
 router.post('/checkout', checkoutController.checkoutDetails);
 router.post('/shoppingAddress', checkoutController.addShoppingAddress);
 router.put('/shoppingAddress', checkoutController.editshoppingAddress);
+router.post('/select-address', checkoutController.saveSelectedAddress);
 
 // wishlist routes
 router.get('/wishlist',userAuth.checkStatus, wishlistController.getWishlist);
@@ -87,5 +88,12 @@ router.post('/wishlist', wishlistController.toggleWishlist);
 router.delete('/wishlist', wishlistController.removeFromWishlist);
 router.post('/wishlist-to-cart',wishlistController.wishlistToCart)
 
+//order Routes
+
+router.get('/order', profileController.loadOrders);
+router.get('/orderDetails', profileController.loadOrderDetails);
+// router.post('/orders/return', refundController.requestRefund);
+// router.patch('/orders/cancel', refundController.cancelOrder);
+// router.get('/orders/invoice', refundController.generateInvoice);
 
 export default router;

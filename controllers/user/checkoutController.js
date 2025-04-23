@@ -112,10 +112,25 @@ const checkoutDetails = async (req,res) => {
     res.redirect('/payments')
 }
 
+const  saveSelectedAddress = (req, res)=> {
+    console.log(`save address accessed`);
+    
+    const { selectedAddress } = req.body;
+    console.log(selectedAddress);
+    
+    if (!selectedAddress) {
+        return res.status(400).send('No address provided');
+    }
+
+    req.session.selectedAddress = selectedAddress;
+
+    res.sendStatus(200);
+}
 
 export default {
     loadCheckout,
     addShoppingAddress,
     editshoppingAddress,
     checkoutDetails,
+    saveSelectedAddress,
 }

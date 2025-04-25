@@ -640,11 +640,15 @@
 
     // Count images (existing + new)
     let imageCount = 0;
-    document.querySelectorAll('.image-preview').forEach(preview => {
-      if (preview.style.display === 'block' && preview.querySelector('img')) {
-        imageCount++;
-      }
-    });
+
+document.querySelectorAll('.image-preview img').forEach(img => {
+  if (img.src && img.src.trim() !== '') {
+    imageCount++;
+  }
+});
+
+console.log('Image count:', imageCount);
+
 
     // Validation checks
     if (!name) {
@@ -668,6 +672,8 @@
       isValid = false;
     }
     if (imageCount !== 4) {
+        console.log(`count of images are `,imageCount);
+        
       document.getElementById('images-error').style.display = 'block';
       isValid = false;
     }
@@ -690,7 +696,8 @@
     if (isValid) {
       try {
         const formData = new FormData(this);
-
+        console.log(`form data is`,formData);
+        
         const response = await fetch(`/admin/products/${productId}`, {
           method: 'PUT',
           body: formData,

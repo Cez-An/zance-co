@@ -2,7 +2,7 @@ import express from "express";
 import userController from "../controllers/user/userController.js";
 import userAuth from "../middlewares/userAuth.js";
 import profileController from '../controllers/user/profileController.js'
-import uploads from '../helpers/multer.js'
+// import uploads from '../helpers/multer.js'
 import cartControlller from '../controllers/user/cartControlller.js'
 import checkoutController from "../controllers/user/checkoutController.js";
 import wishlistController from "../controllers/user/wishlistController.js"
@@ -53,7 +53,7 @@ router.post('/changePassword',userController.newPassword)
 //user profile
 router.get('/userProfile',userAuth.checkStatus,profileController.renderProfileInfo)
 router.get('/userProfile/:id',userAuth.checkStatus,profileController.renderProfileEdit)
-router.put('/userProfile', uploads.single('profilePic'), profileController.updateProfile)
+router.put('/userProfile', profileController.updateProfile)
 router.post('/sendotp', profileController.sendOTP);
 router.post('/verifymail', profileController.verifyOTP);
 

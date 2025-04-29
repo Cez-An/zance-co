@@ -1,7 +1,8 @@
 import Product from "../../models/productsShema.js";
 import User from "../../models/userSchema.js";
 import Category from "../../models/categorySchema.js";
-
+import cloudinary from '../../helpers/cloudinary.js'
+import fs from 'fs';
 
 const renderProductAddPage = async (req, res) => {
   try {
@@ -59,84 +60,263 @@ const renderProductsListPage = async (req, res) => {
   }
 };
 
+// const addProduct = async (req, res) => {
+//   try {
+//     const { 
+//       name, 
+//       description, 
+//       category, 
+//       basePrice, 
+//       discount, 
+//       stock, 
+//       brand,
+//       visibilityStatus, 
+//     } = req.body;
+    
+//     let status;
+//     if (visibilityStatus === "Active") {
+//        status = false;
+//     } else {
+//        status = true;
+//     }
+    
+//     const imageUrls = req.files.map((file) => file.path || file.url);
+
+//     const generateProductId = async () => {
+//       const randomNumber = Math.floor(100000 + Math.random() * 900000);
+//       const id = `ZNCP${randomNumber}`;
+//       const ifExists = await Product.findOne({ productId: id });
+//       if (ifExists) {
+//         return generateProductId();
+//       }
+//       return id;
+//     };
+
+//     const categoryFind = await Category.findOne({ name: category });
+//     if (!categoryFind) {
+//       return res.status(400).json({ 
+//         success: false,
+//         message: "Invalid category" 
+//       });
+//     }
+//     const categoryId = categoryFind._id;
+
+    
+//     await Category.findOneAndUpdate({ _id: categoryId }, { $inc: { count: 1 } });
+
+    
+//     const productId = await generateProductId();
+
+    
+//     const newProduct = new Product({
+//       name,
+//       productId,
+//       category: categoryId,
+//       description,
+//       brand,
+//       salePrice: basePrice,   
+//       productOffer: discount,   
+//       quantity: stock,         
+//       isBlocked:status,
+//       productImage: imageUrls,  
+//     });
+
+//     await newProduct.save();
+
+//     res.status(200).json({ 
+//       success: true,
+//       message: "Product added successfully",
+//       redirect: "/admin/products"  
+//     });
+    
+//   } catch (error) {
+//     console.error("Error:", error);
+//     res.status(500).json({ 
+//       success: false,
+//       message: "Error saving product",
+//       error: error.message 
+//     });
+//   }
+// };
+
+// const addProduct = async (req, res) => {
+//   try {
+//     const {
+//       name,
+//       description,
+//       category,
+//       basePrice,
+//       discount,
+//       stock,
+//       brand,
+//       visibilityStatus,
+//     } = req.body;
+
+//     let status = visibilityStatus === "Active" ? false : true;
+
+//     if (!req.files || !req.files.variantImages) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "No images provided"
+//       });
+//     }
+
+//     const files = Array.isArray(req.files.variantImages)
+//       ? req.files.variantImages
+//       : [req.files.variantImages];
+
+//     const imageUrls = [];
+
+//     for (const file of files) {
+//       const result = await cloudinary.uploader.upload(file.tempFilePath, {
+//         folder: "products"
+//       });
+//       imageUrls.push({
+//         url: result.secure_url,
+//         public_id: result.public_id
+//       });
+//       fs.unlinkSync(file.tempFilePath);
+//     }
+
+//     const generateProductId = async () => {
+//       const randomNumber = Math.floor(100000 + Math.random() * 900000);
+//       const id = `ZNCP${randomNumber}`;
+//       const ifExists = await Product.findOne({ productId: id });
+//       return ifExists ? generateProductId() : id;
+//     };
+
+//     const categoryFind = await Category.findOne({ name: category });
+//     if (!categoryFind) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid category"
+//       });
+//     }
+
+//     const categoryId = categoryFind._id;
+//     await Category.findOneAndUpdate({ _id: categoryId }, { $inc: { count: 1 } });
+
+//     const productId = await generateProductId();
+
+//     const newProduct = new Product({
+//       name,
+//       productId,
+//       category: categoryId,
+//       description,
+//       brand,
+//       salePrice: basePrice,
+//       productOffer: discount,
+//       quantity: stock,
+//       isBlocked: status,
+//       productImage: imageUrls,
+//     });
+
+//     await newProduct.save();
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Product added successfully",
+//       redirect: "/admin/products"
+//     });
+
+//   } catch (error) {
+//     console.error("Error:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Error saving product",
+//       error: error.message
+//     });
+//   }
+// };
+
+
 const addProduct = async (req, res) => {
   try {
-    const { 
-      name, 
-      description, 
-      category, 
-      basePrice, 
-      discount, 
-      stock, 
+    const {
+      name,
+      description,
+      category,
+      basePrice,
+      discount,
+      stock,
       brand,
-      visibilityStatus, 
+      visibilityStatus,
     } = req.body;
-    
-    let status;
-    if (visibilityStatus === "Active") {
-       status = false;
-    } else {
-       status = true;
+
+    let status = visibilityStatus === "Active" ? false : true;
+
+    if (!req.files || !req.files.variantImages) {
+      return res.status(400).json({
+        success: false,
+        message: "No images provided"
+      });
     }
-    
-    const imageUrls = req.files.map((file) => file.path || file.url);
+
+    const files = Array.isArray(req.files.variantImages)
+      ? req.files.variantImages
+      : [req.files.variantImages];
+
+    const imageUrls = [];
+
+    for (const file of files) {
+      const result = await cloudinary.uploader.upload(file.tempFilePath, {
+        folder: "products"
+      });
+      imageUrls.push(result.secure_url);
+      fs.unlinkSync(file.tempFilePath); // Clean up the temp file
+    }
 
     const generateProductId = async () => {
       const randomNumber = Math.floor(100000 + Math.random() * 900000);
       const id = `ZNCP${randomNumber}`;
       const ifExists = await Product.findOne({ productId: id });
-      if (ifExists) {
-        return generateProductId();
-      }
-      return id;
+      return ifExists ? generateProductId() : id;
     };
 
     const categoryFind = await Category.findOne({ name: category });
     if (!categoryFind) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: "Invalid category" 
+        message: "Invalid category"
       });
     }
-    const categoryId = categoryFind._id;
 
-    
+    const categoryId = categoryFind._id;
     await Category.findOneAndUpdate({ _id: categoryId }, { $inc: { count: 1 } });
 
-    
     const productId = await generateProductId();
 
-    
     const newProduct = new Product({
       name,
       productId,
       category: categoryId,
       description,
       brand,
-      salePrice: basePrice,   
-      productOffer: discount,   
-      quantity: stock,         
-      isBlocked:status,
-      productImage: imageUrls,  
+      salePrice: basePrice,
+      productOffer: discount,
+      quantity: stock,
+      isBlocked: status,
+      productImage: imageUrls,
     });
 
     await newProduct.save();
 
-    res.status(200).json({ 
+    res.status(200).json({
       success: true,
       message: "Product added successfully",
-      redirect: "/admin/products"  
+      redirect: "/admin/products"
     });
-    
+
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       success: false,
       message: "Error saving product",
-      error: error.message 
+      error: error.message
     });
   }
 };
+
 
 const productBlocked = async (req, res) => {
   try {
@@ -344,8 +524,100 @@ const renderProductsEditPage = async (req, res) => {
 //   }
 // };
 
+// const updateProduct = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const {
+//       name,
+//       description,
+//       category,
+//       basePrice,
+//       discount,
+//       stock,
+//       visibilityStatus,
+//       brand,
+//     } = req.body;
+
+//     let status = visibilityStatus === 'Active' ? false : true;
+    
+//     const existingProduct = await Product.findById(id);
+//     if (!existingProduct) {
+//       return res.status(404).json({
+//         success: false,
+//         message: 'Product not found',
+//       });
+//     }
+
+//     let imageUrls = existingProduct.productImage || ['', '', '', '']; 
+  
+//     if (req.files && req.files.length > 0) {
+      
+//       req.files.forEach((file) => {
+       
+//         const match = file.fieldname.match(/variantImages\[(\d)\]/);
+//         if (match) {
+//           const slot = parseInt(match[1]);
+//           if (slot >= 0 && slot < 4) {
+//             imageUrls[slot] = file.path; 
+//           }
+//         }
+//       });
+//     }
+
+//     if (imageUrls.length !== 4 || imageUrls.some(url => !url)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: 'Exactly four images are required',
+//       });
+//     }
+
+//     const categoryFind = await Category.findById(category);
+//     if (!categoryFind) {
+//       return res.status(400).json({
+//         success: false,
+//         message: 'Invalid category',
+//       });
+//     }
+
+//     if (existingProduct.category.toString() !== category) {
+//       await Category.findByIdAndUpdate(existingProduct.category, { $inc: { count: -1 } });
+//       await Category.findByIdAndUpdate(category, { $inc: { count: 1 } });
+//     }
+
+//     const updatedProduct = await Product.findByIdAndUpdate(
+//       id,
+//       {
+//         name,
+//         description,
+//         category,
+//         brand,
+//         salePrice: basePrice,
+//         productOffer: discount,
+//         isBlocked: status,
+//         quantity: stock,
+//         productImage: imageUrls,
+//       },
+//       { new: true, runValidators: true }
+//     );
+
+//     res.status(200).json({
+//       success: true,
+//       message: 'Product updated successfully',
+//       redirect: '/admin/products',
+//     });
+//   } catch (error) {
+//     console.error('Error updating product:', error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Error updating product: ' + error.message,
+//     });
+//   }
+// };
+
 const updateProduct = async (req, res) => {
   try {
+    console.log("ACCCCCCEDED UPDATE PRODUCT");
+    
     const { id } = req.params;
     const {
       name,
@@ -354,49 +626,54 @@ const updateProduct = async (req, res) => {
       basePrice,
       discount,
       stock,
-      visibilityStatus,
       brand,
     } = req.body;
 
-    let status = visibilityStatus === 'Active' ? false : true;
-    
+
     const existingProduct = await Product.findById(id);
     if (!existingProduct) {
-      return res.status(404).json({
-        success: false,
-        message: 'Product not found',
-      });
+      return res.status(404).json({ success: false, message: 'Product not found' });
     }
 
-    let imageUrls = existingProduct.productImage || ['', '', '', '']; 
-  
-    if (req.files && req.files.length > 0) {
-      
-      req.files.forEach((file) => {
-       
-        const match = file.fieldname.match(/variantImages\[(\d)\]/);
+    // Start with existing images
+    let imageSlots = existingProduct.productImage || ['', '', '', ''];
+
+    // Handle file uploads (express-fileupload)
+    if (req.files) {
+      const files = Object.entries(req.files); // [['variantImages[0]', file], ['variantImages[2]', file], ...]
+
+      for (const [key, file] of files) {
+        const match = key.match(/variantImages\[(\d)\]/);
         if (match) {
           const slot = parseInt(match[1]);
           if (slot >= 0 && slot < 4) {
-            imageUrls[slot] = file.path; 
+            // Upload new image to Cloudinary
+            const result = await cloudinary.uploader.upload(file.tempFilePath, {
+              folder: 'products',
+            });
+
+            // Store only the image URL
+            imageSlots[slot] = result.secure_url;
+
+            // Remove temp file
+            fs.unlinkSync(file.tempFilePath);
           }
         }
-      });
+      }
     }
 
-    if (imageUrls.length !== 4 || imageUrls.some(url => !url)) {
+    // Ensure exactly 4 valid image URLs
+    if (imageSlots.length !== 4 || imageSlots.some(url => !url)) {
       return res.status(400).json({
         success: false,
         message: 'Exactly four images are required',
       });
     }
 
+    // Validate category and adjust count if changed
     const categoryFind = await Category.findById(category);
     if (!categoryFind) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid category',
-      });
+      return res.status(400).json({ success: false, message: 'Invalid category' });
     }
 
     if (existingProduct.category.toString() !== category) {
@@ -413,9 +690,8 @@ const updateProduct = async (req, res) => {
         brand,
         salePrice: basePrice,
         productOffer: discount,
-        isBlocked: status,
         quantity: stock,
-        productImage: imageUrls,
+        productImage: imageSlots,
       },
       { new: true, runValidators: true }
     );
@@ -433,7 +709,6 @@ const updateProduct = async (req, res) => {
     });
   }
 };
-
 
 
 

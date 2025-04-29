@@ -56,6 +56,13 @@ const paymentSuccess = async (req,res) => {
 
     const cart = await Cart.findOne({ userId : userId }).populate('items.productId');
 
+    const generateOrderId = async () => {
+        const randomNumber = Math.floor(10000000 + Math.random() * 90000000);
+        const id = `ORD#${randomNumber}`;
+        const ifExists = await Order.findOne({ orderId: id });
+        return ifExists ? generateProductId() : id;
+      };
+    const orderID = await generateOrderId();
     if(paymentMethod == 'cod'){
         const address = await Address.findOne(
             { 'details._id': objectId },
@@ -66,19 +73,19 @@ const paymentSuccess = async (req,res) => {
             
             const order = new Order({
                 userId,
+                orderId:orderID,
                 orderItems: cart.items.map(item => ({
                     product: item.productId._id,
                     name : item.name,
                     quantity: item.quantity,
-                    price: item.productId.price,
+                    price: item.productId.salePrice,
                     brand : item.brand,
                     productImage : item.productImage
                 })),
                 totalPrice: cart.items.reduce((sum, item) => sum + item.quantity * item.basePrice, 0),
                 paymentMethod,
                 address : addressId,
-                status: 'Pending',
-                
+                status: 'Pending',                
                 });
 
             await order.save();
@@ -107,7 +114,7 @@ const confirmOrder = async (req, res) => {
 
         const order = await Order.findOne({ userId }).populate({
             path: 'orderItems.product',
-            select: 'name price brand'
+    
         }).sort({ createdAt: -1 });
 
         const addressId = order.address

@@ -5,7 +5,7 @@ import adminAuth from '../middlewares/adminAuth.js'
 import customerController from '../controllers/admin/customerController.js'
 import categoryController from '../controllers/admin/categoryController.js'
 import productController from "../controllers/admin/productController.js";
-import uploads from '../helpers/multer.js'
+// import uploads from '../helpers/multer.js'
 
 // Admin login management
 router.get('/login',adminAuth.islogin,adminController.renderAdminLoginPage)
@@ -29,8 +29,8 @@ router.get('/category/:id',adminAuth.checkSession,categoryController.renderCateg
 //product Management
 
 router.get('/products',adminAuth.checkSession,productController.renderProductsListPage)
-router.post('/products',uploads.array('variantImages',8),productController.addProduct)
-router.put('/products/:id',uploads.array('variantImages',8),productController.updateProduct);
+router.post('/products',productController.addProduct)
+router.put('/products/:id',productController.updateProduct);
 
 router.get('/productAdd',adminAuth.checkSession,productController.renderProductAddPage)
 router.get('/products/:id',adminAuth.checkSession,productController.renderProductsEditPage)

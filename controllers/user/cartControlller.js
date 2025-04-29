@@ -162,7 +162,7 @@ const updateQuantity = async (req, res) => {
     const userId = req.session.user?.id ?? req.session.user?._id ?? null;
     console.log(userId);
     
-    // Validate inputs
+    
     if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
     }
@@ -171,13 +171,13 @@ const updateQuantity = async (req, res) => {
     }
 
     try {
-        // Find the cart
+        
         const cart = await Cart.findOne({ userId });
         if (!cart) {
             return res.status(404).json({ error: "Cart not found" });
         }
 
-        // Find the item in the cart
+        
         const item = cart.items.find((item) =>
             item.productId.toString() === productId
         );
@@ -185,13 +185,13 @@ const updateQuantity = async (req, res) => {
             return res.status(404).json({ error: "Product not found in cart" });
         }
 
-        // Find the product to check stock
+        
         const product = await Product.findOne({ _id: productId });
         if (!product) {
             return res.status(404).json({ error: "Product not found" });
         }
 
-        // Update quantity based on change
+        
         if (change > 0) {
             if (item.quantity >= product.stock) {
                 return res.status(400).json({ error: "Product stock limit reached" });
@@ -205,12 +205,12 @@ const updateQuantity = async (req, res) => {
         }
         console.log(item.quantity);
         
-        if (item.quantity > 10) {
+        if (item.quantity > 5) {
             return res.status(STATUS_CODE.NOT_FOUND).json({
-                error: `Only 10 units can be purchased in one order.`
+                error: `Only 5 units can be purchased in one order.`
             });
         }
-        // Save the updated cart
+        
         await cart.save();
 
         return res.status(200).json({ message: "Quantity updated successfully", cart });

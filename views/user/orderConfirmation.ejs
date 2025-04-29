@@ -164,7 +164,7 @@
                             day: '2-digit', 
                             hour: '2-digit', 
                             minute: '2-digit', 
-                            hour12: false
+                            hour12: true
                         }).format(new Date(order.createdAt)).replace(',', '') %>
                         
                     </span>
@@ -185,7 +185,7 @@
             <div class="detail-section">
                 <h5 class="section-title">Shipping Address</h5>
                 <div>
-                    <strong><%= shippingAddress.name %> &nbsp; <%= shippingAddress.phone %></strong>
+                    <strong><%= shippingAddress.name %> &nbsp;</strong>
                     <p>
                         <%= shippingAddress.addressLine1 %>,<br>
                         <%= shippingAddress.addressLine2 ? `${shippingAddress.addressLine2}, ` : '' %>
@@ -203,11 +203,11 @@
                         <img src="<%= item.productImage %>" alt="Product Image" class="product-img">
                         <div class="product-info">
                             <h6><%= item.name %></h6>
-                            <p>Product ID: <%= item.product?._id %></p>
+                            <p>Product ID: <%= item.product?.productId %></p>
                             <p>Brand: <%= item.brand %></p>                            
                             <p>Qty: <%= item.quantity %></p>
                         </div>
-                        <span class="product-price">₹ <%= item.price * item.quantity %></span>
+                        <span class="product-price">₹ <%= item.product?.salePrice * item.quantity %></span>
                     </div>
                 <% }) %>
             </div>
@@ -215,7 +215,7 @@
             <!-- Buttons -->
             <div class="btn-container">
                 <a href="/user/renderShopPage" class="btn btn-outline-primary">Continue Shopping</a>
-                <a href="/user/orders" class="btn btn-primary">View Orders</a>
+                <a href="/user/order" class="btn btn-primary">View Orders</a>
             </div>
         </div>
     </div>

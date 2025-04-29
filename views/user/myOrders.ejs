@@ -175,7 +175,7 @@
             color: #1a1a1a;
         }
         .order-card {
-            background-color: #ffffff;
+            background-color: rgb(235 228 255) !important;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             padding: 20px;
@@ -293,7 +293,7 @@
         }
         .no-orders, .loading, .error {
             text-align: center;
-            color: #666;
+            color: #ffffff;
             font-size: 16px;
             padding: 40px;
         }
@@ -334,7 +334,7 @@
                             <div class="order-card bg-light">
                                 <!-- Order Header -->
                                 <div class="order-header">
-                                    <span class="order-id">Order #<%= order.orderId %></span>
+                                    <span class="order-id">Order - <%= order.orderId %></span>
                                     <span class="order-status <%= (order.status || '').toLowerCase() %>">
                                         <%= order.status || 'Pending' %>
                                     </span>
@@ -343,7 +343,7 @@
                                 <!-- Order Details -->
                                 <div class="order-details">
                                     <div>
-                                        <span>Order Date: </span>
+                                        <span>Order Date:</span>
                                         <%= new Date(order.createdAt).toLocaleString('en-US', {
                                             weekday: 'short',
                                             year: 'numeric',
@@ -351,8 +351,8 @@
                                             day: '2-digit',
                                             hour: '2-digit',
                                             minute: '2-digit',
-                                            hour12: false
-                                        }) %>
+                                            hour12: true
+                                          }) %>
                                     </div>
                                     <div>
                                         <span>Total: </span>₹ <%= order.totalPrice %>
@@ -390,8 +390,8 @@
                         <% }) %>
                     <% } else { %>
                         <div class="no-orders">
-                            <p>You haven't placed any orders yet. Start shopping now!</p>
-                            <a href="/shop" class="btn btn-primary">Shop Now</a>
+                            <p class="no-orders">You haven't placed any orders yet. Start shopping now!</p>
+                            <a href="/user/renderShopPage" class="btn w-25 btn-primary">Shop Now</a>
                         </div>
                     <% } %>
                 </div>

@@ -7,6 +7,8 @@ import nodemailer from "nodemailer";
 import env from "dotenv";
 import bcrypt from "bcrypt";
 import Order from "../../models/orderSchema.js"
+import path, { format } from 'path';
+import cloudinary from '../../helpers/cloudinary.js'
 
 env.config();
 
@@ -40,35 +42,85 @@ const renderProfileEdit = async (req,res)=>{
   }
 }
 
-const updateProfile = async (req,res) => {
-    try {
-        let { email,name,phone,gender } = req.body;
+// const updateProfile = async (req,res) => {
+//     try {
+//         let { email,name,phone,gender } = req.body;
 
-        const userId = req.query.id;
+//         const userId = req.query.id;
 
-        const user = await User.findOne({userId : userId});
+//         const user = await User.findOne({userId : userId});
 
-        if (req.file) {
-            user.profilePic = req.file.path;
-        }
+//         if (req.file) {
+//             user.profilePic = req.file.path;
+//         }
         
-        user.name = name;
-        user.email = email;
-        user.phone = phone;    
-        user.gender = gender;
+//         user.name = name;
+//         user.email = email;
+//         user.phone = phone;    
+//         user.gender = gender;
 
-        await user.save();
+//         await user.save();
         
-        req.session.user = user
+//         req.session.user = user
 
-        return res.status(STATUS_CODE.SUCCESS).json({ message: "Profile updated successfully", user });
+//         return res.status(STATUS_CODE.SUCCESS).json({ message: "Profile updated successfully", user });
 
-    } catch (error) {
-        console.log("BACK END Error updating profile:", error);
-        return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
+//     } catch (error) {
+//         console.log("BACK END Error updating profile:", error);
+//         return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
+//     }
+
+// }
+
+const updateProfile = async (req, res) => {
+  try {
+    let { email, name, phone, gender } = req.body;
+    const userId = req.query.id;
+
+    const user = await User.findOne({ userId });
+
+    // Check if the file is uploaded
+    if (req.files && req.files.profilePic) {
+      const file = req.files.profilePic;
+
+      // Validate file type
+      const allowedTypes = /jpeg|jpg|png|webp/;
+      const extname = allowedTypes.test(path.extname(file.name).toLowerCase());
+      const mimetype = allowedTypes.test(file.mimetype);
+
+      if (!extname || !mimetype) {
+        return res.status(400).json({ error: 'Only JPEG, JPG, PNG, and WEBP images are allowed' });
+      }
+
+      // Upload to Cloudinary
+      const result = await cloudinary.uploader.upload(file.tempFilePath, {
+        folder: 'user_profiles', // You can set the folder as needed
+        resource_type: 'image',
+      });
+
+      // Save the Cloudinary URL to the profilePic field
+      user.profilePic = result.secure_url;
     }
 
-}
+    // Update other user details
+    user.name = name;
+    user.email = email;
+    user.phone = phone;
+    user.gender = gender;
+
+    await user.save();
+
+    req.session.user = user;
+
+    return res.status(STATUS_CODE.SUCCESS).json({
+      message: "Profile updated successfully",
+      user,
+    });
+  } catch (error) {
+    console.log("BACK END Error updating profile:", error);
+    return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
+  }
+};
 
  function generateOtp() {
   return Math.floor(1000 + Math.random() * 9000).toString();

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #000;
+            color: #e0e0e0;
+        }
+        
+        .card-dark {
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-pending {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+        
+        .status-shipped {
+            background-color: rgba(13, 110, 253, 0.1);
+            color: #0d6efd;
+            border: 1px solid rgba(13, 110, 253, 0.3);
+        }
+        
+        .status-delivered {
+            background-color: rgba(25, 135, 84, 0.1);
+            color: #198754;
+            border: 1px solid rgba(25, 135, 84, 0.3);
+        }
+        
+        .status-cancelled {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+        
+        .product-img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            border-radius: 6px;
+            background-color: #2a2a2a;
+            padding: 5px;
+            border: 1px solid #333;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #333;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 20px;
+        }
+        
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 5px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 3px solid #1a1a1a;
+            z-index: 1;
+        }
+        
+        .timeline-item.completed::before {
+            background-color: #198754;
+        }
+        
+        .timeline-item.pending::before {
+            background-color: #ffc107;
+        }
+        
+        .timeline-item.upcoming::before {
+            background-color: #6c757d;
+        }
+        
+        .btn-dark-primary {
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+        }
+        
+        .btn-dark-primary:hover {
+            background-color: #0b5ed7;
+            color: white;
+        }
+        
+        .btn-dark-secondary {
+            background-color: rgba(13, 110, 253, 0.1);
+            color: #0d6efd;
+            border: 1px solid rgba(13, 110, 253, 0.3);
+        }
+        
+        .btn-dark-secondary:hover {
+            background-color: rgba(13, 110, 253, 0.2);
+            color: #0d6efd;
+        }
+        
+        .border-dark {
+            border-color: #333 !important;
+        }
+        
+        .text-muted-dark {
+            color: #8a8a8a !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="text-white">Order Details</h1>
+                <p class="text-muted-dark mb-0">View and manage your order information</p>
+            </div>
+            <button onclick="window.history.back()" class="btn btn-link text-primary text-decoration-none">
+                <i class="fas fa-arrow-left me-2"></i> Back to Orders
+            </button>
+        </div>
+        
+        <!-- Order Summary -->
+        <div class="card card-dark mb-4">
+            <div class="card-body">
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-6 mb-3 mb-md-0">
+                        <h2 class="h5 mb-1 text-white">Order #ORD-2023-12345</h2>
+                        <p class="text-muted-dark mb-0">Placed on <span id="order-date">October 15, 2023 at 10:30 AM</span></p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <span id="order-status" class="status-badge status-pending">Pending</span>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <div class="p-3 bg-dark rounded">
+                            <h3 class="text-muted-dark fs-6 mb-1">Payment Method</h3>
+                            <p id="payment-method" class="mb-0 text-white">Credit Card</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <div class="p-3 bg-dark rounded">
+                            <h3 class="text-muted-dark fs-6 mb-1">Shipping Method</h3>
+                            <p class="mb-0 text-white">Standard Delivery (3-5 days)</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 bg-dark rounded">
+                            <h3 class="text-muted-dark fs-6 mb-1">Coupon Applied</h3>
+                            <p id="coupon-applied" class="mb-0 text-white">No</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-lg-8 mb-4 mb-lg-0">
+                <!-- Order Items -->
+                <div class="card card-dark mb-4">
+                    <div class="card-body">
+                        <h2 class="h5 mb-4 text-white">Order Items (3)</h2>
+                        
+                        <!-- Product 1 -->
+                        <div class="row align-items-center mb-3 pb-3 border-bottom border-dark">
+                            <div class="col-3 col-md-2">
+                                <img src="https://via.placeholder.com/150" class="product-img img-fluid" alt="Product">
+                            </div>
+                            <div class="col-9 col-md-10">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h3 class="h6 mb-1 text-white">Wireless Bluetooth Headphones</h3>
+                                        <p class="text-muted-dark mb-1 small">Brand: SoundMaster</p>
+                                        <p class="text-muted-dark mb-0 small">Color: Black</p>
+                                    </div>
+                                    <div class="col-md-4 text-md-end mt-2 mt-md-0">
+                                        <p class="mb-1 text-white">$99.99</p>
+                                        <p class="text-muted-dark small mb-0">Qty: 1</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Product 2 -->
+                        <div class="row align-items-center mb-3 pb-3 border-bottom border-dark">
+                            <div class="col-3 col-md-2">
+                                <img src="https://via.placeholder.com/150" class="product-img img-fluid" alt="Product">
+                            </div>
+                            <div class="col-9 col-md-10">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h3 class="h6 mb-1 text-white">Smartphone Case</h3>
+                                        <p class="text-muted-dark mb-1 small">Brand: CasePro</p>
+                                        <p class="text-muted-dark mb-0 small">Model: iPhone 13</p>
+                                    </div>
+                                    <div class="col-md-4 text-md-end mt-2 mt-md-0">
+                                        <p class="mb-1 text-white">$19.99</p>
+                                        <p class="text-muted-dark small mb-0">Qty: 2</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Product 3 -->
+                        <div class="row align-items-center">
+                            <div class="col-3 col-md-2">
+                                <img src="https://via.placeholder.com/150" class="product-img img-fluid" alt="Product">
+                            </div>
+                            <div class="col-9 col-md-10">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <h3 class="h6 mb-1 text-white">USB-C Charging Cable</h3>
+                                        <p class="text-muted-dark mb-1 small">Brand: PowerFlow</p>
+                                        <p class="text-muted-dark mb-0 small">Length: 6ft</p>
+                                    </div>
+                                    <div class="col-md-4 text-md-end mt-2 mt-md-0">
+                                        <p class="mb-1 text-white">$12.99</p>
+                                        <p class="text-muted-dark small mb-0">Qty: 1</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Order Timeline -->
+                <div class="card card-dark">
+                    <div class="card-body">
+                        <h2 class="h5 mb-4 text-white">Order Timeline</h2>
+                        
+                        <div class="timeline">
+                            <div class="timeline-item completed">
+                                <h3 class="h6 mb-1 text-white">Order Placed</h3>
+                                <p class="text-muted-dark small mb-0">October 15, 2023 at 10:30 AM</p>
+                            </div>
+                            <div class="timeline-item pending">
+                                <h3 class="h6 mb-1 text-white">Processing</h3>
+                                <p class="text-muted-dark small mb-0">Expected by October 16, 2023</p>
+                            </div>
+                            <div class="timeline-item upcoming">
+                                <h3 class="h6 mb-1 text-white">Shipped</h3>
+                                <p class="text-muted-dark small mb-0">Not yet shipped</p>
+                            </div>
+                            <div class="timeline-item upcoming">
+                                <h3 class="h6 mb-1 text-white">Delivered</h3>
+                                <p class="text-muted-dark small mb-0">Expected by October 20, 2023</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column -->
+            <div class="col-lg-4">
+                <!-- Shipping Address -->
+                <div class="card card-dark mb-4">
+                    <div class="card-body">
+                        <h2 class="h5 mb-3 text-white">Shipping Address</h2>
+                        <address class="text-muted-dark">
+                            <strong class="text-white">John Doe</strong><br>
+                            123 Main Street<br>
+                            Apt 4B<br>
+                            New York, NY 10001<br>
+                            United States<br><br>
+                            <i class="fas fa-phone me-2"></i> +1 (555) 123-4567
+                        </address>
+                    </div>
+                </div>
+                
+                <!-- Payment Summary -->
+                <div class="card card-dark mb-4">
+                    <div class="card-body">
+                        <h2 class="h5 mb-3 text-white">Payment Summary</h2>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted-dark">Subtotal (3 items)</span>
+                                <span class="text-white">$152.96</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted-dark">Shipping</span>
+                                <span class="text-white">$5.99</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="text-muted-dark">Discount</span>
+                                <span class="text-success">-$10.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between border-top border-dark pt-2">
+                                <span class="text-white fw-bold">Total</span>
+                                <span class="text-white fw-bold">$148.95</span>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-dark-primary w-100">
+                            <i class="fas fa-download me-2"></i> Download Invoice
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Order Actions -->
+                <div class="card card-dark">
+                    <div class="card-body">
+                        <h2 class="h5 mb-3 text-white">Order Actions</h2>
+                        
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-dark-secondary">
+                                <i class="fas fa-truck me-2"></i> Track Order
+                            </button>
+                            <button class="btn btn-dark-secondary">
+                                <i class="fas fa-undo me-2"></i> Request Return
+                            </button>
+                            <button class="btn btn-dark-secondary">
+                                <i class="fas fa-times-circle me-2"></i> Cancel Order
+                            </button>
+                            <button class="btn btn-dark-secondary">
+                                <i class="fas fa-question-circle me-2"></i> Need Help?
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Order data (would normally come from API/backend)
+        const orderData = {
+            orderId: "ORD-2023-12345",
+            orderDate: "2023-10-15T10:30:00",
+            status: "Pending",
+            paymentMethod: "Credit Card",
+            couponApplied: true,
+            items: [
+                {
+                    name: "Wireless Bluetooth Headphones",
+                    brand: "SoundMaster",
+                    variant: "Black",
+                    price: 99.99,
+                    quantity: 1,
+                    image: "https://via.placeholder.com/150"
+                },
+                {
+                    name: "Smartphone Case",
+                    brand: "CasePro",
+                    variant: "iPhone 13",
+                    price: 19.99,
+                    quantity: 2,
+                    image: "https://via.placeholder.com/150"
+                },
+                {
+                    name: "USB-C Charging Cable",
+                    brand: "PowerFlow",
+                    variant: "6ft",
+                    price: 12.99,
+                    quantity: 1,
+                    image: "https://via.placeholder.com/150"
+                }
+            ],
+            subtotal: 152.96,
+            shipping: 5.99,
+            discount: 10.00,
+            total: 148.95,
+            address: {
+                name: "John Doe",
+                street: "123 Main Street",
+                apartment: "Apt 4B",
+                city: "New York",
+                state: "NY",
+                zip: "10001",
+                country: "United States",
+                phone: "+1 (555) 123-4567"
+            }
+        };
+
+        // Format date
+        const formatDate = (dateString) => {
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        };
+
+        // Update status badge
+        const updateStatusBadge = (status) => {
+            const badge = document.getElementById('order-status');
+            badge.textContent = status;
+            badge.className = 'status-badge';
+            
+            switch(status) {
+                case 'Pending':
+                    badge.classList.add('status-pending');
+                    break;
+                case 'Shipped':
+                    badge.classList.add('status-shipped');
+                    break;
+                case 'Delivered':
+                    badge.classList.add('status-delivered');
+                    break;
+                case 'Cancelled':
+                    badge.classList.add('status-cancelled');
+                    break;
+                default:
+                    badge.classList.add('status-pending');
+            }
+        };
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set order date
+            document.getElementById('order-date').textContent = formatDate(orderData.orderDate);
+            
+            // Set status
+            updateStatusBadge(orderData.status);
+            
+            // Set payment method
+            document.getElementById('payment-method').textContent = orderData.paymentMethod;
+            
+            // Set coupon status
+            document.getElementById('coupon-applied').textContent = 
+                orderData.couponApplied ? 'Yes (SAVE10)' : 'No';
+        });
+    </script>
+</body>
+</html>

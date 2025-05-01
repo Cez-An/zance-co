@@ -5,7 +5,8 @@ import adminAuth from '../middlewares/adminAuth.js'
 import customerController from '../controllers/admin/customerController.js'
 import categoryController from '../controllers/admin/categoryController.js'
 import productController from "../controllers/admin/productController.js";
-// import uploads from '../helpers/multer.js'
+import orderController from "../controllers/admin/orderController.js"
+
 
 // Admin login management
 router.get('/login',adminAuth.islogin,adminController.renderAdminLoginPage)
@@ -37,5 +38,10 @@ router.get('/products/:id',adminAuth.checkSession,productController.renderProduc
 router.get('/blockProduct',adminAuth.checkSession,productController.productBlocked)
 router.get('/unBlockProduct',adminAuth.checkSession,productController.productUnBlocked)
 
+//order
+router.get('/orders',adminAuth.checkSession, orderController.loadOrders);
+// router.patch('/orders', adminController.updateStatus);
+// router.patch('/orders/all-status', adminController.updateAllOrderItemsStatus);
+// router.get('/vieworders', adminAuth.checkSession, adminController.viewOrders);
 
 export default router;

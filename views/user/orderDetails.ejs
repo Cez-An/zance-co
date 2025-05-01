@@ -339,19 +339,13 @@
                     <div class="card-body">
                         <h2 class="h5 mb-3 text-white">Order Actions</h2>
                         
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-dark-secondary">
-                                <i class="fas fa-truck me-2"></i> Track Order
-                            </button>
+                        <div class="d-grid gap-2">                            
                             <button class="btn btn-dark-secondary">
                                 <i class="fas fa-undo me-2"></i> Request Return
                             </button>
                             <button class="btn btn-dark-secondary">
                                 <i class="fas fa-times-circle me-2"></i> Cancel Order
-                            </button>
-                            <button class="btn btn-dark-secondary">
-                                <i class="fas fa-question-circle me-2"></i> Need Help?
-                            </button>
+                            </button>                           
                         </div>
                     </div>
                 </div>
@@ -460,8 +454,8 @@
             document.getElementById('payment-method').textContent = orderData.paymentMethod;
             
             // Set coupon status
-            document.getElementById('coupon-applied').textContent = 
-                orderData.couponApplied ? 'Yes (SAVE10)' : 'No';
+            // document.getElementById('coupon-applied').textContent = 
+            //     orderData.couponApplied ? 'Yes (SAVE10)' : 'No';
         });
     </script>
 </body>

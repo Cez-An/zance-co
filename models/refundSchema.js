@@ -1,9 +1,14 @@
 import mongoose from 'mongoose';
 
 const refundSchema = new mongoose.Schema({
-    orderId: {
+    order: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order',
+        required: true
+    },
+    product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Products',
         required: true
     },
     userId: {
@@ -17,17 +22,14 @@ const refundSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['Pending', 'Approved', 'Rejected', 'Processed'],
-        default: 'Pending'
+        enum: ['Requested', 'Approved', 'Rejected']
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
+    variant: {
+        color: { type: String},
+        weight: { type: String}
     },
-    processedAt: {
-        type: Date
-    }
-});
+},{timestamps : true});
 
 const Refund = mongoose.model('Refund', refundSchema);
+
 export default Refund;

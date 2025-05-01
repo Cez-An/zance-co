@@ -566,7 +566,7 @@ const testing = async (req, res) => {
   try {
     const product = await Product.find({ isBlocked: false }).limit(12);
 
-    let page = "selectAddress";
+    let page = "orderDetails";
 
     res.render(`user/${page}`, { product });
   } catch (error) {

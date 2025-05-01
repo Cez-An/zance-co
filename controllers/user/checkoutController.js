@@ -19,7 +19,7 @@ const loadCheckout = async (req, res) => {
 
     if (cart && cart.items.length > 0) {
         cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.basePrice, 0);
-        deliveryCharge = cartTotal < 499 ? 39 : 0;
+        deliveryCharge = cartTotal < 499 ? 40 : 0;
         grandTotal = cartTotal + deliveryCharge;
     }
 
@@ -34,7 +34,6 @@ const loadCheckout = async (req, res) => {
 
     res.render('user/checkout', {user, address, cart, calculatedValues: {cartTotal, deliveryCharge, grandTotal }});
 };
-
 
 const addShoppingAddress = async (req,res) =>{
     try {
@@ -116,7 +115,7 @@ const  saveSelectedAddress = (req, res)=> {
     console.log(`save address accessed`);
     
     const { selectedAddress } = req.body;
-    console.log(selectedAddress);
+    // console.log(selectedAddress);
     
     if (!selectedAddress) {
         return res.status(400).send('No address provided');

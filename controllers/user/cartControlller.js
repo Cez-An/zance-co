@@ -106,55 +106,6 @@ const addItemToCart = async (req, res) => {
     }
 };
 
-// const updateQuantity = async (req, res) => {
-//     const { productId, change } = req.body;
-//     const userId = req.session.user?.id ?? req.session.user?._id ?? null;
-
-//     try {
-//         const cart = await Cart.findOne({ userId: userId });
-
-//         if (!cart) {
-//             return res.status(STATUS_CODE.NOT_FOUND).json({ message: "Cart not found" });
-//         }
-
-//         const item = cart.items.find(item =>
-//             item.productId.toString() === productId
-            
-//         );
-
-//         if (!item) {
-//             return res.status(STATUS_CODE.NOT_FOUND).json({ message: "Product not found in cart" });
-//         }
-
-//         const product = await Product.findOne({
-//             _id: productId           
-//         });
-
-//         if (!product) {
-//             return res.status(STATUS_CODE.NOT_FOUND).json({ message: "Product not found" });
-//         }
-
-//         if (change > 0) {
-//             if (item.quantity < variant.stock) {
-//                 item.quantity += 1;
-//             } else {
-//                 return res.status(STATUS_CODE.BAD_REQUEST).json({ error: "Product stock limit reached" });
-//             }
-//         } else if (change < 0 && item.quantity > 1) {
-//             item.quantity -= 1;
-//         } else if (change < 0 && item.quantity === 1) {
-//             return res.status(STATUS_CODE.BAD_REQUEST).json({ message: "Quantity unchanged as it’s already at minimum", cart });
-//         }
-
-//         await cart.save();
-
-//         return res.status(STATUS_CODE.SUCCESS).json({ message: "Quantity updated successfully", cart });
-//     } catch (error) {
-//         console.error("Error updating quantity:", error);
-//         return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
-//     }
-// };
-
 const updateQuantity = async (req, res) => {
     console.log(`update quantity accessed`);
     

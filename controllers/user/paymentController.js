@@ -23,12 +23,12 @@ const loadPayments = async (req, res) => {
         let grandTotal = 0;
 
         if (cart && cart.items.length > 0) {
-            cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.price, 0);
-            deliveryCharge = cartTotal < 499 ? 39 : 0;
+            cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.basePrice, 0);
+            deliveryCharge = cartTotal < 499 ? 40 : 0;
             grandTotal = cartTotal + deliveryCharge;
         }
 
-        deliveryCharge = cartTotal < 499 ? 39 : 0;
+        deliveryCharge = cartTotal < 499 ? 40 : 0;
 
         const couponDiscount = req.session.couponDiscount || 0;
 
@@ -78,14 +78,14 @@ const paymentSuccess = async (req,res) => {
                     product: item.productId._id,
                     name : item.name,
                     quantity: item.quantity,
-                    price: item.productId.salePrice,
+                    basePrice: item.productId.salePrice,
                     brand : item.brand,
                     productImage : item.productImage
                 })),
                 totalPrice: cart.items.reduce((sum, item) => sum + item.quantity * item.basePrice, 0),
                 paymentMethod,
                 address : addressId,
-                status: 'Pending',                
+                status: 'Placed',                
                 });
 
             await order.save();

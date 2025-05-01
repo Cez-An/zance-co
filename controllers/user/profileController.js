@@ -42,35 +42,6 @@ const renderProfileEdit = async (req,res)=>{
   }
 }
 
-// const updateProfile = async (req,res) => {
-//     try {
-//         let { email,name,phone,gender } = req.body;
-
-//         const userId = req.query.id;
-
-//         const user = await User.findOne({userId : userId});
-
-//         if (req.file) {
-//             user.profilePic = req.file.path;
-//         }
-        
-//         user.name = name;
-//         user.email = email;
-//         user.phone = phone;    
-//         user.gender = gender;
-
-//         await user.save();
-        
-//         req.session.user = user
-
-//         return res.status(STATUS_CODE.SUCCESS).json({ message: "Profile updated successfully", user });
-
-//     } catch (error) {
-//         console.log("BACK END Error updating profile:", error);
-//         return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
-//     }
-
-// }
 
 const updateProfile = async (req, res) => {
   try {
@@ -499,11 +470,10 @@ const loadOrders = async (req,res) => {
       if (!userId) {
           return res.status(401).redirect('/user/login');
       }
-      const [firstName, lastName] = user.name.split(' ');
+      const firstName = user.name;
       const orders = await Order.find({ userId })
               .populate({
                   path: 'orderItems.product',
-                  select: 'name price brand variants'
               })
               .sort({ createdAt: -1 });
 
@@ -547,7 +517,7 @@ const loadOrderDetails = async (req,res)=> {
       const address = addresses?.details?.[0] || null;
       
 
-      res.render('user/orderdetails',{title : "My Orders",order, address, user, firstName});
+      res.render('user/orderDetails',{title : "My Orders",order, address, user, firstName});
 
   } catch (error) {
       console.error('Error loading orders:', error.message);

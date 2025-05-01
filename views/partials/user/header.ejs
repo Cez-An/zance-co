@@ -47,8 +47,20 @@
         <div class="offcanvas__nav__option">
             <a href="/user/wishlist"><i class="bi bi-suit-heart"></i></a>
             <a href="/user/cart"><i class="bi bi-bag"></i></a>
-            <a href="/user/signup">SIGN UP</a> 
-            <a href="/user/login">LOG IN</a>
+            <% if (locals.user) { %>
+                <div class="dropdown">
+                   <a href="" class="sign-in-link"  id="user-name"><%=locals.user.name%></a>
+                   <div class="dropdown-content">
+                       <a href="/user/userProfile">User Profile</a>
+                       <a href="/user/logout">Logout</a>
+                   </div>
+                </div>
+                <% } else { %>
+                
+               <a href="/user/signup">SIGN UP</a>
+               <a href="/user/login">LOG IN</a>
+
+               <% } %>
 
         </div>
         <div id="mobile-menu-wrap"></div>
@@ -72,7 +84,7 @@
                     <nav class="header__menu mobile-menu">
                         <ul>
                             <li class="active"><a href="/user">HOME</a></li>
-                            <li><a href="/user/renderShopPage">SHOPS</a></li>
+                            <li><a href="/user/renderShopPage">SHOP</a></li>
                             <!-- <li><a href="#">PAGES</a>
                                 <ul class="dropdown">
                                     <li><a href="/user">About Us</a></li>
@@ -94,7 +106,7 @@
 
                         <% if (locals.user) { %>
                          <div class="dropdown">
-                            <a href="" class="sign-in-link" id="user-name"><%=locals.user.name%></a>
+                            <a  class="sign-in-link" id="user-name"><%=locals.user.name%></a>
                             <div class="dropdown-content">
                                 <a href="/user/userProfile">User Profile</a>
                                 <a href="/user/logout">Logout</a>

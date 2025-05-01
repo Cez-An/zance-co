@@ -232,7 +232,7 @@
             display: flex;
             align-items: center;
             padding: 10px 0;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid #bababa;
         }
         .item-img {
             width: 50px;
@@ -300,6 +300,38 @@
         a {
             text-decoration: none;
         }
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            
+        }
+        
+        .status-pending {
+            background-color:rgb(255, 230, 0);
+            color: #000000;
+            border: 1px solid rgb(255, 230, 0);
+        }
+        
+        .status-shipped {
+            background-color: rgba(13, 110, 253, 0.1);
+            color: #0d6efd;
+            border: 1px solid rgba(13, 110, 253, 0.3);
+        }
+        
+        .status-delivered {
+            background-color: rgba(25, 135, 84, 0.1);
+            color: #198754;
+            border: 1px solid rgba(25, 135, 84, 0.3);
+        }
+        
+        .status-cancelled {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+        
     </style>
 </head>
 <body>
@@ -324,7 +356,7 @@
             <!-- Sidebar -->
             <div class="d-flex gap-2">
                 <!-- Orders Content -->
-                <div class="col-9">
+                <div class="col-12">
                     <div class="page-header text-white">
                         <h1 class="text-white">My Orders</h1>
                     </div>
@@ -335,9 +367,7 @@
                                 <!-- Order Header -->
                                 <div class="order-header">
                                     <span class="order-id">Order - <%= order.orderId %></span>
-                                    <span class="order-status <%= (order.status || '').toLowerCase() %>">
-                                        <%= order.status || 'Pending' %>
-                                    </span>
+                                    
                                 </div>
                     
                                 <!-- Order Details -->
@@ -368,23 +398,16 @@
                                                 class="item-img">
                                             <div class="item-info">
                                                 <h6><%= item.product.name %></h6>
-                                                <p>Qty: <%= item.quantity %> | ₹ <%= order.totalPrice %></p>
+                                                <p>Qty: <%= item.quantity %> | <strong>₹ <%= item.price %></strong></p>
                                             </div>
-                                            <span class="item-price">₹ <%= order.totalPrice %></span>
+                                            <span id="order-status" class="status-badge status-pending">Placed</span>
                                         </div>
                                     <% }) %>
                                 </div>
                     
                                 <!-- Action Buttons -->
                                 <div class="d-flex gap-3 justify-content-end">
-                                    <button class="btn btn-primary details-btn" data-order-id="<%= order.orderId %>">View Order</button>
-                                    <% if (order.status !== 'Cancelled') { %>
-                                        <% if (order.status === 'Delivered') { %>
-                                            <button class="btn btn-outline-secondary return-btn" data-order-id="<%= order.orderId %>">Return</button>
-                                        <% } else { %>
-                                            <button class="btn btn-outline-secondary cancel-btn" data-order-id="<%= order.orderId %>">Cancel</button>
-                                        <% } %>
-                                    <% } %>
+                                    <button class="btn btn-primary details-btn" data-order-id="<%= order.orderId %>">View Order</button>                                    
                                 </div>
                             </div>
                         <% }) %>
@@ -408,11 +431,6 @@
             });
         </script>
     
-
-
-
-
-
 
     <script>
         window.addEventListener('load', function() {

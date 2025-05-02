@@ -2,7 +2,6 @@ import express from "express";
 import userController from "../controllers/user/userController.js";
 import userAuth from "../middlewares/userAuth.js";
 import profileController from '../controllers/user/profileController.js'
-// import uploads from '../helpers/multer.js'
 import cartControlller from '../controllers/user/cartControlller.js'
 import checkoutController from "../controllers/user/checkoutController.js";
 import wishlistController from "../controllers/user/wishlistController.js"

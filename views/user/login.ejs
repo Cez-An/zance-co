@@ -54,7 +54,7 @@
                   <input type="password" class="form-control" name="password" id="password" placeholder="XXXXXXXXXX" value="" required>
                 </div>
 
-                <% if (locals.message && message.length > 0) { %>
+                <% if (typeof message !== 'undefined' && message.length > 0) { %>
                  <div class="alert alert-danger text-center">
                   <%=message %>
                  </div>

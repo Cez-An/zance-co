@@ -443,10 +443,106 @@ const renderProductsEditPage = async (req, res) => {
 //   }
 // };
 
+// const updateProduct = async (req, res) => {
+//   try {
+//     console.log("ACCCCCCEDED UPDATE PRODUCT");
+    
+//     const { id } = req.params;
+//     const {
+//       name,
+//       description,
+//       category,
+//       basePrice,
+//       discount,
+//       stock,
+//       brand,
+//     } = req.body;
+
+
+//     const existingProduct = await Product.findById(id);
+//     if (!existingProduct) {
+//       return res.status(404).json({ success: false, message: 'Product not found' });
+//     }
+
+//     // Start with existing images
+//     let imageSlots = existingProduct.productImage || ['', '', '', ''];
+
+//     // Handle file uploads (express-fileupload)
+//     if (req.files) {
+//       const files = Object.entries(req.files); // [['variantImages[0]', file], ['variantImages[2]', file], ...]
+
+//       for (const [key, file] of files) {
+//         const match = key.match(/variantImages\[(\d)\]/);
+//         if (match) {
+//           const slot = parseInt(match[1]);
+//           if (slot >= 0 && slot < 4) {
+//             // Upload new image to Cloudinary
+//             const result = await cloudinary.uploader.upload(file.tempFilePath, {
+//               folder: 'products',
+//             });
+
+//             // Store only the image URL
+//             imageSlots[slot] = result.secure_url;
+
+//             // Remove temp file
+//             fs.unlinkSync(file.tempFilePath);
+//           }
+//         }
+//       }
+//     }
+
+//     // Ensure exactly 4 valid image URLs
+//     if (imageSlots.length !== 4 || imageSlots.some(url => !url)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: 'Exactly four images are required',
+//       });
+//     }
+
+//     // Validate category and adjust count if changed
+//     const categoryFind = await Category.findById(category);
+//     if (!categoryFind) {
+//       return res.status(400).json({ success: false, message: 'Invalid category' });
+//     }
+
+//     if (existingProduct.category.toString() !== category) {
+//       await Category.findByIdAndUpdate(existingProduct.category, { $inc: { count: -1 } });
+//       await Category.findByIdAndUpdate(category, { $inc: { count: 1 } });
+//     }
+
+//     const updatedProduct = await Product.findByIdAndUpdate(
+//       id,
+//       {
+//         name,
+//         description,
+//         category,
+//         brand,
+//         salePrice: basePrice,
+//         productOffer: discount,
+//         quantity: stock,
+//         productImage: imageSlots,
+//       },
+//       { new: true, runValidators: true }
+//     );
+
+//     res.status(200).json({
+//       success: true,
+//       message: 'Product updated successfully',
+//       redirect: '/admin/products',
+//     });
+//   } catch (error) {
+//     console.error('Error updating product:', error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Error updating product: ' + error.message,
+//     });
+//   }
+// };
+
 const updateProduct = async (req, res) => {
   try {
     console.log("ACCCCCCEDED UPDATE PRODUCT");
-    
+
     const { id } = req.params;
     const {
       name,
@@ -458,7 +554,6 @@ const updateProduct = async (req, res) => {
       brand,
     } = req.body;
 
-
     const existingProduct = await Product.findById(id);
     if (!existingProduct) {
       return res.status(404).json({ success: false, message: 'Product not found' });
@@ -467,27 +562,19 @@ const updateProduct = async (req, res) => {
     // Start with existing images
     let imageSlots = existingProduct.productImage || ['', '', '', ''];
 
-    // Handle file uploads (express-fileupload)
-    if (req.files) {
-      const files = Object.entries(req.files); // [['variantImages[0]', file], ['variantImages[2]', file], ...]
+    // Handle file uploads (expecting variantImages like in addProduct)
+    if (req.files && req.files.variantImages) {
+      const files = Array.isArray(req.files.variantImages)
+        ? req.files.variantImages
+        : [req.files.variantImages];
 
-      for (const [key, file] of files) {
-        const match = key.match(/variantImages\[(\d)\]/);
-        if (match) {
-          const slot = parseInt(match[1]);
-          if (slot >= 0 && slot < 4) {
-            // Upload new image to Cloudinary
-            const result = await cloudinary.uploader.upload(file.tempFilePath, {
-              folder: 'products',
-            });
-
-            // Store only the image URL
-            imageSlots[slot] = result.secure_url;
-
-            // Remove temp file
-            fs.unlinkSync(file.tempFilePath);
-          }
-        }
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const result = await cloudinary.uploader.upload(file.tempFilePath, {
+          folder: 'products',
+        });
+        imageSlots[i] = result.secure_url;
+        fs.unlinkSync(file.tempFilePath); // Clean up temp file
       }
     }
 
@@ -499,12 +586,13 @@ const updateProduct = async (req, res) => {
       });
     }
 
-    // Validate category and adjust count if changed
+    // Validate category
     const categoryFind = await Category.findById(category);
     if (!categoryFind) {
       return res.status(400).json({ success: false, message: 'Invalid category' });
     }
 
+    // Adjust category count if changed
     if (existingProduct.category.toString() !== category) {
       await Category.findByIdAndUpdate(existingProduct.category, { $inc: { count: -1 } });
       await Category.findByIdAndUpdate(category, { $inc: { count: 1 } });
@@ -538,7 +626,6 @@ const updateProduct = async (req, res) => {
     });
   }
 };
-
 
 
 export default {

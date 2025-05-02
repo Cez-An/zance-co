@@ -50,12 +50,36 @@ const loadSignUp = async (req, res) => {
 
 const loadLogin = async (req, res) => {
   try {
-    if (!req.session.user) {
-      return res.render("user/login");
-    } else {
+    if (req.session.user) {
       return res.redirect("/user");
     }
+
+    // Handle error messages from query params
+    let message = "";
+    const { error } = req.query;
+
+    switch (error) {
+      case "user_not_found":
+        message = "User not found";
+        break;
+      case "blocked":
+        message = "User is blocked by admin";
+        break;
+      case "incorrect_password":
+        message = "Incorrect Password";
+        break;
+      case "server_error":
+        message = "Login failed. Please try again later";
+        break;
+      case "google_auth_failed":
+        message = "Google authentication failed. Please try again.";
+        break;
+    }
+
+    return res.render("user/login", { message });
+
   } catch (error) {
+    console.error("loadLogin error", error);
     return res.redirect("/user/pageNotFound");
   }
 };
@@ -270,16 +294,17 @@ const login = async (req, res) => {
     const findUser = await User.findOne({ email: email.trim() });
 
     if (!findUser) {
-      return res.render("user/login", { message: "User not found" });
+      return res.redirect("/login?error=user_not_found");
     }
+
     if (findUser.isBlocked) {
-      return res.render("user/login", { message: "User is blocked by admin" });
+      return res.redirect("/login?error=blocked");
     }
 
     const passwordMatch = await bcrypt.compare(password, findUser.password);
 
     if (!passwordMatch) {
-      return res.render("user/login", { message: "Incorrect Password" });
+      return res.redirect("/login?error=incorrect_password");
     }
 
     req.session.user = findUser;
@@ -287,15 +312,13 @@ const login = async (req, res) => {
     res.redirect("/user");
   } catch (error) {
     console.error("login error", error);
-    res.render("user/login", {
-      message: "login failed. Please try again later",
-    });
+    res.redirect("/login?error=server_error");
   }
 };
 
 const logout = (req, res) => {
   console.log("session destroy accessed");
-  req.session.destroy();
+  req.session.user=false;
   res.redirect("/user");
 };
 

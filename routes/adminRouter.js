@@ -6,6 +6,7 @@ import customerController from '../controllers/admin/customerController.js'
 import categoryController from '../controllers/admin/categoryController.js'
 import productController from "../controllers/admin/productController.js";
 import orderController from "../controllers/admin/orderController.js"
+import refundController from "../controllers/user/refundController.js";
 
 
 // Admin login management
@@ -40,8 +41,11 @@ router.get('/unBlockProduct',adminAuth.checkSession,productController.productUnB
 
 //order
 router.get('/orders',adminAuth.checkSession, orderController.loadOrders);
-// router.patch('/orders', adminController.updateStatus);
-// router.patch('/orders/all-status', adminController.updateAllOrderItemsStatus);
-// router.get('/vieworders', adminAuth.checkSession, adminController.viewOrders);
+router.patch('/orders', adminController.updateStatus);
+router.patch('/orders/all-status', adminController.updateAllOrderItemsStatus);
+router.get('/vieworders', adminAuth.checkSession, adminController.viewOrders);
+
+//refund
+router.patch('/refunds', refundController.updateRefundStatus);
 
 export default router;

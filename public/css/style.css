@@ -3901,15 +3901,15 @@ ol {
 }
 
 .wishlist{
-	color: #5c5c5c ;
+	color: #929292 ;
 	font-size: 1.4rem;	
 }
 .wishlist2{
-	color: hsl(0, 100%, 57%) !important ;
+	color: #9549ff !important ;
 	font-size: 1.4rem;	
 }
 .wishlist:hover{
-	color: hsl(0, 100%, 57%) !important;
+	color: #6510dc9f !important;
 	font-size: 1.6rem;	
 }
 .search-bar{

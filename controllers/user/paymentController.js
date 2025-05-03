@@ -80,7 +80,8 @@ const paymentSuccess = async (req,res) => {
                     quantity: item.quantity,
                     basePrice: item.productId.salePrice,
                     brand : item.brand,
-                    productImage : item.productImage
+                    productImage : item.productImage,
+                    currentStatus:'Placed',
                 })),
                 totalPrice: cart.items.reduce((sum, item) => sum + item.quantity * item.basePrice, 0),
                 paymentMethod,
@@ -88,6 +89,11 @@ const paymentSuccess = async (req,res) => {
                 status: 'Placed',                
                 });
 
+                for(let item of cart.items){
+                    await Product.findOneAndUpdate({_id:item.productId._id},{
+                        $inc:{quantity:-item.quantity}
+                    })};
+                    
             await order.save();
 
             await Cart.findByIdAndDelete(cart._id);

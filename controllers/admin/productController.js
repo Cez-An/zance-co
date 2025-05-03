@@ -559,7 +559,7 @@ const updateProduct = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Product not found' });
     }
 
-    // Start with existing images
+    
     let imageSlots = existingProduct.productImage || ['', '', '', ''];
 
     // Handle file uploads (expecting variantImages like in addProduct)
@@ -574,11 +574,11 @@ const updateProduct = async (req, res) => {
           folder: 'products',
         });
         imageSlots[i] = result.secure_url;
-        fs.unlinkSync(file.tempFilePath); // Clean up temp file
+        fs.unlinkSync(file.tempFilePath); 
       }
     }
 
-    // Ensure exactly 4 valid image URLs
+    
     if (imageSlots.length !== 4 || imageSlots.some(url => !url)) {
       return res.status(400).json({
         success: false,
@@ -586,13 +586,13 @@ const updateProduct = async (req, res) => {
       });
     }
 
-    // Validate category
+    
     const categoryFind = await Category.findById(category);
     if (!categoryFind) {
       return res.status(400).json({ success: false, message: 'Invalid category' });
     }
 
-    // Adjust category count if changed
+    
     if (existingProduct.category.toString() !== category) {
       await Category.findByIdAndUpdate(existingProduct.category, { $inc: { count: -1 } });
       await Category.findByIdAndUpdate(category, { $inc: { count: 1 } });

@@ -108,12 +108,11 @@ const addItemToCart = async (req, res) => {
 
 const updateQuantity = async (req, res) => {
     console.log(`update quantity accessed`);
-    
+
     const { productId, change } = req.body;
     const userId = req.session.user?.id ?? req.session.user?._id ?? null;
     console.log(userId);
-    
-    
+
     if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });
     }
@@ -122,13 +121,11 @@ const updateQuantity = async (req, res) => {
     }
 
     try {
-        
         const cart = await Cart.findOne({ userId });
         if (!cart) {
             return res.status(404).json({ error: "Cart not found" });
         }
 
-        
         const item = cart.items.find((item) =>
             item.productId.toString() === productId
         );
@@ -136,33 +133,48 @@ const updateQuantity = async (req, res) => {
             return res.status(404).json({ error: "Product not found in cart" });
         }
 
-        
-        const product = await Product.findOne({ _id: productId });
+        const product = await Product.findById(productId);
         if (!product) {
             return res.status(404).json({ error: "Product not found" });
         }
 
-        
+        if (product.status !== "Available") {
+            return res.status(400).json({ error: `Product is ${product.status}` });
+        }
+
+        // Increase quantity
         if (change > 0) {
-            if (item.quantity >= product.stock) {
+            if (item.quantity >= product.quantity) {
                 return res.status(400).json({ error: "Product stock limit reached" });
             }
             item.quantity += 1;
-        } else if (change < 0) {
+            product.quantity -= 1;
+
+            if (product.quantity === 0) {
+                product.status = "Out Of Stock";
+            }
+        }
+
+        // Decrease quantity
+        else if (change < 0) {
             if (item.quantity <= 1) {
                 return res.status(400).json({ error: "Cannot reduce quantity below 1" });
             }
             item.quantity -= 1;
+            product.quantity += 1;
+
+            if (product.status === "Out Of Stock" && product.quantity > 0) {
+                product.status = "Available";
+            }
         }
-        console.log(item.quantity);
-        
+
+        // Business rule: max 5 units
         if (item.quantity > 5) {
-            return res.status(STATUS_CODE.NOT_FOUND).json({
-                error: `Only 5 units can be purchased in one order.`
-            });
+            return res.status(400).json({ error: "Only 5 units can be purchased in one order." });
         }
-        
+
         await cart.save();
+        await product.save();
 
         return res.status(200).json({ message: "Quantity updated successfully", cart });
     } catch (error) {
@@ -170,6 +182,7 @@ const updateQuantity = async (req, res) => {
         return res.status(500).json({ error: "Internal server error" });
     }
 };
+
 
 const deleteFromcart = async (req,res)=> {
     try {

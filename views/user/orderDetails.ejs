@@ -1,462 +1,478 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Details</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<%-include("../../views/partials/user/header") %> 
+
+
+    <link rel="stylesheet" href="../../css/profile-section.css">
     <style>
-        body {
-            background-color: #000;
-            color: #e0e0e0;
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin: 0;
         }
-        
-        .card-dark {
-            background-color: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 8px;
-        }
-        
-        .status-badge {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
+
+        .order-section h3 {
+            font-size: 16px;
             font-weight: 600;
-            text-transform: uppercase;
+            margin-bottom: 10px;
+            color: #3C1549;
         }
-        
-        .status-pending {
-            background-color: rgba(255, 193, 7, 0.1);
-            color: #ffc107;
-            border: 1px solid rgba(255, 193, 7, 0.3);
+        .order-info {
+            font-size: 14px;
+            color: #666;
         }
-        
-        .status-shipped {
-            background-color: rgba(13, 110, 253, 0.1);
-            color: #0d6efd;
-            border: 1px solid rgba(13, 110, 253, 0.3);
+        .order-info span {
+            font-weight: 500;
+            color: #333;
         }
-        
-        .status-delivered {
-            background-color: rgba(25, 135, 84, 0.1);
-            color: #198754;
-            border: 1px solid rgba(25, 135, 84, 0.3);
+        .item-row {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.3s ease;
         }
-        
-        .status-cancelled {
-            background-color: rgba(220, 53, 69, 0.1);
-            color: #dc3545;
-            border: 1px solid rgba(220, 53, 69, 0.3);
+        .item-row:hover {
+            background-color: #f8f9fa;
         }
-        
-        .product-img {
-            width: 80px;
-            height: 80px;
-            object-fit: contain;
+        .item-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
             border-radius: 6px;
-            background-color: #2a2a2a;
-            padding: 5px;
-            border: 1px solid #333;
+            margin-right: 15px;
+            border: 1px solid #eee;
         }
-        
-        .timeline {
-            position: relative;
-            padding-left: 30px;
+        .item-info {
+            flex-grow: 1;
         }
-        
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 10px;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background-color: #333;
+        .item-info h6 {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0 0 5px;
+            color: #1a1a1a;
         }
-        
-        .timeline-item {
-            position: relative;
-            padding-bottom: 20px;
+        .item-info p {
+            font-size: 12px;
+            color: #777;
+            margin: 0;
         }
-        
-        .timeline-item:last-child {
-            padding-bottom: 0;
+        .item-price {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
         }
-        
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -30px;
-            top: 5px;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            border: 3px solid #1a1a1a;
-            z-index: 1;
+        .btn {
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 20px;
+            text-decoration: none;
+            transition: all 0.3s ease;
         }
-        
-        .timeline-item.completed::before {
-            background-color: #198754;
+        .order-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
         }
-        
-        .timeline-item.pending::before {
-            background-color: #ffc107;
-        }
-        
-        .timeline-item.upcoming::before {
-            background-color: #6c757d;
-        }
-        
-        .btn-dark-primary {
-            background-color: #0d6efd;
-            color: white;
-            border: none;
-        }
-        
-        .btn-dark-primary:hover {
-            background-color: #0b5ed7;
-            color: white;
-        }
-        
-        .btn-dark-secondary {
-            background-color: rgba(13, 110, 253, 0.1);
-            color: #0d6efd;
-            border: 1px solid rgba(13, 110, 253, 0.3);
-        }
-        
-        .btn-dark-secondary:hover {
-            background-color: rgba(13, 110, 253, 0.2);
-            color: #0d6efd;
-        }
-        
-        .border-dark {
-            border-color: #333 !important;
-        }
-        
-        .text-muted-dark {
-            color: #8a8a8a !important;
+        body{
+            background-color: white;
         }
     </style>
 </head>
 <body>
-    <div class="container py-4">
-        <!-- Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="text-white">Order Details</h1>
-                <p class="text-muted-dark mb-0">View and manage your order information</p>
-            </div>
-            <button onclick="window.history.back()" class="btn btn-link text-primary text-decoration-none">
-                <i class="fas fa-arrow-left me-2"></i> Back to Orders
-            </button>
-        </div>
-        
-        <!-- Order Summary -->
-        <div class="card card-dark mb-4">
-            <div class="card-body">
-                <div class="row align-items-center mb-3">
-                    <div class="col-md-6 mb-3 mb-md-0">
-                        <h2 class="h5 mb-1 text-white">Order #ORD-2023-12345</h2>
-                        <p class="text-muted-dark mb-0">Placed on <span id="order-date">October 15, 2023 at 10:30 AM</span></p>
-                    </div>
-                    <div class="col-md-6 text-md-end">
-                        <span id="order-status" class="status-badge status-pending">Pending</span>
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-md-4 mb-3 mb-md-0">
-                        <div class="p-3 bg-dark rounded">
-                            <h3 class="text-muted-dark fs-6 mb-1">Payment Method</h3>
-                            <p id="payment-method" class="mb-0 text-white">Credit Card</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-3 mb-md-0">
-                        <div class="p-3 bg-dark rounded">
-                            <h3 class="text-muted-dark fs-6 mb-1">Shipping Method</h3>
-                            <p class="mb-0 text-white">Standard Delivery (3-5 days)</p>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="p-3 bg-dark rounded">
-                            <h3 class="text-muted-dark fs-6 mb-1">Coupon Applied</h3>
-                            <p id="coupon-applied" class="mb-0 text-white">No</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="row">
-            <!-- Left Column -->
-            <div class="col-lg-8 mb-4 mb-lg-0">
-                <!-- Order Items -->
-                <div class="card card-dark mb-4">
-                    <div class="card-body">
-                        <h2 class="h5 mb-4 text-white">Order Items (3)</h2>
-                        
-                        <!-- Product 1 -->
-                        <div class="row align-items-center mb-3 pb-3 border-bottom border-dark">
-                            <div class="col-3 col-md-2">
-                                <img src="https://via.placeholder.com/150" class="product-img img-fluid" alt="Product">
-                            </div>
-                            <div class="col-9 col-md-10">
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <h3 class="h6 mb-1 text-white">Wireless Bluetooth Headphones</h3>
-                                        <p class="text-muted-dark mb-1 small">Brand: SoundMaster</p>
-                                        <p class="text-muted-dark mb-0 small">Color: Black</p>
-                                    </div>
-                                    <div class="col-md-4 text-md-end mt-2 mt-md-0">
-                                        <p class="mb-1 text-white">$99.99</p>
-                                        <p class="text-muted-dark small mb-0">Qty: 1</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Product 2 -->
-                        <div class="row align-items-center mb-3 pb-3 border-bottom border-dark">
-                            <div class="col-3 col-md-2">
-                                <img src="https://via.placeholder.com/150" class="product-img img-fluid" alt="Product">
-                            </div>
-                            <div class="col-9 col-md-10">
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <h3 class="h6 mb-1 text-white">Smartphone Case</h3>
-                                        <p class="text-muted-dark mb-1 small">Brand: CasePro</p>
-                                        <p class="text-muted-dark mb-0 small">Model: iPhone 13</p>
-                                    </div>
-                                    <div class="col-md-4 text-md-end mt-2 mt-md-0">
-                                        <p class="mb-1 text-white">$19.99</p>
-                                        <p class="text-muted-dark small mb-0">Qty: 2</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Product 3 -->
-                        <div class="row align-items-center">
-                            <div class="col-3 col-md-2">
-                                <img src="https://via.placeholder.com/150" class="product-img img-fluid" alt="Product">
-                            </div>
-                            <div class="col-9 col-md-10">
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <h3 class="h6 mb-1 text-white">USB-C Charging Cable</h3>
-                                        <p class="text-muted-dark mb-1 small">Brand: PowerFlow</p>
-                                        <p class="text-muted-dark mb-0 small">Length: 6ft</p>
-                                    </div>
-                                    <div class="col-md-4 text-md-end mt-2 mt-md-0">
-                                        <p class="mb-1 text-white">$12.99</p>
-                                        <p class="text-muted-dark small mb-0">Qty: 1</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Order Timeline -->
-                <div class="card card-dark">
-                    <div class="card-body">
-                        <h2 class="h5 mb-4 text-white">Order Timeline</h2>
-                        
-                        <div class="timeline">
-                            <div class="timeline-item completed">
-                                <h3 class="h6 mb-1 text-white">Order Placed</h3>
-                                <p class="text-muted-dark small mb-0">October 15, 2023 at 10:30 AM</p>
-                            </div>
-                            <div class="timeline-item pending">
-                                <h3 class="h6 mb-1 text-white">Processing</h3>
-                                <p class="text-muted-dark small mb-0">Expected by October 16, 2023</p>
-                            </div>
-                            <div class="timeline-item upcoming">
-                                <h3 class="h6 mb-1 text-white">Shipped</h3>
-                                <p class="text-muted-dark small mb-0">Not yet shipped</p>
-                            </div>
-                            <div class="timeline-item upcoming">
-                                <h3 class="h6 mb-1 text-white">Delivered</h3>
-                                <p class="text-muted-dark small mb-0">Expected by October 20, 2023</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Right Column -->
-            <div class="col-lg-4">
-                <!-- Shipping Address -->
-                <div class="card card-dark mb-4">
-                    <div class="card-body">
-                        <h2 class="h5 mb-3 text-white">Shipping Address</h2>
-                        <address class="text-muted-dark">
-                            <strong class="text-white">John Doe</strong><br>
-                            123 Main Street<br>
-                            Apt 4B<br>
-                            New York, NY 10001<br>
-                            United States<br><br>
-                            <i class="fas fa-phone me-2"></i> +1 (555) 123-4567
-                        </address>
-                    </div>
-                </div>
-                
-                <!-- Payment Summary -->
-                <div class="card card-dark mb-4">
-                    <div class="card-body">
-                        <h2 class="h5 mb-3 text-white">Payment Summary</h2>
-                        
-                        <div class="mb-3">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted-dark">Subtotal (3 items)</span>
-                                <span class="text-white">$152.96</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted-dark">Shipping</span>
-                                <span class="text-white">$5.99</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-3">
-                                <span class="text-muted-dark">Discount</span>
-                                <span class="text-success">-$10.00</span>
-                            </div>
-                            <div class="d-flex justify-content-between border-top border-dark pt-2">
-                                <span class="text-white fw-bold">Total</span>
-                                <span class="text-white fw-bold">$148.95</span>
-                            </div>
-                        </div>
-                        
-                        <button class="btn btn-dark-primary w-100">
-                            <i class="fas fa-download me-2"></i> Download Invoice
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Order Actions -->
-                <div class="card card-dark">
-                    <div class="card-body">
-                        <h2 class="h5 mb-3 text-white">Order Actions</h2>
-                        
-                        <div class="d-grid gap-2">                            
-                            <button class="btn btn-dark-secondary">
-                                <i class="fas fa-undo me-2"></i> Request Return
-                            </button>
-                            <button class="btn btn-dark-secondary">
-                                <i class="fas fa-times-circle me-2"></i> Cancel Order
-                            </button>                           
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Bootstrap JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
+
+    <!-- Main Content -->
+    <main class="container" style="margin-top: 95px;">
+        <div class="row g-5">
+          
+            <!-- Order Details Content -->
+            <div class="col-9">
+                <div class="mb-4">
+                    <h3 class="fw-bold pb-2">Order Details</h3>
+                </div>
+                <div class="row">
+                    <!-- Left Column: Order Details -->
+                    <div class="col-md-12">
+                        <div class="d-flex justify-content-between mb-3">
+                            <div class="order-section w-100">
+                                <%
+                                    let itemTotal = 0;
+                                    order.orderItems.forEach(item => {
+                                        const isCancelled = item.statusHistory?.[item.statusHistory.length - 1]?.status === 'Cancelled';
+                                        if (!isCancelled) {
+                                            itemTotal += item.discountPrice * item.quantity;
+                                        }
+                                    });
+
+                                    let grandTotal = itemTotal + (order.deliveryCharge || 0) - (order.coupon || 0);
+                                %>
+
+                                <h3>Order Summary</h3>
+                                <div class="order-info">
+                                    <p><span>Order ID:</span> <%= order.orderId %></p>
+                                    <p><span>Order Date:</span> <%= new Date(order.createdAt).toLocaleString('en-US', {
+                                        weekday: 'short',
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: '2-digit',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        hour12: false
+                                    }) %></p>
+                                    <p><span>Total Amount:</span> ₹ <%= itemTotal || 0  %></p>
+                                    <p><span>Payment Method:</span> <%= order.paymentMethod === 'cod' ? 'Cash on Delivery' : order.paymentMethod %></p>
+                                </div>
+                            </div>
+                            <div class="order-section w-100">
+                                <h3>Shipping Address</h3>
+                                <div class="order-info">
+                                    <p><span>Name:</span> <%= address?.name || 'N/A' %></p>
+                                    <p><%= address?.addressLine1 || '' %>, <%= address?.addressLine2 || '' %></p>
+                                    <p><%= address?.city || '' %>, <%= address?.pincode || '' %></p>
+                                    <p><span>Phone:</span> <%= address?.phone || 'N/A' %></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Product Details -->
+                    <% order.orderItems.forEach(item => {
+                        const isCancelled = item.statusHistory?.[item.statusHistory.length - 1]?.status === 'Cancelled';
+                        const isDelivered = item.currentStatus === 'Delivered';
+                        const isReturned = item.currentStatus === 'Returned';
+                    %>
+                    <% const paymentFailed = order.paymentStatus === 'Failed' %>
+
+                        <div class="item-row p-2">
+                            <img src="<%= item.product.productImage %>" 
+                                 alt="Product Image" class="item-img">
+                            <div class="item-info">
+                                <h6><%= item.product.name %></h6>
+                                <p>
+                                    Qty: <%= item.quantity %> | ₹ <%= item.basePrice %>
+                                    
+                                </p>
+                            </div>
+                            
+                        </div>
+                    <% }) %>
+
+                    <hr>
+                    <div class="d-flex justify-content-between mb-2">
+                        <small>Subtotal:</small>
+                        <small>₹<%= itemTotal %></small>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <small>Delivery Charges:</small>
+                        <small>₹<%= order.deliveryCharge || 0 %></small>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <small>Coupon Discount:</small>
+                        <small>- ₹<%= order.coupon %></small>
+                    </div>
+                    <div class="d-flex justify-content-between fw-bold">
+                        <span>Total:</span>
+                        <span>₹<%= grandTotal %></span>
+                    </div>
+
+                    <div class="order-actions mb-5">
+                        <a href="/user/order" class="btn btn-outline-primary"> <i class="fa-solid fa-angle-left"></i> Orders</a>
+                        
+                        <% 
+                            const allCancelled = order.orderItems.every(item => item.currentStatus === 'Cancelled');
+                            const allDelivered = order.orderItems.some(item => item.currentStatus === 'Delivered');
+                            const allReturned = order.orderItems.every(item => item.currentStatus === 'Returned');
+                            const anyCancellable = order.orderItems.some(item => item.currentStatus !== 'Cancelled' && item.currentStatus !== 'Delivered' && item.currentStatus !== 'Returned');
+                        %>
+                        
+                        <% if (allDelivered) { %>
+                            <button class="btn custom-btn" onclick="window.location.href='/user/order/invoice?id=<%= order.orderId %>'">
+                                <i class="fa-solid fa-arrow-down-to-line me-2"></i> Invoice
+                            </button>
+                        <% } %>
+                        
+                        <% if (order.paymentStatus === 'Failed') { %>
+                            <button class="btn btn-primary retry-btn" data-orderid="<%= order._id %>" data-amount="<%= grandTotal %>">
+                                Retry Payment
+                            </button>
+                        <% } %>
+                    </div>
+                    
+                    <!-- Return Modal -->
+                    <div class="modal fade" id="returnModal" tabindex="-1" aria-labelledby="returnModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <!-- Header -->
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="returnModalLabel">Return Order Item</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <!-- Body -->
+                                <div class="modal-body">
+                                    <!-- Hidden to track order and item ID -->
+                                    <input type="hidden" id="returnOrderId">
+                                    <input type="hidden" id="returnproductId">
+                                    <input type="hidden" id="returnproductVariant">
+                                    <!-- Product Details -->
+                                    <div id="returnProductDetails" class="mb-3"></div>
+                                    <!-- Reason Dropdown -->
+                                    <div class="mb-3">
+                                        <label for="returnReason" class="form-label">Reason for Return</label>
+                                        <select class="form-select" id="returnReason" required>
+                                            <option value="" selected disabled>Select a reason</option>
+                                            <option value="Wrong item received">Wrong item received</option>
+                                            <option value="Product damaged">Product damaged</option>
+                                            <option value="Not as described">Not as described</option>
+                                            <option value="Quality issues">Quality issues</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                        <div class="invalid-feedback">Please select a reason for returning the product.</div>
+                                    </div>
+                                    <!-- Other Reason Textarea (Hidden by Default) -->
+                                    <div class="mb-3" id="otherReasonContainer" style="display: none;">
+                                        <label for="otherReason" class="form-label">Please specify the reason</label>
+                                        <textarea class="form-control" id="otherReason" rows="3" placeholder="Enter details"></textarea>
+                                        <div class="invalid-feedback">Please provide details for the return.</div>
+                                    </div>
+                                </div>
+                                <!-- Footer -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="submitReturn()">Confirm Return</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cancel Modal -->
+                    <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="cancelModalLabel">Cancel Order Item</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Hidden to track order and item ID -->
+                                    <input type="hidden" id="cancelOrderId">
+                                    <input type="hidden" id="cancelproductId">
+                                    <!-- Product Details -->
+                                    <div id="cancelProductDetails" class="mb-3"></div>
+                                    <!-- Reason Dropdown -->
+                                    <div class="mb-3">
+                                        <label for="cancelReason" class="form-label">Reason for Cancellation</label>
+                                        <select class="form-select" id="cancelReason" required>
+                                            <option value="" selected disabled>Select a reason</option>
+                                            <option value="Changed my mind">Changed my mind</option>
+                                            <option value="Found a better deal">Found a better deal</option>
+                                            <option value="Ordered by mistake">Ordered by mistake</option>
+                                            <option value="Shipping is delayed">Shipping is delayed</option>
+                                            <option value="Product no longer needed">Product no longer needed</option>
+                                        </select>
+                                        <div class="invalid-feedback">Please select a reason for cancelling the order.</div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn custom-btn btn-sm" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn custom-outline-btn btn-sm" onclick="submitCancel()">Confirm Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    
+
     <script>
-        // Order data (would normally come from API/backend)
-        const orderData = {
-            orderId: "ORD-2023-12345",
-            orderDate: "2023-10-15T10:30:00",
-            status: "Pending",
-            paymentMethod: "Credit Card",
-            couponApplied: true,
-            items: [
-                {
-                    name: "Wireless Bluetooth Headphones",
-                    brand: "SoundMaster",
-                    variant: "Black",
-                    price: 99.99,
-                    quantity: 1,
-                    image: "https://via.placeholder.com/150"
-                },
-                {
-                    name: "Smartphone Case",
-                    brand: "CasePro",
-                    variant: "iPhone 13",
-                    price: 19.99,
-                    quantity: 2,
-                    image: "https://via.placeholder.com/150"
-                },
-                {
-                    name: "USB-C Charging Cable",
-                    brand: "PowerFlow",
-                    variant: "6ft",
-                    price: 12.99,
-                    quantity: 1,
-                    image: "https://via.placeholder.com/150"
-                }
-            ],
-            subtotal: 152.96,
-            shipping: 5.99,
-            discount: 10.00,
-            total: 148.95,
-            address: {
-                name: "John Doe",
-                street: "123 Main Street",
-                apartment: "Apt 4B",
-                city: "New York",
-                state: "NY",
-                zip: "10001",
-                country: "United States",
-                phone: "+1 (555) 123-4567"
+        document.getElementById('returnReason').addEventListener('change', function () {
+            const otherReasonContainer = document.getElementById('otherReasonContainer');
+            if (this.value === 'Other') {
+                otherReasonContainer.style.display = 'block';
+            } else {
+                otherReasonContainer.style.display = 'none';
+                document.getElementById('otherReason').value = '';
             }
-        };
-
-        // Format date
-        const formatDate = (dateString) => {
-            const options = { 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric', 
-                hour: '2-digit', 
-                minute: '2-digit' 
-            };
-            return new Date(dateString).toLocaleDateString('en-US', options);
-        };
-
-        // Update status badge
-        const updateStatusBadge = (status) => {
-            const badge = document.getElementById('order-status');
-            badge.textContent = status;
-            badge.className = 'status-badge';
-            
-            switch(status) {
-                case 'Pending':
-                    badge.classList.add('status-pending');
-                    break;
-                case 'Shipped':
-                    badge.classList.add('status-shipped');
-                    break;
-                case 'Delivered':
-                    badge.classList.add('status-delivered');
-                    break;
-                case 'Cancelled':
-                    badge.classList.add('status-cancelled');
-                    break;
-                default:
-                    badge.classList.add('status-pending');
-            }
-        };
-
-        // Initialize page
-        document.addEventListener('DOMContentLoaded', () => {
-            // Set order date
-            document.getElementById('order-date').textContent = formatDate(orderData.orderDate);
-            
-            // Set status
-            updateStatusBadge(orderData.status);
-            
-            // Set payment method
-            document.getElementById('payment-method').textContent = orderData.paymentMethod;
-            
-            // Set coupon status
-            // document.getElementById('coupon-applied').textContent = 
-            //     orderData.couponApplied ? 'Yes (SAVE10)' : 'No';
         });
+
+        document.querySelectorAll('.cancel-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const orderId = this.dataset.orderId;
+                const productId = this.dataset.productId;
+                const itemName = this.dataset.productName;
+                const itemVariant = JSON.parse(this.dataset.productVariant || '{}');
+                const isReturn = this.textContent.trim() === 'Return';
+
+                if (isReturn) {
+                    openReturnModal(orderId, productId, itemName, itemVariant);
+                } else {
+                    openCancelModal(orderId, productId, itemName, itemVariant);
+                }
+            });
+        });
+        
+
+        function openReturnModal(orderId, productId, itemName, itemVariant) {
+            const container = document.getElementById('returnProductDetails');
+            container.innerHTML = '';
+            document.getElementById('returnOrderId').value = orderId;
+            document.getElementById('returnproductId').value = productId;
+            document.getElementById('returnproductVariant').value = JSON.stringify(itemVariant);
+
+
+            const color = itemVariant?.color || '';
+            const weight = itemVariant?.weight ? ' | ' + itemVariant.weight : '';
+            const label = `
+                <div class="d-flex justify-content-start gap-2 align-items-center mb-2">
+                    <small class="w-100">${itemName} (${color}${weight})</small>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', label);
+
+            const modal = new bootstrap.Modal(document.getElementById('returnModal'));
+            modal.show();
+        }
+
+        function openCancelModal(orderId, productId, itemName, itemVariant) {
+            const container = document.getElementById('cancelProductDetails');
+            container.innerHTML = '';
+            document.getElementById('cancelOrderId').value = orderId;
+            document.getElementById('cancelproductId').value = productId;
+
+            const color = itemVariant?.color || '';
+            const weight = itemVariant?.weight ? ' | ' + itemVariant.weight : '';
+            const label = `
+                <div class="d-flex justify-content-start gap-2 align-items-center mb-2">
+                    <small class="w-100">${itemName} (${color}${weight})</small>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', label);
+
+            const modal = new bootstrap.Modal(document.getElementById('cancelModal'));
+            modal.show();
+        }
+
+        async function submitReturn() {
+            const itemVariant = JSON.parse(document.getElementById('returnproductVariant').value || '{}');
+            const orderId = document.getElementById('returnOrderId').value;
+            const productId = document.getElementById('returnproductId').value;
+            let reason = document.getElementById('returnReason').value;
+            const otherReason = document.getElementById('otherReason').value;
+
+            if (!reason.trim()) {
+                document.getElementById('returnReason').classList.add('is-invalid');
+                return;
+            } else {
+                document.getElementById('returnReason').classList.remove('is-invalid');
+            }
+
+            if (reason === 'Other' && !otherReason.trim()) {
+                document.getElementById('otherReason').classList.add('is-invalid');
+                return;
+            } else {
+                document.getElementById('otherReason').classList.remove('is-invalid');
+            }
+
+            if (reason === 'Other') {
+                reason = `Other: ${otherReason}`;
+            }
+
+            try {
+                const response = await fetch(`/user/order/return?id=${orderId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ reason, productId, variant: itemVariant })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    Swal.fire({
+                        text: data.message || 'Return request submitted successfully.',
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false,
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        text: data?.message || 'Failed to process return request. Please try again.',
+                        icon: 'error',
+                        timer: 3000,
+                        showConfirmButton: false,
+                    });
+                }
+            } catch (error) {
+                console.error('Return Error:', error);
+                Swal.fire({
+                    text: 'Network error. Please check your connection and try again.',
+                    icon: 'error',
+                    timer: 3000,
+                    showConfirmButton: false,
+                });
+            }
+        }
+
+        async function submitCancel() {
+            const orderId = document.getElementById('cancelOrderId').value;
+            const productId = document.getElementById('cancelproductId').value;
+            const reason = document.getElementById('cancelReason').value;
+
+            if (!reason.trim()) {
+                document.getElementById('cancelReason').classList.add('is-invalid');
+                return;
+            } else {
+                document.getElementById('cancelReason').classList.remove('is-invalid');
+            }
+
+            try {
+                const response = await fetch(`/user/order/cancel?id=${orderId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ reason, productId })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    Swal.fire({
+                        text: 'Item cancelled successfully.',
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false,
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        text: data?.message || 'Failed to cancel item.',
+                        icon: 'error',
+                        timer: 2000,
+                        showConfirmButton: false,
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    text: 'An error occurred while cancelling the item.',
+                    icon: 'error',
+                    timer: 2000,
+                    showConfirmButton: false,
+                });
+            }
+        }
+
+
     </script>
 </body>
-</html>
+
+    <%-include("../../views/partials/user/footer") %> 

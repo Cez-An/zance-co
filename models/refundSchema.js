@@ -8,7 +8,7 @@ const refundSchema = new mongoose.Schema({
     },
     product: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Products',
+        ref: 'Product',
         required: true
     },
     userId: {
@@ -24,10 +24,7 @@ const refundSchema = new mongoose.Schema({
         type: String,
         enum: ['Requested', 'Approved', 'Rejected']
     },
-    variant: {
-        color: { type: String},
-        weight: { type: String}
-    },
+    
 },{timestamps : true});
 
 const Refund = mongoose.model('Refund', refundSchema);

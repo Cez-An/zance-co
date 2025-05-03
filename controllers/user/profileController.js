@@ -9,6 +9,8 @@ import bcrypt from "bcrypt";
 import Order from "../../models/orderSchema.js"
 import path, { format } from 'path';
 import cloudinary from '../../helpers/cloudinary.js'
+import Refund from "../../models/refundSchema.js";
+import {generateInvoicePDF} from "../../helpers/invoice.js"
 
 env.config();
 
@@ -29,7 +31,6 @@ const renderProfileInfo = async (req, res) => {
   }
 };
 
-
 const renderProfileEdit = async (req,res)=>{
   try {
     const {id} = req.params;
@@ -41,7 +42,6 @@ const renderProfileEdit = async (req,res)=>{
     res.status(STATUS_CODES.NOT_FOUND);
   }
 }
-
 
 const updateProfile = async (req, res) => {
   try {
@@ -428,7 +428,6 @@ const loadPrivacy = async (req, res) => {
   }
 };
 
-
 const updatePassword = async (req, res) => {
   try {
       const { oldPassword, newPassword } = req.body;
@@ -486,28 +485,111 @@ const loadOrders = async (req,res) => {
   }
 }
 
+// const loadOrderDetails = async (req,res)=> {
+//   try {
+//       const userId = req.session.user?.id ?? req.session.user?._id ?? null;
+      
+//       const orderId = req.query.id;
+
+//       if (!userId) {
+//           return res.status(401).redirect('/user/login');
+//       }
+
+//       const user = await User.findOne({_id : userId})
+
+//       const firstName = user.name;
+
+//       const order = await Order.findOne({ orderId });
+
+//       const addressId = order.address
+
+//       console.log(addressId)
+
+//       const addresses = await Address.findOne(
+//           { 'details._id': addressId },
+//           { details: { $elemMatch: { _id: addressId } } }
+//       );
+      
+//       const address = addresses?.details?.[0] || null;
+      
+
+//       res.render('user/orderDetails',{title : "My Orders",order, address, user, firstName});
+
+//   } catch (error) {
+//       console.error('Error loading orders:', error.message);
+//   }
+// }
+
+// const loadOrderDetails = async (req, res) => {
+//   try {
+//     const userId = req.session.user?.id ?? req.session.user?._id ?? null;
+//     const orderId = req.query.id;
+
+//     if (!userId) {
+//       return res.status(401).redirect('/user/login');
+//     }
+
+//     const user = await User.findById(userId);
+//     const firstName = user?.name ?? "";
+
+//     const order = await Order.findById(orderId) || await Order.findOne({ orderId });
+
+//     if (!order) {
+//       console.log("No order found with given ID");
+//       return res.status(404).send("Order not found");
+//     }
+
+//     const addressId = order.address;
+//     const addresses = await Address.findOne(
+//       { 'details._id': addressId },
+//       { details: { $elemMatch: { _id: addressId } } }
+//     );
+
+//     const address = addresses?.details?.[0] || null;
+
+//     res.render('user/orderDetails2', {
+//       order,
+//       address,
+//       user,
+//       firstName
+//     });
+
+//   } catch (error) {
+//     console.error('Error loading orders:', error.message);
+//     res.status(500).send("Server Error");
+//   }
+// };
 
 const loadOrderDetails = async (req,res)=> {
   try {
       const userId = req.session.user?.id ?? req.session.user?._id ?? null;
-      
       const orderId = req.query.id;
 
-
-
       if (!userId) {
-          return res.status(401).redirect('/user/login');
+          return res.status(STATUS_CODE.UNAUTHORIZED).redirect('/user/login');
       }
 
-      const user = await User.findOne({_id : userId})
+      const user = await User.findOne({ _id : userId, isBlocked : false});
 
-      const [firstName, lastName] = user.name.split(' ');
+      if(!user){
+          return res.redirect('/')
+      }
 
-      const order = await Order.findOne({ orderId });
+      const firstName = user.name;
 
-      const addressId = order.address
+      const order = await Order.findOne({ _id : orderId }).populate('orderItems.product');
+      const addressId = order.address;
 
-      console.log(addressId)
+      const refundStatusArray = await Refund.find({ order: orderId }).populate('product');
+
+      const refundMap = {};
+
+      refundStatusArray.forEach(refund => {
+        if (refund.product) {
+            refundMap[refund.product.toString()] = refund;
+        }
+    });
+    
 
       const addresses = await Address.findOne(
           { 'details._id': addressId },
@@ -515,15 +597,64 @@ const loadOrderDetails = async (req,res)=> {
       );
       
       const address = addresses?.details?.[0] || null;
-      
 
-      res.render('user/orderDetails',{title : "My Orders",order, address, user, firstName});
+      res.render('user/orderDetails2',{order, address, user, firstName, refundMap});
 
   } catch (error) {
-      console.error('Error loading orders:', error.message);
+      console.error('Error loading orders...:', error.message);
   }
 }
 
+/**
+ * Controller function to generate and download an invoice for an order
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ */
+export const downloadOrderInvoice = async (req, res) => {
+  try {
+    const userId = req.session.user?.id ?? req.session.user?._id ?? null;
+    const orderId = req.query.id;
+
+    if (!userId) {
+      return res.status(401).redirect('/user/login');
+    }
+
+    // Get user information
+    const user = await User.findOne({ _id: userId, isBlocked: false });
+    if (!user) {
+      return res.redirect('/');
+    }
+
+    // Get order information with populated products
+    const order = await Order.findOne({ _id: orderId }).populate('orderItems.product');
+    if (!order) {
+      return res.status(404).send('Order not found');
+    }
+
+    // Get address information
+    const addressId = order.address;
+    const addresses = await Address.findOne(
+      { 'details._id': addressId },
+      { details: { $elemMatch: { _id: addressId } } }
+    );
+    const address = addresses?.details?.[0] || null;
+
+    // Generate the invoice PDF
+    const pdfBuffer = await generateInvoicePDF(order, address, user);
+
+    // Set response headers for PDF download
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename=Invoice-${order.orderId || order._id}.pdf`);
+    res.setHeader('Content-Length', pdfBuffer.length);
+
+    // Send the PDF buffer as the response
+    res.send(pdfBuffer);
+
+  } catch (error) {
+    console.error('Error generating invoice PDF:', error.message);
+    res.status(500).send('Error generating invoice. Please try again later.');
+  }
+};
 
 export default {
     renderProfileInfo,
@@ -544,5 +675,7 @@ export default {
     updatePassword,
     loadOrders,
     loadOrderDetails,
+    downloadOrderInvoice,
+    
 
 }

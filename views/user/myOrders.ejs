@@ -301,36 +301,21 @@
             text-decoration: none;
         }
         .status-badge {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            
-        }
-        
-        .status-pending {
-            background-color:rgb(255, 230, 0);
-            color: #000000;
-            border: 1px solid rgb(255, 230, 0);
-        }
-        
-        .status-shipped {
-            background-color: rgba(13, 110, 253, 0.1);
-            color: #0d6efd;
-            border: 1px solid rgba(13, 110, 253, 0.3);
-        }
-        
-        .status-delivered {
-            background-color: rgba(25, 135, 84, 0.1);
-            color: #198754;
-            border: 1px solid rgba(25, 135, 84, 0.3);
-        }
-        
-        .status-cancelled {
-            background-color: rgba(220, 53, 69, 0.1);
-            color: #dc3545;
-            border: 1px solid rgba(220, 53, 69, 0.3);
-        }
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.status-placed { background-color: #e0f3ff; color: #0275d8; }
+.status-shipped { background-color: #d9f9e3; color: #28a745; }
+.status-out-for-delivery { background-color: #fff3cd; color: #856404; }
+.status-delivered { background-color: #d4edda; color: #155724; }
+.status-cancelled { background-color: #f8d7da; color: #721c24; }
+.status-failed { background-color: #f8d7da; color: #dc3545; }
+.status-returned { background-color: #ffeeba; color: #856404; }
+.status-unknown { background-color: #e2e3e5; color: #6c757d; }
         
     </style>
 </head>
@@ -343,7 +328,7 @@
         <a href="/user/address"><i class="fas fa-map-marker-alt"></i><span>Manage Addresses</span></a>
         <a href="/user/privacy"><i class="fas fa-lock"></i><span>Privacy Settings</span></a>
         <a href="#my-coupons"><i class="fas fa-ticket-alt"></i><span>My Coupons</span></a>
-        <a href="#my-wallet"><i class="fas fa-wallet"></i><span>My Wallet</span></a>
+        <a href="/user/wallet"><i class="fas fa-wallet"></i><span>My Wallet</span></a>
     </div>
 
       
@@ -393,21 +378,39 @@
                                 <div class="order-items">
                                     <% order.orderItems.forEach(item => { %>
                                         <div class="item-row">
-                                            <img src="<%= item.productImage || '/images/default-product.png' %>" 
+                                            <img src="<%= item.productImage %>" 
                                                 alt="Product Image" 
                                                 class="item-img">
                                             <div class="item-info">
                                                 <h6><%= item.product.name %></h6>
-                                                <p>Qty: <%= item.quantity %> | <strong>₹ <%= item.price %></strong></p>
+                                                <p>Qty: <%= item.quantity %> | <strong>₹ <%= item.basePrice %></strong></p>
                                             </div>
-                                            <span id="order-status" class="status-badge status-pending">Placed</span>
+                                
+                                            <% if (item.currentStatus === 'Placed') { %>
+                                                <span class="status-badge status-placed">Placed</span>
+                                            <% } else if (item.currentStatus === 'Shipped') { %>
+                                                <span class="status-badge status-shipped">Shipped</span>
+                                            <% } else if (item.currentStatus === 'Out for Delivery') { %>
+                                                <span class="status-badge status-out-for-delivery">Out for Delivery</span>
+                                            <% } else if (item.currentStatus === 'Delivered') { %>
+                                                <span class="status-badge status-delivered">Delivered</span>
+                                            <% } else if (item.currentStatus === 'Cancelled') { %>
+                                                <span class="status-badge status-cancelled">Cancelled</span>
+                                            <% } else if (item.currentStatus === 'Payment Failed') { %>
+                                                <span class="status-badge status-failed">Payment Failed</span>
+                                            <% } else if (item.currentStatus === 'Returned') { %>
+                                                <span class="status-badge status-returned">Returned</span>
+                                            <% } else { %>
+                                                <span class="status-badge status-unknown">Unknown</span>
+                                            <% } %>
                                         </div>
                                     <% }) %>
                                 </div>
+                                
                     
                                 <!-- Action Buttons -->
                                 <div class="d-flex gap-3 justify-content-end">
-                                    <button class="btn btn-primary details-btn" data-order-id="<%= order.orderId %>">View Order</button>                                    
+                                    <button class="btn btn-primary details-btn" data-order-id="<%= order._id %>">View Order</button>                                    
                                 </div>
                             </div>
                         <% }) %>

@@ -54,7 +54,6 @@ const loadLogin = async (req, res) => {
       return res.redirect("/user");
     }
 
-    // Handle error messages from query params
     let message = "";
     const { error } = req.query;
 
@@ -587,11 +586,13 @@ const renderShopPage = async (req, res) => {
 
 const testing = async (req, res) => {
   try {
+    const userId = req.session.user?.id ?? req.session.user?._id ?? null;
+    const user = await User.findOne({ _id: userId, isBlocked: false });
     const product = await Product.find({ isBlocked: false }).limit(12);
 
-    let page = "orderDetails";
+    let page = "myWallet";
 
-    res.render(`user/${page}`, { product });
+    res.render(`user/${page}`, { product,user: { wallet: 0 } });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });

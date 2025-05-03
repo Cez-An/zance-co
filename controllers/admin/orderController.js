@@ -88,7 +88,7 @@ const viewOrders = async (req, res) => {
 
     const address = addresses?.details?.[0] || null; 
 
-    res.render('admin/vieworders', { title: 'Orders', order, address, allShipped, allOutForDelivery, refundMap });
+    res.render('admin/viewOrders', { title: 'Orders', order, address, allShipped, allOutForDelivery, refundMap });
 }
 
 

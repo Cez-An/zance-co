@@ -1,11 +1,13 @@
 <%-include("../../views/partials/user/header") %> 
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" href="/css/profile-section.css">
+    
     <style>
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background-color: #252525;
+            background-color: #000000;
             color: #ffffff;
         }
 
@@ -78,33 +80,189 @@
             }
         }
     </style>
-</head>
-<body>
+    <style>
+        
+        .wallet-card {
+            /* background: line ar-gradient(135deg, #6f0303 17%, #b7a4a4 100%); */
+            border: 1px solid #333;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            color: white;
+        }
+        
+        .wallet-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        .add-btn {
+            background: linear-gradient(135deg, #6b46c1 0%, #805ad5 100%);
+            border: none;
+            transition: all 0.3s ease;
+            color: white;
+        }
+        
+        .add-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(107, 70, 193, 0.5);
+        }
+        
+        .quick-action-btn {
+            background-color: #111;
+            border: 1px solid #333;
+            color: white;
+            transition: all 0.2s ease;
+        }
+        
+        .quick-action-btn:hover {
+            background-color: #222;
+            transform: translateY(-2px);
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(107, 70, 193, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(107, 70, 193, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(107, 70, 193, 0);
+            }
+        }
+        
+        .wallet-icon {
+            background-color: #222;
+            color: #9f7aea;
+        }
+        
+        .fast-pay-badge {
+            background-color: #222;
+            color: #f6ad55;
+        }
+    </style>
+
     <div class="sidebar">
         <!-- Add 'active' class to My Orders --> 
          <br><br><br>
-        <a href="#my-orders"><i class="fas fa-shopping-cart"></i><span>My Orders</span></a>
-        <a href="#profile-info"><i class="fas fa-user"></i><span>Profile Information</span></a>
-        <a href="#manage-addresses"><i class="fas fa-map-marker-alt"></i><span>Manage Addresses</span></a>
+        <a href="/user/order"><i class="fas fa-shopping-cart"></i><span>My Orders</span></a>
+        <a href="/user/userProfile"><i class="fas fa-user"></i><span>Profile Information</span></a>
+        <a href="/user/address"><i class="fas fa-map-marker-alt"></i><span>Manage Addresses</span></a>
         <a href="/user/privacy"><i class="fas fa-lock"></i><span>Privacy Settings</span></a>
         <a href="#my-coupons"><i class="fas fa-ticket-alt"></i><span>My Coupons</span></a>
-        <a href="#my-wallet" class="active"><i class="fas fa-wallet"></i><span>My Wallet</span></a>
+        <a href="/user/wallet" class="active"><i class="fas fa-wallet"></i><span>My Wallet</span></a>
     </div>
 
-    <div class="content">
-        <h1>User Profile Page</h1>
-        <p>This is the main content area. Select an option from the sidebar.</p>
-    </div>
-    <script>
-        window.addEventListener('load', function() {
-            const loader = document.querySelector('.loader-wrapper');
-            const content = document.querySelector('.content');
-            setTimeout(function() {
-                loader.classList.add('loader-hidden');
-                content.classList.add('content-loaded');
-            }, 2000);
-        });
-    </script>
+        <main class="container mt-4 bg-secondary">
+            <div class="row">
+    
+                <!-- Wallet Display -->
+                <div class="col-md-9 col-lg-10 col-xl-9 p-4">
+                    <div class="profile-section">
+                        <div class="profile-header d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <i class="fa-solid fa-wallet me-3" style="font-size: 40px; color: #ffffff;"></i>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <div>
+                                    <h4 style="color: #ffffff; margin: 0;">Your Wallet</h4>
+                                    <div class="mt-1">
+                                        <small class="text-muted">Manage your balance</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMoneyModal">
+                                <i class="fa-solid fa-plus me-2"></i>Add Money
+                            </button> -->
+                        </div>
+    
+                        <!-- Wallet Balance -->
+                        <div class="info-grid" style="margin-top: 20px;">
+                            <div class="info-item">
+                                <div class="info-label">Current Balance</div>
+                                <div class="info-value" style="font-size: 24px; color: #ffffff;">
+                                    ₹ <%= user.wallet || '0.00' %>.00 
+                                </div>
+                            </div>
+                            
+                        </div>   
+    
+                        <!-- Wallet Benefits -->
+                        <!-- <div class="benefits-section" style="margin-top: 40px;">
+                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="benefit-item text-center">
+                                        <i class="fa-solid fa-bolt" style="font-size: 24px; color: #3C1549;"></i>
+                                        <p class="mt-2">Fast Checkout</p>
+                                        <small class="text-muted">Pay instantly without entering card details.</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="benefit-item text-center">
+                                        <i class="fa-solid fa-shield-halved" style="font-size: 24px; color: #3C1549;"></i>
+                                        <p class="mt-2">Secure Payments</p>
+                                        <small class="text-muted">Your money is safe with us.</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="benefit-item text-center">
+                                        <i class="fa-solid fa-gift" style="font-size: 24px; color: #3C1549;"></i>
+                                        <p class="mt-2">Exclusive Offers</p>
+                                        <small class="text-muted">Get discounts when you use wallet.</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+    
+                        <!-- Tips/Info Card -->
+                        <!-- <div class="tips-section" style="margin-top: 40px;">
+                            <div class="card bg-light p-3">
+                                <h6 style="color: #3C1549;">Wallet Tip</h6>
+                                <p class="mb-0">Keep a minimum balance of ₹500 to enjoy seamless shopping and exclusive wallet-only discounts!</p>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Add Money Modal -->
+            <!-- <div class="modal fade" id="addMoneyModal" tabindex="-1" aria-labelledby="addMoneyModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addMoneyModalLabel" style="color: #3C1549;">Add Money to Wallet</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form id="addMoneyForm">
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="amount" class="form-label">Amount (₹)</label>
+                                    <input type="number" class="form-control" id="amount" name="amount" min="1" step="0.01" required placeholder="Enter amount">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Payment Method</label>
+                                    <select class="form-select" id="paymentMethod" name="paymentMethod">
+                                        <option value="" disabled selected>Select payment method</option>
+                                        <option value="razorpay">Online Payment</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Add Money</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div> -->
+        </main>
+
+
+
+    
     <!-- Js Plugins -->
     <script src="../../js/jquery-3.3.1.min.js"></script>
     <script src="../../js/bootstrap.min.js"></script>

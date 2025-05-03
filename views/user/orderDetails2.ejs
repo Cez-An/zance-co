@@ -1,0 +1,517 @@
+<%-include("../../views/partials/user/header") %> 
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="/css/style2.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="/css/profile-sectionn.css">
+    
+
+        <style>
+            body{
+                background-color: black;
+            }
+            
+            h1 {
+                font-size: 28px;
+                font-weight: 700;
+                color: #1a1a1a;
+                margin: 0;
+            }
+    
+            .order-section h3 {
+                font-size: 16px;
+                font-weight: 600;
+                margin-bottom: 10px;
+                color: var(--primary);
+            }
+            .order-info {
+                font-size: 14px;
+                color: #000000;
+            }
+            .order-info span {
+                font-weight: 500;
+                color: #000000;
+            }
+            .item-row {
+                display: flex;
+                align-items: center;
+                padding: 10px 0;
+                border-bottom: 1px solid #eee;
+                transition: background-color 0.3s ease;
+            }
+            .item-row:hover {
+                background-color: #f8f9fa;
+            }
+            .item-img {
+                width: 50px;
+                height: 50px;
+                object-fit: cover;
+                border-radius: 6px;
+                margin-right: 15px;
+                border: 1px solid #eee;
+            }
+            .item-info {
+                flex-grow: 1;
+            }
+            .item-info h6 {
+                font-size: 14px;
+                font-weight: 600;
+                margin: 0 0 5px;
+                color: #1a1a1a;
+            }
+            .item-info p {
+                font-size: 12px;
+                color: #777;
+                margin: 0;
+            }
+            .item-price {
+                font-size: 14px;
+                font-weight: 600;
+                color: #1a1a1a;
+            }
+            .btn {
+                padding: 8px 20px;
+                font-size: 13px;
+                font-weight: 500;
+                border-radius: 20px;
+                text-decoration: none;
+                transition: all 0.3s ease;
+            }
+            .order-actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 10px;
+                margin-top: 20px;
+            }
+            a {
+            text-decoration: none;
+            }
+        </style>
+  
+        <!-- Main Content -->
+        <main class="container" style="margin-top: 95px; background-color:rgb(235 228 255) !important; padding: 30px;" >
+            <div class="row g-5">
+               
+                <!-- Order Details Content -->
+                <div class="col-12">
+                    <div class="mb-4">
+                        <h3 class="fw-bold pb-2 text-dark">Order Details</h3>
+                    </div>
+                    <div class="row">
+                        <!-- Left Column: Order Details -->
+                        <div class="col-md-12">
+                            <div class="d-flex justify-content-between mb-3">
+                                <div class="order-section w-100">
+                                    <%
+                                        let itemTotal = 0;
+                                        order.orderItems.forEach(item => {
+                                            const isCancelled = item.statusHistory?.[item.statusHistory.length - 1]?.status === 'Cancelled';
+                                            if (!isCancelled) {
+                                                itemTotal += item.basePrice * item.quantity;
+                                            }
+                                        });
+    
+                                        let grandTotal = itemTotal + (order.deliveryCharge || 0) ;
+                                    %>
+    
+                                    <h3>Order Summary</h3>
+                                    <div class="order-info">
+                                        <p><span>Order ID:</span> <%= order.orderId %></p>
+                                        <p>
+                                            <span>Order Date:</span>
+                                            <%= new Date(order.createdAt).toLocaleString('en-US', {
+                                              weekday: 'short',
+                                              year: 'numeric',
+                                              month: 'short',
+                                              day: '2-digit',
+                                              hour: '2-digit',
+                                              minute: '2-digit',
+                                              hour12: false
+                                            }) %>
+                                          </p>
+                                          
+                                        <p><span>Total Amount:</span> ₹ <%= itemTotal || 0  %></p>
+                                        <p><span>Payment Method:</span> <%= order.paymentMethod === 'cod' ? 'Cash on Delivery' : order.paymentMethod %></p>
+                                    </div>
+                                </div>
+                                <div class="order-section w-100">
+                                    <h3>Shipping Address</h3>
+                                    <div class="order-info">
+                                        <p><span>Name:</span> <%= address?.name || 'N/A' %></p>
+                                        <p><%= address?.addressLine1 || '' %>, <%= address?.addressLine2 || '' %></p>
+                                        <p><%= address?.city || '' %>, <%= address?.pincode || '' %></p>
+                                        <p><span>Phone:</span> <%= address?.phone || 'N/A' %></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!-- Right Column: Product Details -->
+                        <% order.orderItems.forEach(item => {
+                            const isCancelled = item.statusHistory?.[item.statusHistory.length - 1]?.status === 'Cancelled';
+                            const isDelivered = item.currentStatus === 'Delivered';
+                            const isReturned = item.currentStatus === 'Returned';
+                        %>
+                        <% const paymentFailed = order.paymentStatus === 'Failed' %>
+    
+                            <div class="item-row p-2">
+                                <img id="productdetails" src="<%= item.product.productImage?.[0] %>" 
+                                     alt="Product Image" class="item-img" data-productid="<%= item.product._id %>">
+                                     
+                                <div class="item-info">
+                                    <h6><%= item.product.name %></h6>
+                                    <p>
+                                        Qty: <%= item.quantity %> | ₹ <%= item.basePrice %>
+                                        
+                                    </p>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="item-price">
+                                        <% const refund = refundMap[item.product._id.toString()]; %>
+                                
+                                        <% if (refund) { %>
+                                            <span class="order-status return-requested">
+                                               Refund <%= refund.status %>
+                                            </span>
+                                        <% } else { %>
+                                            <% if (order.paymentStatus !== 'Failed' ) { %>
+                                                <span class="order-status <%= (item.currentStatus || '').toLowerCase().replace(/\s+/g, '-') %>">
+                                                    <%= item.currentStatus || 'Placed' %>
+                                                </span>
+                                            <% } else { %>
+                                                <span class="order-status payment-failed">Payment Failed</span>
+                                            <% } %>
+                                        <% } %>
+                                    </span>
+                                    <% if (isDelivered && !isReturned && !isCancelled && !refund) { %>
+                                        <button 
+                                            class="btn btn-warning btn-sm cancel-btn px-3 py-1" 
+                                            data-order-id="<%= order._id %>" 
+                                            data-productid="<%= item.product._id %>" 
+                                            data-product-name="<%= item.product.name %>"
+                                            data-product-variant='<%- JSON.stringify(item.variant) %>'>
+                                            Return
+                                        </button>
+                                    <% } else if (!isDelivered && !isReturned && !isCancelled && !paymentFailed) { %>
+                                        <button 
+                                            class="btn btn-warning btn-sm cancel-btn px-3 py-1" 
+                                            data-order-id="<%= order._id %>" 
+                                            data-productid="<%= item.product._id %>" 
+                                            data-product-name="<%= item.product.name %>"
+                                            data-product-variant='<%- JSON.stringify(item.variant) %>'>
+                                            Cancel
+                                        </button>
+                                    <% } %>
+                                    <div class="ms-3">₹<%= item.basePrice * item.quantity %></div>
+                                </div>
+                            </div>
+                        <% }) %>
+    
+                        <hr>
+                        <div class="d-flex justify-content-between mb-2">
+                            <small>Subtotal:</small>
+                            <small>₹<%= itemTotal %></small>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <small>Delivery Charges:</small>
+                            <small>₹<%= order.deliveryCharge || 0 %></small>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between fw-bold">
+                            <span>Total:</span>
+                            <span>₹<%= grandTotal %></span>
+                        </div>
+    
+                        <div class="order-actions mb-5">
+                            <a href="/user/order" class="btn btn-outline-primary"> <i class="fa-solid fa-angle-left"></i> Orders</a>
+                            
+                            <% 
+                                const allCancelled = order.orderItems.every(item => item.currentStatus === 'Cancelled');
+                                const allDelivered = order.orderItems.some(item => item.currentStatus === 'Delivered');
+                                const allReturned = order.orderItems.every(item => item.currentStatus === 'Returned');
+                                const anyCancellable = order.orderItems.some(item => item.currentStatus !== 'Cancelled' && item.currentStatus !== 'Delivered' && item.currentStatus !== 'Returned');
+                            %>
+                            
+                            
+                                <button class="btn custom-btn" onclick="window.location.href='/user/order/invoiceDownload?id=<%= order._id %>'">
+                                    <i class="fa-solid fa-arrow-down-to-line me-2"></i> Invoice
+                                </button>
+                            
+                            
+                        </div>
+                        
+                        <!-- Return Modal -->
+                        <div class="modal fade" id="returnModal" tabindex="-1" aria-labelledby="returnModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <!-- Header -->
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="returnModalLabel">Return Order Item</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <!-- Body -->
+                                    <div class="modal-body">
+                                        <!-- Hidden to track order and item ID -->
+                                        <input type="hidden" id="returnOrderId">
+                                        <input type="hidden" id="returnproductId">
+                                        <input type="hidden" id="returnproductVariant">
+                                        <!-- Product Details -->
+                                        <div id="returnProductDetails" class="mb-3"></div>
+                                        <!-- Reason Dropdown -->
+                                        <div class="mb-3">
+                                            <label for="returnReason" class="form-label">Reason for Return</label>
+                                            <select class="form-select" id="returnReason" required>
+                                                <option value="" selected disabled>Select a reason</option>
+                                                <option value="Wrong item received">Wrong item received</option>
+                                                <option value="Product damaged">Product damaged</option>
+                                                <option value="Not as described">Not as described</option>
+                                                <option value="Quality issues">Quality issues</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                            <div class="invalid-feedback">Please select a reason for returning the product.</div>
+                                        </div>
+                                        <!-- Other Reason Textarea (Hidden by Default) -->
+                                        <div class="mb-3" id="otherReasonContainer" style="display: none;">
+                                            <label for="otherReason" class="form-label">Please specify the reason</label>
+                                            <textarea class="form-control" id="otherReason" rows="3" placeholder="Enter details"></textarea>
+                                            <div class="invalid-feedback">Please provide details for the return.</div>
+                                        </div>
+                                    </div>
+                                    <!-- Footer -->
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-danger btn-sm" onclick="submitReturn()">Confirm Return</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!-- Cancel Modal -->
+                        <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="cancelModalLabel">Cancel Order Item</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Hidden to track order and item ID -->
+                                        <input type="hidden" id="cancelOrderId">
+                                        <input type="hidden" id="cancelproductId">
+                                        <!-- Product Details -->
+                                        <div id="cancelProductDetails" class="mb-3"></div>
+                                        <!-- Reason Dropdown -->
+                                        <div class="mb-3">
+                                            <label for="cancelReason" class="form-label">Reason for Cancellation</label>
+                                            <select class="form-select" id="cancelReason" required>
+                                                <option value="" selected disabled>Select a reason</option>
+                                                <option value="Changed my mind">Changed my mind</option>
+                                                <option value="Found a better deal">Found a better deal</option>
+                                                <option value="Ordered by mistake">Ordered by mistake</option>
+                                                <option value="Shipping is delayed">Shipping is delayed</option>
+                                                <option value="Product no longer needed">Product no longer needed</option>
+                                            </select>
+                                            <div class="invalid-feedback">Please select a reason for cancelling the order.</div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn custom-btn btn-sm" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn custom-outline-btn btn-sm" onclick="submitCancel()">Confirm Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    
+        <br><br><br>
+    
+        <script>
+            document.getElementById('returnReason').addEventListener('change', function () {
+                const otherReasonContainer = document.getElementById('otherReasonContainer');
+                if (this.value === 'Other') {
+                    otherReasonContainer.style.display = 'block';
+                } else {
+                    otherReasonContainer.style.display = 'none';
+                    document.getElementById('otherReason').value = '';
+                }
+            });
+    
+            document.querySelectorAll('.cancel-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const orderId = this.dataset.orderId;
+                    const productId = this.dataset.productid;
+                    const itemName = this.dataset.productName;
+                    const itemVariant = JSON.parse(this.dataset.productVariant || '{}');
+                    const isReturn = this.textContent.trim() === 'Return';
+    
+                    if (isReturn) {
+                        openReturnModal(orderId, productId, itemName, itemVariant);
+                    } else {
+                        openCancelModal(orderId, productId, itemName, itemVariant);
+                    }
+                });
+            });
+            
+    
+            function openReturnModal(orderId, productId, itemName, itemVariant) {
+                const container = document.getElementById('returnProductDetails');
+                container.innerHTML = '';
+                document.getElementById('returnOrderId').value = orderId;
+                document.getElementById('returnproductId').value = productId;
+                document.getElementById('returnproductVariant').value = JSON.stringify(itemVariant);
+    
+                const label = `
+                    <div class="d-flex justify-content-start gap-2 align-items-center mb-2">
+                        <small class="w-100">${itemName}</small>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', label);
+    
+                const modal = new bootstrap.Modal(document.getElementById('returnModal'));
+                modal.show();
+            }
+    
+            function openCancelModal(orderId, productId, itemName, itemVariant) {
+                const container = document.getElementById('cancelProductDetails');
+                container.innerHTML = '';
+                document.getElementById('cancelOrderId').value = orderId;
+                document.getElementById('cancelproductId').value = productId;
+    
+               
+                const label = `
+                    <div class="d-flex justify-content-start gap-2 align-items-center mb-2">
+                        <small class="w-100">${itemName} </small>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', label);
+    
+                const modal = new bootstrap.Modal(document.getElementById('cancelModal'));
+                modal.show();
+            }
+    
+            async function submitReturn() {
+                const itemVariant = JSON.parse(document.getElementById('returnproductVariant').value || '{}');
+                const orderId = document.getElementById('returnOrderId').value;
+                const productId = document.getElementById('returnproductId').value;
+                let reason = document.getElementById('returnReason').value;
+                const otherReason = document.getElementById('otherReason').value;
+    
+                if (!reason.trim()) {
+                    document.getElementById('returnReason').classList.add('is-invalid');
+                    return;
+                } else {
+                    document.getElementById('returnReason').classList.remove('is-invalid');
+                }
+    
+                if (reason === 'Other' && !otherReason.trim()) {
+                    document.getElementById('otherReason').classList.add('is-invalid');
+                    return;
+                } else {
+                    document.getElementById('otherReason').classList.remove('is-invalid');
+                }
+    
+                if (reason === 'Other') {
+                    reason = `Other: ${otherReason}`;
+                }
+    
+                try {
+                    const response = await fetch(`/user/order/return?id=${orderId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ reason, productId, variant: itemVariant })
+                    });
+    
+                    const data = await response.json();
+    
+                    if (response.ok) {
+                        Swal.fire({
+                            text: data.message || 'Return request submitted successfully.',
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false,
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            text: data?.message || 'Failed to process return request. Please try again.',
+                            icon: 'error',
+                            timer: 3000,
+                            showConfirmButton: false,
+                        });
+                    }
+                } catch (error) {
+                    console.error('Return Error:', error);
+                    Swal.fire({
+                        text: 'Network error. Please check your connection and try again.',
+                        icon: 'error',
+                        timer: 3000,
+                        showConfirmButton: false,
+                    });
+                }
+            }
+    
+            async function submitCancel() {
+                const orderId = document.getElementById('cancelOrderId').value;
+                const productId = document.getElementById('cancelproductId').value;
+                const reason = document.getElementById('cancelReason').value;
+    
+                if (!reason.trim()) {
+                    document.getElementById('cancelReason').classList.add('is-invalid');
+                    return;
+                } else {
+                    document.getElementById('cancelReason').classList.remove('is-invalid');
+                }
+    
+                try {
+                    const response = await fetch(`/user/order/cancel?id=${orderId}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ reason, productId, orderId })
+                    });
+    
+                    const data = await response.json();
+    
+                    if (response.ok) {
+                        Swal.fire({
+                            text: 'Item cancelled successfully.',
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false,
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            text: data?.message || 'Failed to cancel item.',
+                            icon: 'error',
+                            timer: 2000,
+                            showConfirmButton: false,
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        text: 'An error occurred while cancelling the item.',
+                        icon: 'error',
+                        timer: 2000,
+                        showConfirmButton: false,
+                    });
+                }
+            }
+    
+        </script>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <%-include("../../views/partials/user/footer") %> 

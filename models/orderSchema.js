@@ -48,7 +48,7 @@ const orderSchema = new Schema({
             status: {
                 type: String,
                 required: true,
-                enum: ['Placed', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled', 'Payment Failed']
+                enum: ['Placed', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled', 'Payment Failed','Returned']
             },
             timestamp: {
                 type: Date,
@@ -67,6 +67,7 @@ const orderSchema = new Schema({
     paymentStatus: {
         type: String,
         required: false,
+        default:'Pending',
         enum: ['Pending', 'Paid', 'Failed']
     },
     paymentId: {

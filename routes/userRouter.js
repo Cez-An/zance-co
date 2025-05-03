@@ -5,6 +5,8 @@ import profileController from '../controllers/user/profileController.js'
 import cartControlller from '../controllers/user/cartControlller.js'
 import checkoutController from "../controllers/user/checkoutController.js";
 import wishlistController from "../controllers/user/wishlistController.js"
+import refundController from "../controllers/user/refundController.js"
+import walletController from "../controllers/user/walletController.js"
 
 const router = express.Router();
 
@@ -14,7 +16,7 @@ router.get("/",userController.loadHomepage);
 
 router.get('/renderShopPage',userController.renderShopPage)
 
-router.get("/testing",userController.testing);
+
 
 
 // signup route
@@ -91,8 +93,16 @@ router.post('/wishlist-to-cart',wishlistController.wishlistToCart)
 
 router.get('/order', profileController.loadOrders);
 router.get('/orderDetails', profileController.loadOrderDetails);
-// router.post('/orders/return', refundController.requestRefund);
-// router.patch('/orders/cancel', refundController.cancelOrder);
-// router.get('/orders/invoice', refundController.generateInvoice);
+router.post('/order/return', refundController.requestRefund);
+router.patch('/order/cancel', refundController.cancelOrder);
+router.get('/order/invoiceDownload',profileController.downloadOrderInvoice);
+
+//wallet
+router.get('/wallet', walletController.loadWallet);
+
+
+
+
+router.get("/testing",userController.testing);
 
 export default router;

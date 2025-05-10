@@ -1,5 +1,3 @@
-import User from "../models/userSchema.js";
-import STATUS_CODE from "../helpers/statusCode.js";
 
 const checkStatus = (req, res, next) => {
   if (!req.session.user) {

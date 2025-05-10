@@ -1,5 +1,3 @@
-import STATUS_CODE from "../helpers/statusCode.js";
-
 
 const checkSession = async(req,res,next)=>{
   if(req.session.admin){

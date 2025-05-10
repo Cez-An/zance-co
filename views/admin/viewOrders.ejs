@@ -124,6 +124,7 @@
             }
         }
     </style>
+    
 </head>
 <body>
     <!-- Hamburger Menu for Mobile -->
@@ -186,17 +187,9 @@
         </ul>
     </nav>
 
-    <!-- Main Content -->
-    
-   
-        <!-- Navbar -->
-     
-    
         <!-- Sidebar + Main Content Wrapper -->
         <div class="container-fluid w-100 sidebar-header">
-            <div class="row g-0">
-                <!-- Sidebar -->
-                
+            <div class="row g-0">                
                 
                 <!-- Main Content -->
                 <main class="col-md-12 ms-sm-auto col-lg-9 px-md-2 py-4 mx-auto">
@@ -214,7 +207,7 @@
                                             <%
                                                 let subtotal = 0;
                                                 order.orderItems.forEach(item => {
-                                                    if (item.currentStatus !== 'Cancelled') {
+                                                    if (item.individualStatus !== 'Cancelled') {
                                                         subtotal += item.quantity * (item.basePrice || 0);
                                                     }
                                                 });
@@ -257,7 +250,7 @@
                                             </thead>
                                             <tbody class="table-group-divider">
                                                 <% order.orderItems.forEach((item) => { 
-                                                    const status = item.currentStatus?.toLowerCase();
+                                                    const status = item.individualStatus?.toLowerCase();
                                                     const statusClasses = {
                                                         placed: 'status-badge status-placed',
                                                         processing: 'status-badge status-processing',
@@ -298,7 +291,7 @@
                                                                 </span>
                                                             <% } else { %>
                                                                 <span class="<%= statusClass %>">
-                                                                    <i class="<%= icon %>"></i> <%= item.currentStatus %>
+                                                                    <i class="<%= icon %>"></i> <%= item.individualStatus %>
                                                                 </span>
                                                             <% } %>
                                                         

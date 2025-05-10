@@ -81,7 +81,7 @@ const paymentSuccess = async (req,res) => {
                     basePrice: item.productId.salePrice,
                     brand : item.brand,
                     productImage : item.productImage,
-                    currentStatus:'Placed',
+                    individualStatus:'Placed',
                 })),
                 totalPrice: cart.items.reduce((sum, item) => sum + item.quantity * item.basePrice, 0),
                 paymentMethod,

@@ -3,10 +3,6 @@ import STATUS_CODE from "../../helpers/statusCode.js";
 import Category from "../../models/categorySchema.js";
 import Order from "../../models/orderSchema.js";
 
-
-
-
-
 const renderCategoryInfo = async (req, res) => {
   try {
     let search = req.query.search ? req.query.search.trim() : "";
@@ -48,10 +44,10 @@ const addCategory = async (req, res) => {
   console.log(req.body);
 
   try {
-    const existingcategory = await Category.findOne({ name });
-    console.log(existingcategory);
+    const existingCategory = await Category.findOne({ name: { $regex: new RegExp(name, 'i') } });
+    console.log(existingCategory);
 
-    if (existingcategory) {
+    if (existingCategory) {
       return res.render("admin/categoryAdd", {
         message: "Category Already Exists",
       });
@@ -83,7 +79,7 @@ const addCategory = async (req, res) => {
 
 const renderCategoryAdd = async (req, res) => {
   try {
-    res.render("admin/categoryAdd");
+    res.render("admin/categoryAdd",{message:''});
   } catch (error) {
     res.redirect("/error-admin");
   }

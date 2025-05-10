@@ -151,8 +151,8 @@
                         <!-- Right Column: Product Details -->
                         <% order.orderItems.forEach(item => {
                             const isCancelled = item.statusHistory?.[item.statusHistory.length - 1]?.status === 'Cancelled';
-                            const isDelivered = item.currentStatus === 'Delivered';
-                            const isReturned = item.currentStatus === 'Returned';
+                            const isDelivered = item.individualStatus === 'Delivered';
+                            const isReturned = item.individualStatus === 'Returned';
                         %>
                         <% const paymentFailed = order.paymentStatus === 'Failed' %>
     
@@ -177,8 +177,8 @@
                                             </span>
                                         <% } else { %>
                                             <% if (order.paymentStatus !== 'Failed' ) { %>
-                                                <span class="order-status <%= (item.currentStatus || '').toLowerCase().replace(/\s+/g, '-') %>">
-                                                    <%= item.currentStatus || 'Placed' %>
+                                                <span class="order-status <%= (item.individualStatus || '').toLowerCase().replace(/\s+/g, '-') %>">
+                                                    <%= item.individualStatus || 'Placed' %>
                                                 </span>
                                             <% } else { %>
                                                 <span class="order-status payment-failed">Payment Failed</span>
@@ -228,10 +228,10 @@
                             <a href="/user/order" class="btn btn-outline-primary"> <i class="fa-solid fa-angle-left"></i> Orders</a>
                             
                             <% 
-                                const allCancelled = order.orderItems.every(item => item.currentStatus === 'Cancelled');
-                                const allDelivered = order.orderItems.some(item => item.currentStatus === 'Delivered');
-                                const allReturned = order.orderItems.every(item => item.currentStatus === 'Returned');
-                                const anyCancellable = order.orderItems.some(item => item.currentStatus !== 'Cancelled' && item.currentStatus !== 'Delivered' && item.currentStatus !== 'Returned');
+                                const allCancelled = order.orderItems.every(item => item.individualStatus === 'Cancelled');
+                                const allDelivered = order.orderItems.some(item => item.individualStatus === 'Delivered');
+                                const allReturned = order.orderItems.every(item => item.individualStatus === 'Returned');
+                                const anyCancellable = order.orderItems.some(item => item.individualStatus !== 'Cancelled' && item.individualStatus !== 'Delivered' && item.individualStatus !== 'Returned');
                             %>
                             
                             

@@ -386,19 +386,19 @@
                                                 <p>Qty: <%= item.quantity %> | <strong>₹ <%= item.basePrice %></strong></p>
                                             </div>
                                 
-                                            <% if (item.currentStatus === 'Placed') { %>
+                                            <% if (item.individualStatus === 'Placed') { %>
                                                 <span class="status-badge status-placed">Placed</span>
-                                            <% } else if (item.currentStatus === 'Shipped') { %>
+                                            <% } else if (item.individualStatus === 'Shipped') { %>
                                                 <span class="status-badge status-shipped">Shipped</span>
-                                            <% } else if (item.currentStatus === 'Out for Delivery') { %>
+                                            <% } else if (item.individualStatus === 'Out for Delivery') { %>
                                                 <span class="status-badge status-out-for-delivery">Out for Delivery</span>
-                                            <% } else if (item.currentStatus === 'Delivered') { %>
+                                            <% } else if (item.individualStatus === 'Delivered') { %>
                                                 <span class="status-badge status-delivered">Delivered</span>
-                                            <% } else if (item.currentStatus === 'Cancelled') { %>
+                                            <% } else if (item.individualStatus === 'Cancelled') { %>
                                                 <span class="status-badge status-cancelled">Cancelled</span>
-                                            <% } else if (item.currentStatus === 'Payment Failed') { %>
+                                            <% } else if (item.individualStatus === 'Payment Failed') { %>
                                                 <span class="status-badge status-failed">Payment Failed</span>
-                                            <% } else if (item.currentStatus === 'Returned') { %>
+                                            <% } else if (item.individualStatus === 'Returned') { %>
                                                 <span class="status-badge status-returned">Returned</span>
                                             <% } else { %>
                                                 <span class="status-badge status-unknown">Unknown</span>

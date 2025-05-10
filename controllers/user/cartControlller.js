@@ -8,10 +8,7 @@ import Category from "../../models/categorySchema.js";
 import Wishlist from "../../models/wishListSchema.js"
 
 const loadCart = async (req, res) => {
-    try {
-        if (!req.session.user) {
-            return res.redirect('/user/login');
-        }
+    try {        
 
         const userId = req.session.user?.id ?? req.session.user?._id ?? null;
 
@@ -182,7 +179,6 @@ const updateQuantity = async (req, res) => {
         return res.status(500).json({ error: "Internal server error" });
     }
 };
-
 
 const deleteFromcart = async (req,res)=> {
     try {

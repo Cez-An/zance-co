@@ -410,7 +410,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="/admin/coupon">
                     <i class="bi bi-ticket"></i> Coupons
                 </a>
             </li>
@@ -576,7 +576,8 @@
                                     textClass = 'text-muted';
                                 }
                             %>
-                                <div class="card mb-3 border-0 shadow-sm"> <!-- Subtle shadow instead of border -->
+                                <div class="card mb-3 border-0 shadow-sm"> 
+                                    <!-- Subtle shadow instead of border -->
                                     <div class="card-body p-3"> <!-- Tighter padding -->
                                         <div class="d-flex justify-content-between mb-2">
                                             <span class="fw-bold text-muted small">Order ID</span>
@@ -599,7 +600,7 @@
                                             <span class="small">
                                                 ₹<%= (
                                                     order.orderItems.reduce((total, item) => {
-                                                        if (item.currentStatus !== 'Cancelled') {
+                                                        if (item.individualStatus !== 'Cancelled') {
                                                             return total + (item.discountPrice || 0) * (item.quantity || 1);
                                                         }
                                                         return total;
@@ -620,7 +621,7 @@
                             <div class="text-center p-4 text-muted">No orders found</div>
                         <% } %>
                     
-                        <!-- Pagination remains same -->
+                        // <!-- Pagination remains same -->
                         <div class="d-flex justify-content-center mt-3">
                             <nav>
                                 <ul class="pagination pagination-sm">

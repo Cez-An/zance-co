@@ -10,7 +10,8 @@
       <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
       
     <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         .sidebar {
             height: 100vh;
@@ -118,8 +119,10 @@
             .sidebar.active + .main-content .open-sidebar-btn {
                 display: none; /* Hide the open button when sidebar is open */
             }
+            .form-control, .form-check-input { background-color: #1e1e1e; color: white; border: 1px solid #444; }
         }
     </style>
+    
 </head>
 <body>
     <!-- Hamburger Menu for Mobile -->
@@ -130,17 +133,17 @@
     <!-- Sidebar -->
     <nav class="sidebar">
         <!-- Close Sidebar Button -->
-        <button class="btn btn-secondary close-sidebar-btn" onclick="toggleSidebar()">
+        <button class="btn btn-dark close-sidebar-btn" onclick="toggleSidebar()">
             <i class="bi bi-x-lg"></i></button>
 
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link active" href="/admin/dashboard">
+                <a class="nav-link " href="/admin/dashboard">
                     <i class="bi bi-house-door"></i> Dashboard
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/admin/category">
+                <a class="nav-link " href="/admin/category">
                     <i class="bi bi-grid"></i> Categories
                 </a>
             </li>
@@ -150,7 +153,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/admin/customers">
+                <a class="nav-link " href="/admin/customers">
                     <i class="bi bi-people"></i> Customers
                 </a>
             </li>
@@ -160,7 +163,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/admin/coupon">
+                <a class="nav-link active" href="/admin/coupon">
                     <i class="bi bi-ticket"></i> Coupons
                 </a>
             </li>
@@ -183,22 +186,125 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="main-content">
-        <!-- Button to Open Sidebar -->
-        <button class="btn btn-secondary open-sidebar-btn" onclick="toggleSidebar()">
-            <i class="bi bi-list"></i></button>
-        
-        <h1>Welcome to Admin Panel</h1>
-        <p>This is the main content area. Add your content here.</p>
-    </div>
+    
+ <div class="container mt-5">
+    <h2 class="mb-4">Edit Coupon</h2>
 
-    <!-- Bootstrap 5 JS and Bootstrap Icons -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <script>
-        function toggleSidebar() {
-            document.querySelector('.sidebar').classList.toggle('active');
+    <form id="editCouponForm" novalidate>
+      <div class="mb-3">
+        <label for="name" class="form-label">Coupon Name</label>
+        <input type="text" class="form-control" id="name" required />
+        <div class="invalid-feedback">Coupon name is required.</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="expiresOn" class="form-label">Expiration Date</label>
+        <input type="date" class="form-control" id="expiresOn" required />
+        <div class="invalid-feedback">Please choose a valid future expiration date.</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="offerPrice" class="form-label">Offer Price</label>
+        <input type="number" class="form-control" id="offerPrice" min="0.01" step="0.01" required />
+        <div class="invalid-feedback">Offer price must be greater than 0.</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="minimumPrice" class="form-label">Minimum Purchase Price</label>
+        <input type="number" class="form-control" id="minimumPrice" min="0.01" step="0.01" required />
+        <div class="invalid-feedback">Minimum price must be greater than 0.</div>
+      </div>
+
+      <div class="mb-3 form-check">
+        <input type="checkbox" class="form-check-input" id="isListed" />
+        <label class="form-check-label" for="isListed">Is Listed</label>
+      </div>
+
+      <button type="submit" class="btn btn-warning">Update Coupon</button>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById("editCouponForm");
+    const params = new URLSearchParams(window.location.search);
+    const couponId = params.get("id");
+
+    if (!couponId) {
+      Swal.fire("Error", "No coupon ID provided in URL", "error");
+    }
+
+    async function loadCoupon() {
+      try {
+        const res = await fetch(`/api/admin/coupons/${couponId}`);
+        const coupon = await res.json();
+
+        if (!res.ok) throw new Error(coupon.message || "Failed to load coupon");
+
+        document.getElementById("name").value = coupon.name;
+        document.getElementById("expiresOn").value = new Date(coupon.expiresOn).toISOString().split("T")[0];
+        document.getElementById("offerPrice").value = coupon.offerPrice;
+        document.getElementById("minimumPrice").value = coupon.minimumPrice;
+        document.getElementById("isListed").checked = coupon.isListed;
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error", err.message, "error");
+      }
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      form.classList.add("was-validated");
+
+      const name = document.getElementById("name").value.trim();
+      const expiresOn = document.getElementById("expiresOn").value;
+      const offerPrice = parseFloat(document.getElementById("offerPrice").value);
+      const minimumPrice = parseFloat(document.getElementById("minimumPrice").value);
+
+      let valid = true;
+
+      if (!name) valid = false;
+      if (!expiresOn || new Date(expiresOn) <= new Date()) valid = false;
+      if (isNaN(offerPrice) || offerPrice <= 0) valid = false;
+      if (isNaN(minimumPrice) || minimumPrice <= 0) valid = false;
+
+      if (!valid) {
+        Swal.fire("Validation Error", "Please fill in all fields correctly.", "warning");
+        return;
+      }
+
+      const updatedCoupon = {
+        name,
+        expiresOn,
+        offerPrice,
+        minimumPrice,
+        isListed: document.getElementById("isListed").checked,
+      };
+
+      try {
+        const res = await fetch(`/api/admin/coupons/${couponId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedCoupon),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          Swal.fire("Updated", "Coupon updated successfully", "success").then(() => {
+            // ✅ Redirect to listing page after successful update
+            window.location.href = "coupons.html";
+          });
+        } else {
+          Swal.fire("Error", data.message || "Failed to update coupon", "error");
         }
-    </script>
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error", "Server error", "error");
+      }
+    });
+
+    loadCoupon();
+  </script>
+
 </body>
 </html>

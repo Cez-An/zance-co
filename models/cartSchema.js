@@ -21,7 +21,7 @@ const cartItemSchema = new Schema({
         required: true,
         min: 1
     },
-    basePrice: {
+    basePrice: { // discount price
         type: Number,
         required: true 
     },

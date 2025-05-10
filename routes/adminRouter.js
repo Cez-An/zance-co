@@ -7,7 +7,7 @@ import categoryController from '../controllers/admin/categoryController.js'
 import productController from "../controllers/admin/productController.js";
 import orderController from "../controllers/admin/orderController.js"
 import refundController from "../controllers/user/refundController.js";
-
+import couponController from "../controllers/admin/couponController.js"
 
 // Admin login management
 router.get('/login',adminAuth.islogin,adminController.renderAdminLoginPage)
@@ -41,11 +41,17 @@ router.get('/unBlockProduct',adminAuth.checkSession,productController.productUnB
 
 //order
 router.get('/orders',adminAuth.checkSession, orderController.loadOrders);
-router.patch('/orders', adminController.updateStatus);
-router.patch('/orders/all-status', adminController.updateAllOrderItemsStatus);
-router.get('/vieworders', adminAuth.checkSession, adminController.viewOrders);
+router.patch('/orders', orderController.updateStatus);
+router.patch('/orders/all-status', orderController.updateAllOrderItemsStatus);
+router.get('/vieworders', adminAuth.checkSession, orderController.viewOrders);
 
 //refund
 router.patch('/refunds', refundController.updateRefundStatus);
+
+//coupon
+router.get("/coupon", adminAuth.checkSession,couponController.renderCouponPage);
+// router.get("/coupons/add", adminAuth.checkSession,couponController.);
+// router.get("/coupons/edit", adminAuth.checkSession,couponController.);
+// router.post("/admin/coupon", adminAuth.checkSession,couponController.);
 
 export default router;

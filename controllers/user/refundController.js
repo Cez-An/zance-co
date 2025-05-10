@@ -119,11 +119,11 @@ const cancelOrder = async (req, res) => {
             return res.status(404).json({ message: 'Product not found in this order' });
         }
 
-        if (item.currentStatus === 'Cancelled') {
+        if (item.individualStatus === 'Cancelled') {
             return res.status(400).json({ message: 'Item is already cancelled' });
         }
 
-        if (item.currentStatus === 'Delivered') {
+        if (item.individualStatus === 'Delivered') {
             return res.status(400).json({ message: 'Cannot cancel a delivered item' });
         }
 
@@ -133,7 +133,7 @@ const cancelOrder = async (req, res) => {
             timestamp: new Date()
         });
 
-        item.currentStatus = 'Cancelled';
+        item.individualStatus = 'Cancelled';
         item.cancelReason = cancelReason || 'No reason provided';
 
         await Product.findOneAndUpdate({_id:productId},{
@@ -204,10 +204,10 @@ const updateRefundStatus = async (req, res) => {
             refund.status = status;
             await refund.save();
 
-            itemToUpdate.currentStatus='Returned';
+            itemToUpdate.individualStatus='Returned';
             await order.save();
 
-            const allReturned = order.orderItems.every(item=>item.currentStatus=='Returned');
+            const allReturned = order.orderItems.every(item=>item.individualStatus=='Returned');
 
             if(allReturned){
                 await Order.findByIdAndUpdate(order._id, { status: status });

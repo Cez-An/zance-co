@@ -55,7 +55,7 @@ const orderSchema = new Schema({
                 default: Date.now
             }
         }],
-        currentStatus : {
+        individualStatus : {
             type : String
         },
     }],

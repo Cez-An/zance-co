@@ -228,7 +228,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="/admin/coupon">
                     <i class="bi bi-ticket"></i> Coupons
                 </a>
             </li>
@@ -262,6 +262,12 @@
             <div class="card p-4 shadow-sm">
                 <h5 class="mb-3">Add Category</h5>
 
+                <% if (message && message.length > 0) { %>
+                    <script>
+                        alert("<%= message %>");
+                    </script>
+                <% } %>
+                
                 <form action="/admin/category" id="addCategorform" method="post">
 
                     <div class="mb-3">

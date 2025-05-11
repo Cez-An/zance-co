@@ -186,6 +186,7 @@
             </li>
         </ul>
     </nav>
+    
 
         <!-- Sidebar + Main Content Wrapper -->
         <div class="container-fluid w-100 sidebar-header">
@@ -275,7 +276,7 @@
                                                     const refund = refundMap[productId];   
                                                     const isReturned = refund && refund.status === 'Requested';  
                                                     const isApproved = refund && refund.status === 'Approved'; 
-                                                    const isRejected = refund && refund.status === 'Rejected';                                        %>
+                                                    const isRejected = refund && refund.status === 'Rejected';%>
                                                     <tr>
                                                         <td class="<%= isCancelled ? 'text-muted' : '' %> break-text">
                                                             <%= item.product?.name %>
@@ -318,12 +319,22 @@
                                                                 ₹<%= item.quantity * (item.basePrice || 0) %>
                                                             <% } %>
                                                         </td>
+                                                        
                                                         <td class="text-center">
+                                                            <% if(item.individualStatus==="Cancelled"){ %>
                                                             <button class="btn custom-outline-btn btn-sm update-btn"
+                                                                    data-bs-toggle="modal" data-bs-target="#statusChangeModal" 
+                                                                    data-product-id="<%= item.product?._id %>" disabled >
+                                                               Cancelled
+                                                            </button>
+                                                            
+                                                            <% } else { %>
+                                                                <button class="btn custom-outline-btn btn-sm update-btn"
                                                                     data-bs-toggle="modal" data-bs-target="#statusChangeModal" 
                                                                     data-product-id="<%= item.product?._id %>">
                                                                 Update
                                                             </button>
+                                                                 <% } %>
                                                         </td>
                                                     </tr>
                                                 <% }) %>

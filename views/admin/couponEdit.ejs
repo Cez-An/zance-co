@@ -167,11 +167,7 @@
                     <i class="bi bi-ticket"></i> Coupons
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="bi bi-arrow-left-right"></i> Refund/Return
-                </a>
-            </li>
+            
             <li class="nav-item">
                 <a class="nav-link" href="#">
                     <i class="bi bi-bar-chart"></i> Sales Report
@@ -194,6 +190,13 @@
       <div class="mb-3">
         <label for="name" class="form-label">Coupon Name</label>
         <input type="text" class="form-control" id="name" required />
+        <div class="invalid-feedback">Coupon name is required.</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="name" class="form-label">Description</label>
+        <textarea class="form-control" rows="3" placeholder="Write your description here..."
+                            id="description"></textarea>
         <div class="invalid-feedback">Coupon name is required.</div>
       </div>
 
@@ -235,12 +238,13 @@
 
     async function loadCoupon() {
       try {
-        const res = await fetch(`/api/admin/coupons/${couponId}`);
+        const res = await fetch(`/admin/coupon/${couponId}`);
         const coupon = await res.json();
 
         if (!res.ok) throw new Error(coupon.message || "Failed to load coupon");
 
         document.getElementById("name").value = coupon.name;
+        document.getElementById("description").value = coupon.description;
         document.getElementById("expiresOn").value = new Date(coupon.expiresOn).toISOString().split("T")[0];
         document.getElementById("offerPrice").value = coupon.offerPrice;
         document.getElementById("minimumPrice").value = coupon.minimumPrice;
@@ -256,6 +260,7 @@
       form.classList.add("was-validated");
 
       const name = document.getElementById("name").value.trim();
+      const description = document.getElementById("description").value.trim();
       const expiresOn = document.getElementById("expiresOn").value;
       const offerPrice = parseFloat(document.getElementById("offerPrice").value);
       const minimumPrice = parseFloat(document.getElementById("minimumPrice").value);
@@ -275,13 +280,14 @@
       const updatedCoupon = {
         name,
         expiresOn,
+        description,
         offerPrice,
         minimumPrice,
         isListed: document.getElementById("isListed").checked,
       };
 
       try {
-        const res = await fetch(`/api/admin/coupons/${couponId}`, {
+        const res = await fetch(`/admin/coupon/${couponId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedCoupon),
@@ -291,7 +297,6 @@
 
         if (res.ok) {
           Swal.fire("Updated", "Coupon updated successfully", "success").then(() => {
-            // ✅ Redirect to listing page after successful update
             window.location.href = "coupons.html";
           });
         } else {

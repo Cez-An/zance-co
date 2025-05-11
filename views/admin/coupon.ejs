@@ -11,6 +11,7 @@
 
   <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
@@ -180,11 +181,7 @@
           <i class="bi bi-ticket"></i> Coupons
         </a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">
-          <i class="bi bi-arrow-left-right"></i> Refund/Return
-        </a>
-      </li>
+      
       <li class="nav-item">
         <a class="nav-link" href="#">
           <i class="bi bi-bar-chart"></i> Sales Report
@@ -202,10 +199,10 @@
   <div class="container mt-5 main-content">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2>Available Coupons</h2>
-      <button class="btn btn-secondary" onclick="window.location.href='add-coupon.html'"> Add Coupon</button>
+      <button class="btn btn-secondary" onclick="window.location.href='/admin/coupon/add'"> Add Coupon</button>
     </div>
 
-    <table class="table table-hover">
+    <table class="table table-hover text-center">
       <thead class="bg-dark text-light">
         <tr>
           <th>No.</th>
@@ -230,7 +227,9 @@
               <td>₹<%= coupon.minimumPrice %></td>
               <td><%= coupon.isListed ? "Yes" : "No" %></td>
               <td>
-                <button class="btn btn-sm btn-primary" onclick="editCoupon('<%= coupon._id %>')">Edit</button>
+                <button class="btn btn-sm btn-secondary" onclick="editCoupon('<%= coupon._id %>')">Edit</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteCoupon('<%= coupon._id %>')">Delete Coupon</button>
+
               </td>
             </tr>
           <% }) %>
@@ -245,8 +244,42 @@
     }
 
     function editCoupon(id) {
-      window.location.href = `edit-coupon.html?id=${id}`;
+      window.location.href = `/admin/coupon/edit/${couponId}`;
     }
-  </script>
+
+    function deleteCoupon(couponId) {
+    Swal.fire({
+    title: "Are you sure?",
+    text: "This coupon will be permanently deleted.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+    if (result.isConfirmed) {
+      fetch(`/admin/coupon/${couponId}`, {
+        'content-type':'application/json',
+        method: 'DELETE',
+      })
+        .then((response) => {
+          if (response.ok) {
+            Swal.fire("Deleted!", "Coupon has been deleted.", "success").then(() => {
+              location.reload();
+            });
+          } else {
+            Swal.fire("Failed", "Could not delete coupon.", "error");
+          }
+        })
+        .catch((error) => {
+          console.error("Error deleting coupon:", error);
+          Swal.fire("Error", "Something went wrong.", "error");
+        });
+    }
+  });
+}
+
+</script>
+
 </body>
 </html>

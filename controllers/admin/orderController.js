@@ -125,13 +125,10 @@ const updateAllOrderItemsStatus = async (req, res) => {
   };
 
 async function updateStatus(req, res) {
-    console.log("......................................................................................");
     
     const { id } = req.query;
-    console.log(id);
-    
-    const { productId, status, cancelReason } = req.body;
-  
+    console.log(id);    
+    const { productId, status, cancelReason } = req.body;  
     try {
         const order = await Order.findOne({ _id: id });
         if (!order) {
@@ -143,7 +140,6 @@ async function updateStatus(req, res) {
             return res.status(STATUS_CODE.NOT_FOUND).json({ message: 'Product not found in order' });
         }
   
-        // Add status update to history
         item.statusHistory.push({ status, timestamp: new Date() });
   
         item.individualStatus = status;
@@ -163,10 +159,10 @@ async function updateStatus(req, res) {
         }
   
         order.updatedAt = new Date();
-        await order.save();
-  
+        await order.save();  
         return res.status(STATUS_CODE.SUCCESS).json({ message: 'Status updated successfully', order });
-    } catch (error) {
+
+    } catch (error){
         console.error(error);
         return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ message: 'Error updating status', error });
     }

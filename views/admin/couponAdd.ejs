@@ -167,11 +167,7 @@
                     <i class="bi bi-ticket"></i> Coupons
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="bi bi-arrow-left-right"></i> Refund/Return
-                </a>
-            </li>
+            
             <li class="nav-item">
                 <a class="nav-link" href="#">
                     <i class="bi bi-bar-chart"></i> Sales Report
@@ -193,6 +189,13 @@
       <div class="mb-3">
         <label for="name" class="form-label">Coupon Name</label>
         <input type="text" class="form-control" id="name" required />
+        <div class="invalid-feedback">Coupon name is required.</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="name" class="form-label">Description</label>
+        <textarea class="form-control" rows="3" placeholder="Write your description here..."
+                            id="description"></textarea>
         <div class="invalid-feedback">Coupon name is required.</div>
       </div>
 
@@ -219,7 +222,7 @@
         <label class="form-check-label" for="isListed">Is Listed</label>
       </div>
 
-      <button type="submit" class="btn btn-primary">Submit Coupon</button>
+      <button type="submit" class="btn btn-secondary">Submit Coupon</button>
     </form>
   </div>
 
@@ -236,6 +239,7 @@
       }
 
       const name = document.getElementById("name").value.trim();
+      const description = document.getElementById("description").value.trim();
       const expiresOn = document.getElementById("expiresOn").value;
       const offerPrice = parseFloat(document.getElementById("offerPrice").value);
       const minimumPrice = parseFloat(document.getElementById("minimumPrice").value);
@@ -251,10 +255,10 @@
         return;
       }
 
-      const couponData = { name, expiresOn, offerPrice, minimumPrice, isListed };
+      const couponData = { name,description, expiresOn, offerPrice, minimumPrice, isListed };
 
       try {
-        const res = await fetch("/api/admin/coupons", {
+        const res = await fetch("/admin/coupon", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(couponData),
@@ -266,6 +270,8 @@
           Swal.fire("Success!", "Coupon created successfully.", "success");
           form.reset();
           form.classList.remove('was-validated');
+          window.location.href = '/admin/coupon'
+
         } else {
           Swal.fire("Error", data.message || "Something went wrong.", "error");
         }

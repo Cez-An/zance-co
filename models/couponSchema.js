@@ -9,6 +9,10 @@
         required: true,
         unique: true,
       },
+      description:{
+        type:String,
+        required: true,
+      },
       expiresOn: {
         type: Date,
         required: true,

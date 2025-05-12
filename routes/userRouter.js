@@ -9,6 +9,7 @@ import refundController from "../controllers/user/refundController.js"
 import walletController from "../controllers/user/walletController.js"
 import authController from "../controllers/user/authController.js";
 import shopController from "../controllers/user/shopController.js";
+import couponController from "../controllers/user/couponControler.js"
 
 const router = express.Router();
 
@@ -100,5 +101,9 @@ router.get('/order/invoiceDownload',userAuth.checkStatus,profileController.downl
 router.get('/wallet', userAuth.checkStatus,walletController.loadWallet);
 
 router.get("/testing",userController.testing);
+
+//coupon
+router.post('/couponValidate', userAuth.checkStatus,couponController.validateCoupon);
+
 
 export default router;

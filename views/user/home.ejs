@@ -44,6 +44,15 @@
     
         
 </style>
+<style>
+    .add-to-cart {
+        color: rgb(129, 129, 189);
+    }
+    .add-to-cart :hover {
+        font-style: 200px !important;
+        color: rgb(225, 255, 200) !important;
+    }
+</style>
     <!-- Hero Section Begin -->
               
     <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
@@ -120,7 +129,7 @@
                         
                             <div class="product__item__text">
                                 <h6><%=element.name %></h6>
-                                <a href="/user/loadProductsDetailsPage/<%=element._id %>" class="add-cart"><%=element.name %></a>
+                                <a href="/user/loadProductsDetailsPage/<%=element._id %>" class="add-cart"><%=element.name %></a>                                
                                 <div class="rating">
                                     <i class="fa fa-star-o"></i>
                                     <i class="fa fa-star-o"></i>
@@ -130,6 +139,16 @@
                                 </div>
                                 <h5>₹&nbsp;<%=element.salePrice  %> </h5>
                             </div>
+
+                            <p class="add-to-cart-btn add-to-cart" 
+                            data-userid="<%= user?._id %>" 
+                            data-productid="<%= element?._id %>" 
+                            data-baseprice="<%= element?.salePrice %>"
+                            style="cursor: pointer;">
+                            <strong>+ Add to Cart</strong>
+                            </p>
+
+
                         </div>
                     </div>
                 <% }); %>
@@ -167,7 +186,6 @@
 <!-- Instagram Section End -->
 <script>
 
-
     document.querySelectorAll('.to-wishlist-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         Swal.fire({
@@ -183,7 +201,6 @@
 document.querySelectorAll('.add-to-wishlist-btn').forEach(btn => {
     const icon = btn.querySelector('i');
 
-    // On load: set heart based on data-is-wishlisted
     if (btn.dataset.isWishlisted === 'true') {
         icon.classList.remove('wishlist');
         icon.classList.add('wishlist2');
@@ -253,6 +270,71 @@ document.querySelectorAll('.add-to-wishlist-btn').forEach(btn => {
             }
         } catch (error) {
             console.error('Error toggling wishlist:', error);
+            Swal.fire({
+                icon: 'error',
+                text: 'An error occurred',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+    });
+});
+
+  
+    document.querySelectorAll('.add-to-cart-btn').forEach(button => {
+    button.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        const userId = button.dataset.userid;
+        const productId = button.dataset.productid;
+        const basePrice = button.dataset.baseprice;
+        const quantity = 1;
+
+        if (!userId || userId === "null" || userId.trim() === "") {
+            Swal.fire({
+                icon: 'warning',
+                text: 'Please log in to add items to your cart.',
+                showConfirmButton: false,
+                timer: 2000
+            });
+            return;
+        }
+
+        const productDetails = {
+            userId,
+            productId,
+            quantity,
+            basePrice,
+        };
+
+        try {
+            const response = await fetch('/user/cart', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(productDetails)
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                Swal.fire({
+                    icon: 'warning',
+                    text: data.error,
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            } else {
+                Swal.fire({
+                    icon: 'success',
+                    text: 'Added to cart successfully',
+                    showConfirmButton: true,
+                    confirmButtonText: 'Go to Cart',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/user/cart';
+                    }
+                });
+            }
+        } catch (error) {
             Swal.fire({
                 icon: 'error',
                 text: 'An error occurred',

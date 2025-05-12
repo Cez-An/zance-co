@@ -41,7 +41,7 @@ const addItemToCart = async (req, res) => {
             return res.status(STATUS_CODE.NOT_FOUND).json({ error: 'Invalid input values.' });
         }
 
-        const product = await Product.findOne({ productId: productId, isBlocked: false });
+        const product = await Product.findOne({ _id: productId, isBlocked: false });
 
         if (!product) {
             return res.status(STATUS_CODE.NOT_FOUND).json({ error: 'Product not found.' });

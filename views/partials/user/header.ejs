@@ -31,6 +31,7 @@
     <link rel="stylesheet" href="../../css/style.css" type="text/css">
     <link rel="stylesheet" href="../../css/headerpartials.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
 
 </head>
 
@@ -52,6 +53,8 @@
                    <a href="" class="sign-in-link"  id="user-name"><%=locals.user.name%></a>
                    <div class="dropdown-content">
                        <a href="/user/userProfile">User Profile</a>
+                       <a href="/user/order">Orders</a>
+                       <!-- <a href="/user/userProfile">User Profile</a> -->
                        <a href="/user/logout">Logout</a>
                    </div>
                 </div>
@@ -109,6 +112,7 @@
                             <a  class="sign-in-link" id="user-name"><%=locals.user.name%></a>
                             <div class="dropdown-content">
                                 <a href="/user/userProfile">User Profile</a>
+                                <a href="/user/order">Orders</a>
                                 <a href="/user/logout">Logout</a>
                             </div>
                          </div>

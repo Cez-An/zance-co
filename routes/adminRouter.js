@@ -48,12 +48,10 @@ router.get('/vieworders', adminAuth.checkSession, orderController.viewOrders);
 //refund
 router.patch('/refunds', refundController.updateRefundStatus);
 
-//coupon
-router.get("/coupon", adminAuth.checkSession,couponController.renderCouponPage);
-router.get("/coupon/add", adminAuth.checkSession,couponController.renderCouponAddPage);
-router.get("/coupon/edit", adminAuth.checkSession,couponController.renderEditCouponPage);
-router.put("/admin/coupon/:id",adminAuth.checkSession,couponController.updateCoupon)
-router.post("/coupon", adminAuth.checkSession,couponController.createCoupon);
-router.delete("/coupon/:id", adminAuth.checkSession,couponController.deleteCoupon);
+// coupon management
+router.get('/coupons',adminAuth.checkSession, couponController.loadCouponPage);
+router.post('/coupons',adminAuth.checkSession, couponController.addCoupon);
+router.put('/coupons', adminAuth.checkSession, couponController.editCoupon);
+router.delete('/coupons', adminAuth.checkSession, couponController.deleteCoupon);
 
 export default router;

@@ -5,34 +5,52 @@ import Address from "../../models/addressSchema.js";
 import Order from "../../models/orderSchema.js"
 import STATUS_CODE from "../../helpers/statusCode.js";
 import Category from "../../models/categorySchema.js";
+import Coupon from "../../models/couponSchema.js";
 
 const loadCheckout = async (req, res) => {
-    
-    const userId = req.session.user?.id ?? req.session.user?._id ?? null;
-    const user = await User.findOne({ _id: userId });
-    const address = await Address.find({ userId });
-    const cart = await Cart.findOne({ userId }).populate('items.productId');
+    try {
+        const userId = req.session.user?.id ?? req.session.user?._id ?? null;
 
-    let cartTotal = 0;
-    let deliveryCharge = 0;
-    let grandTotal = 0;
+        if (!userId) {
+            return res.status(401).send('User not authenticated');
+        }
 
-    if (cart && cart.items.length > 0) {
-        cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.basePrice, 0);
-        deliveryCharge = cartTotal < 499 ? 40 : 0;
-        grandTotal = cartTotal + deliveryCharge;
+        const user = await User.findOne({ _id: userId });
+        const address = await Address.find({ userId });
+        const cart = await Cart.findOne({ userId }).populate('items.productId');
+
+        let cartTotal = 0;
+        let deliveryCharge = 0;
+        let grandTotal = 0;
+
+        if (cart && cart.items.length > 0) {
+            cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.basePrice, 0);
+            deliveryCharge = cartTotal < 499 ? 40 : 0;
+            grandTotal = cartTotal + deliveryCharge;
+        }
+        console.log(grandTotal);
+        
+        const currentDate = new Date();
+
+        const coupons = await Coupon.find({
+            status: 'Active',
+            startDate: { $lte: currentDate },
+            expiryDate: { $gte: currentDate },
+            minPrice: { $lte: grandTotal }
+        });
+
+        res.render('user/checkout', {
+            user,
+            address,
+            cart,
+            calculatedValues: { cartTotal, deliveryCharge, grandTotal },
+            coupons
+        });
+
+    } catch (error) {
+        console.error('Error loading checkout:', error);
+        res.status(500).send('Something went wrong while loading the checkout page.');
     }
-
-    // const currentDate = new Date();
-
-    // const coupons = await Coupon.find({
-    //     status: 'Active',
-    //     startDate: { $lte: currentDate },
-    //     expiryDate: { $gte: currentDate },
-    //     minPrice: { $lte: grandTotal }
-    // });
-
-    res.render('user/checkout', {user, address, cart, calculatedValues: {cartTotal, deliveryCharge, grandTotal }});
 };
 
 const addShoppingAddress = async (req,res) =>{
@@ -104,9 +122,11 @@ const editshoppingAddress = async (req,res) =>{
 }
 
 const checkoutDetails = async (req,res) => {
-    const {selectedAddress} = req.body
 
+    const {selectedAddress, couponDiscount, couponId} = req.body;
     req.session.deliveryAddress = selectedAddress;
+    req.session.couponDiscount = couponDiscount;
+    req.session.couponId = couponId;
 
     res.redirect('/payments')
 }

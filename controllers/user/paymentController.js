@@ -8,10 +8,16 @@ import Category from "../../models/categorySchema.js";
 import Wishlist from "../../models/wishListSchema.js";
 import mongoose from "mongoose";
 
+
 const loadPayments = async (req, res) => {
     try {
         const userId = req.session.user?.id ?? req.session.user?._id ?? null;
-        const user = await User.findOne({_id: userId});
+        const user = await User.findOne({ _id : userId, isBlocked : false});
+
+        if (!user) {
+            return res.status(STATUS_CODE.FORBIDDEN).redirect('/');
+        }
+
         const cart = await Cart.findOne({ userId: userId }).populate('items.productId');
 
         if (!cart || !cart.items || cart.items.length === 0) {
@@ -31,29 +37,32 @@ const loadPayments = async (req, res) => {
         deliveryCharge = cartTotal < 499 ? 40 : 0;
 
         const couponDiscount = req.session.couponDiscount || 0;
+        const couponId = req.session.couponId || "";
+
+        // console.log(couponId)
 
         if (req.session.couponDiscount) {
             req.session.couponDiscount = 0;
+            req.session.couponId = "";
             await req.session.save();
         }
 
         grandTotal = cartTotal + deliveryCharge - couponDiscount;
-
-        res.render('user/payment', {title: "Checkout", user, cart, cartTotal, deliveryCharge, grandTotal, couponDiscount});
+        console.log(grandTotal);
+        
+        res.render('user/payment', {title: "Checkout", user, cart, cartTotal, deliveryCharge, grandTotal, couponDiscount, couponId, RAZOR_API_KEY: process.env.RAZOR_API_KEY});
     } catch (error) {
         console.error('Error loading payment:', error);
         
     }
 }
 
+
 const paymentSuccess = async (req,res) => {
     const userId = req.session.user?.id ?? req.session.user?._id ?? null;
-
     const { paymentMethod } = req.body;
-
     const addressId = req.session.selectedAddress;
     const objectId = new mongoose.Types.ObjectId(addressId);
-
     const cart = await Cart.findOne({ userId : userId }).populate('items.productId');
 
     const generateOrderId = async () => {

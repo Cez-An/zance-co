@@ -119,19 +119,7 @@ const updateCategory = async (req, res) => {
   }
 };
 
-// const deleteCategory = async (req, res) => {
-//   try {
-//     const { id } = req.body;
-//     const category = await Category.findByIdAndDelete(id);
-//     return res
-//       .status(STATUS_CODE.SUCCESS)
-//       .json({ message: "Category deleted successfully" }); 
-//   } catch (error) {
-//     return res
-//       .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
-//       .json({ error: "Category deletion failed" });
-//   }
-// };
+
 
 export default {
   renderCategoryInfo,
@@ -141,7 +129,4 @@ export default {
   updateCategory,
 
 
-
-
-  // deleteCategory,
 };

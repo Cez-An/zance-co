@@ -1,134 +1,156 @@
-import { render } from "ejs";
 import STATUS_CODE from "../../helpers/statusCode.js";
-import Admin from "../../models/adminSchema.js";
-import bcrypt from "bcrypt";
-import User from "../../models/userSchema.js";
-import Order from "../../models/orderSchema.js";
-import Address from "../../models/addressSchema.js";
-import Refund from "../../models/refundSchema.js";
 import Coupon from "../../models/couponSchema.js";
-import { log } from "console";
+import User from "../../models/userSchema.js";
 
-const renderCouponPage = async (req, res) => {
-  try {
-    const coupons = await Coupon.find().sort({ createdAt: -1 });
-    res.render("admin/coupon", { coupons });
-  } catch (error) {
-    res.status(500).send("Failed to load coupons");
-  }
-};
 
-const renderCouponAddPage = async (req, res) => {
-  try {    
-    res.render("admin/couponAdd");
-  } catch (error) {
-    res.status(500).send("Failed to load couponAdd Page");
-  }
-};
+const loadCouponPage = async(req,res)=>{
+    try {
+        const { q, status, page = 1 } = req.query;
+        const limit = 7;
+        let query = {};
 
-const createCoupon = async (req, res) => {
-  try { 
-    console.log("accessedDDDDDDDDDDDDDDDDDDDDDDDDD");
-    
-    const { name,description, expiresOn, offerPrice, minimumPrice, isListed } = req.body;
+        if (q) {
+            query.name = { $regex: q, $options: 'i' };
+        }
 
-    const existing = await Coupon.findOne({ name });
-    if (existing) {
-      return res.status(400).json({ message: "Coupon with this name already exists" });
+        if (status) {
+            query.status = status === 'true' ? 'Active' : 'Inactive';
+        }
+
+        const totalCoupons = await Coupon.countDocuments(query);
+        const totalPages = Math.ceil(totalCoupons / limit);
+        const coupons = await Coupon.find(query)
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .sort({ createdAt: -1 });
+
+        res.render('admin/coupons', {
+            coupons,
+            currentPage: parseInt(page),
+            totalPages,
+            searchQuery: q || '',
+            selectedFilter: status
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: 'Server Error' });
     }
-
-    const coupon = new Coupon({
-      name,
-      description,
-      expiresOn,
-      offerPrice,
-      minimumPrice,
-      isListed,
-
-    });
-
-    await coupon.save();
-    res.status(201).json({ message: "Coupon created successfully", coupon });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-const deleteCoupon = async (req, res) => {
-  try {
-
-    console.log("yyaysyysyasyas")
-    const { id } = req.params;
-    const deletedCoupon = await Coupon.findByIdAndDelete(id);
-    if (!deletedCoupon) {
-      return res.status(404).json({ message: "Coupon not found" });
-    }
-    res.status(200).json({ message: "Coupon deleted successfully" });
-  } catch (error) {
-    console.error("Error deleting coupon:", error);
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
-
-const renderEditCouponPage = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    // Optional: Check if the coupon exists before rendering
-    // const coupon = await Coupon.findById(id);
-    // if (!coupon) return res.status(404).send("Coupon not found");
-
-    res.render("admin/couponEdit", { couponId: id });
-  } catch (error) {
-    console.error("Error rendering edit coupon page:", error);
-    res.status(500).send("Server Error");
-  }
-};
-
-
-const updateCoupon = async (req, res) => {
-  const { id } = req.params;
-  const { name, description, expiresOn, offerPrice, minimumPrice, isListed } = req.body;
-
-  try {
-    const coupon = await Coupon.findById(id);
-    if (!coupon) {
-      return res.status(404).json({ message: "Coupon not found" });
-    }
-
-    const expiryDate = new Date(expiresOn);
-    if (expiryDate <= new Date()) {
-      return res.status(400).json({ message: "Expiration date must be in the future" });
-    }
-
-    if (offerPrice <= 0 || minimumPrice <= 0) {
-      return res.status(400).json({ message: "Prices must be greater than 0" });
-    }
-
-    coupon.name = name;
-    coupon.description = description;
-    coupon.expiresOn = expiryDate;
-    coupon.offerPrice = offerPrice;
-    coupon.minimumPrice = minimumPrice;
-    coupon.isListed = isListed;
-
-    await coupon.save();
-
-    res.status(200).json({ message: "Coupon updated successfully", coupon });
-  } catch (error) {
-    console.error("Update Coupon Error:", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-
-
-export default {
-    renderCouponPage,
-    createCoupon,
-    renderCouponAddPage,
-    deleteCoupon,
-    updateCoupon,
-    renderEditCouponPage,
 }
+
+const addCoupon = async (req, res)=> {
+    try {
+        const { addName, addCode, addDescription, addStartDate, addExpiryDate, addMinPrice, addOfferPrice, addStatus, addUsageType } = req.body;
+   
+        if (new Date(addStartDate) >= new Date(addExpiryDate)) {
+            return res.status(STATUS_CODE.BAD_REQUEST).json({ error: 'Expiry date must be after start date' });
+        }
+        if (parseFloat(addMinPrice) < parseFloat(addOfferPrice)) {
+            return res.status(STATUS_CODE.BAD_REQUEST).json({ error: 'Minimum price must be greater than offer price' });
+        }
+
+        await Coupon.create({
+            name: addName,
+            code: addCode, 
+            description: addDescription,
+            startDate: addStartDate,
+            expiryDate: addExpiryDate,
+            minPrice: addMinPrice,
+            offerPrice: addOfferPrice,
+            status: addStatus,
+            usageType: addUsageType
+        });
+        
+        return res.status(STATUS_CODE.SUCCESS).json({ message: 'Coupon added successfully' });
+
+    } catch (err) {
+        console.error(err);
+        if (err.code === 11000) {
+            res.status(STATUS_CODE.BAD_REQUEST).json({ error: 'Coupon name already exists' });
+        } else {
+            res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: 'Server Error' });
+        }
+    }
+}
+
+const editCoupon = async (req, res) => {
+    try {
+        const { orgName, editName, editCode, editDescription, editStartDate, editExpiryDate, editMinPrice, editOfferPrice, editStatus, editUsageType } = req.body;
+
+        if (new Date(editStartDate) >= new Date(editExpiryDate)) {
+            return res.status(STATUS_CODE.BAD_REQUEST).json({ error: 'Expiry date must be after start date' });
+        }
+        if (parseFloat(editMinPrice) < parseFloat(editOfferPrice)) {
+            return res.status(STATUS_CODE.BAD_REQUEST).json({ error: 'Minimum price must be greater than offer price' });
+        }
+
+        const coupon = await Coupon.findOneAndUpdate(
+            { name: orgName },
+            { 
+                name: editName,
+                code: editCode,
+                description: editDescription,
+                startDate: editStartDate,
+                expiryDate: editExpiryDate,
+                minPrice: editMinPrice,
+                offerPrice: editOfferPrice,
+                status: editStatus,
+                usageType: editUsageType,
+            }, 
+            { new: true }
+        );
+        
+        if (coupon) {
+            return res.status(STATUS_CODE.SUCCESS).json({ message: 'Coupon updated successfully' });
+        } else {
+            return res.status(STATUS_CODE.BAD_REQUEST).json({ error : 'Coupon updated Failed' });
+        }
+        
+
+        
+    } catch (err) {
+        console.error(err);
+        if (err.code === 11000) {
+            res.status(STATUS_CODE.BAD_REQUEST).json({ error: 'Coupon name already exists' });
+        } else {
+            res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: 'Server Error' });
+        }
+    }
+}
+
+const deleteCoupon = async (req,res) => {
+    try {
+        const {couponName} = req.body;
+        
+        const coupon = await Coupon.findOneAndDelete({ name : couponName });
+        if (!coupon) {
+            return res.status(STATUS_CODE.NOT_FOUND).json({ error: 'Coupon not found' });
+        }
+        res.status(STATUS_CODE.SUCCESS).json({ message: 'Coupon deleted successfully' });
+    } catch (err) {
+        console.error(err);
+        res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: 'Server Error' });
+    }
+}
+
+const loadCoupons = async (req,res)=>{
+    const userId = req.session.user?.id ?? req.session.user?._id ?? null;
+
+    if(!userId){
+        res.redirect('/user/login')
+    }
+
+    const user = await User.findOne({ _id : userId, isBlocked : false});
+
+    if(!user){
+        return res.redirect('/')
+    }
+
+    const [firstName] = user.name.split(' ');
+
+    const coupons = await Coupon.find({});
+
+
+    res.render('user/coupons', {title : "coupons", coupons, user, firstName});
+}
+
+export default {loadCouponPage, addCoupon, editCoupon, deleteCoupon, loadCoupons }

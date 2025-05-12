@@ -422,7 +422,7 @@
 }
 
 .card-header {
-    background-color: #5d5d5d;
+    background-color: #000000;
     color: white;
 }
 
@@ -772,13 +772,13 @@ td {
 
 
 .custom-outline-btn {
-    border: 1px solid #3C1549;
-    color: #3C1549;
+    border: 1px solid #000000;
+    color: #000000;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .custom-outline-btn:hover {
-    background-color: #3C1549;
+    background-color: #000000;
     color: #fff;
 }
 

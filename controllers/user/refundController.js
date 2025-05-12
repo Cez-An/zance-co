@@ -9,44 +9,6 @@ import Wishlist from "../../models/wishListSchema.js";
 import mongoose from "mongoose";
 import Refund from "../../models/refundSchema.js";
 
-
-// const requestRefund = async (req, res) => {
-//     const { reason } = req.body;
-//     const {productId} = req.body;  // COMMON PRODUCT ID LOOK INTO THIS!!!!!!
-//     const orderId = req.query.id;
-//     const userId = req.session.user?.id ?? req.session.user?._id ?? null;
-
-//     console.log(orderId, reason, userId)
-
-//     try {
-//         const order = await Order.findById(orderId);
-//         if (!order) {
-//             return res.status(404).json({ message: 'Order not found' });
-//         }
-
-//         const existingRefund = await Refund.findOne({ order:orderId });
-//         if (existingRefund) {
-//             return res.status(400).json({ message: 'Refund already requested' });
-//         }
-
-//         const refund = new Refund({
-//             order: orderId,
-//             userId,
-//             reason,
-//             product: productId,
-//             status: 'Requested', 
-//         });
-
-//         await refund.save();
-
-//         res.status(201).json({ message: 'Refund request submitted' });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ message: 'Server error' });
-//     }
-// };
-
-
 const requestRefund = async (req, res) => {
     const { reason, productId } = req.body;
     const orderId = req.query.id;
@@ -70,7 +32,7 @@ const requestRefund = async (req, res) => {
         }
 
         // Check for existing refund
-        const existingRefund = await Refund.findOne({ product: productId });
+        const existingRefund = await Refund.findOne({ product: productId ,order: orderId});
         if (existingRefund) {
             return res.status(400).json({ message: 'Refund already requested' });
         }
@@ -95,7 +57,6 @@ const requestRefund = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
-
 
 const cancelOrder = async (req, res) => {
     try {
@@ -152,8 +113,6 @@ const cancelOrder = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 };
-
-
 
 const updateRefundStatus = async (req, res) => {
     const { status, orderId, productId } = req.body;
@@ -215,8 +174,14 @@ const updateRefundStatus = async (req, res) => {
 
             return res.status(STATUS_CODE.SUCCESS).json({ message: `Refund of ₹${refundAmount} processed successfully` });
         } else {
+            const itemToUpdate = order.orderItems.find(item =>
+            item.product.toString() === productId             
+        );
             refund.status = status;
             await refund.save();
+            itemToUpdate.individualStatus='Rejected';
+            await order.save();
+            
 
             return res.status(STATUS_CODE.BAD_REQUEST).json({ message: `Refund for order #${order.orderId} rejected` });
         }

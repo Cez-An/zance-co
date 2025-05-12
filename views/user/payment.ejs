@@ -94,7 +94,7 @@
                     </div>
                     <div class="card p-3 mb-3 border-0 shadow-sm" style="background-color: #eae2fc;">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="paymentMethod" value="cod" id="cod">
+                            <input class="form-check-input" type="radio" name="paymentMethod" value="razorpay" id="cod">
                             <label class="form-check-label w-100" for="cod">
                                 <div class="d-flex align-items-center">
                                     <i class="fas fa-money-bill-wave me-3" style="font-size: 24px;"></i>
@@ -108,32 +108,43 @@
                 </div>
     
                 <!-- Price Summary -->
-                <div class="col-md-4">
-                    <div class="card p-3 shadow-sm border-0 order-summary mb-3" >
+                  <div class="col-lg-4">
+                    <div class="card p-3 shadow-sm border-0 order-summary mb-3">
                         <h5 class="fw-bold text-white mb-4">Price Details</h5>
+
                         <% if (cart && cart.items && cart.items.length > 0) { %>
-                            <% let total = 0; %>
                             <% cart.items.forEach(item => { %>
-                                <% total += item.quantity * item.basePrice; %>
-                                <div class="d-flex justify-content-between mb-3">
-                                    <span class="text-white" style="font-size: 0.95rem;"><%= item.quantity %>x <%= item.productId.name %></span>
-                                    <span class="text-white fw-medium">₹<%= (item.quantity * item.basePrice)%></span>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-white text-truncate" 
+                                          style="font-size: 0.95rem; max-width: 70%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        <%= item.quantity %>x <%= item.productId.name %>
+                                    </span>
+                                    <span class="text-white fw-medium flex-shrink-0">
+                                        ₹ <%= (item.quantity * item.basePrice).toLocaleString('en-IN') %>
+                                    </span>
                                 </div>
                             <% }) %>
-                            <div class="d-flex justify-content-between mb-2">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="text-white" style="font-size: 0.95rem;">Delivery Charges</span>
-                                <span class="text-success fw-semibold">Free</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-white" style="font-size: 0.95rem;">Platform Fee</span>
-                                <span class="text-success fw-semibold">₹ 0</span>
-                            </div>
-                            <hr class="my-2" style="border-color: #E0E0E0;">
-                            <div class="d-flex justify-content-between">
-                                <span class="fw-bold text-white" style="font-size: 1.2rem;">Grand Total</span>
-                                <span class="fw-bold text-white" style="font-size: 1.2rem;">₹ <%= total%></span>
+                                <span class="<%= deliveryCharge ? 'text-danger' : 'text-success' %> flex-shrink-0">
+                                    <%= deliveryCharge ? `₹ ${deliveryCharge}` : 'Free' %>
+                                </span>
                             </div>
                             
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-white" style="font-size: 0.95rem;">Coupon Discount</span>
+                                <span class="text-success fw-semibold flex-shrink-0">₹ <%= couponDiscount %></span>
+                                <input type="hidden" id="couponDiscount" name="couponDiscount" value="<%= couponDiscount %>">
+                                <input type="hidden" id="couponId" name="couponId" value="<%= couponId %>">
+                            </div>
+                            <hr class="my-2" style="border-color: #E0E0E0;">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold text-white" style="font-size: 1.2rem;">Grand Total</span>
+                                <span id="grandTotal" class="fw-bold text-white flex-shrink-0" style="font-size: 1.2rem;" 
+                                    value="<%= grandTotal %>">
+                                    ₹ <%= grandTotal.toLocaleString('en-IN') %>
+                                </span>
+                            </div>
                             <!-- Combined submit button -->
                             <button type="submit" class="btn btn-primary w-100 mt-4">Place Order</button>
                         <% } else { %>

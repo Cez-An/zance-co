@@ -1,0 +1,94 @@
+<!-- Order Summary -->
+
+<div class="col-lg-4">
+    <div class="card p-3 shadow-sm border-0 order-summary">
+        <h5 class="fw-bold text-white mb-4">Order Summary</h5>
+        <% if (cart && cart.items && cart.items.length> 0) { %>
+
+            <% let total=calculatedValues.cartTotal; %>
+                <% let deliveryCharge=calculatedValues.deliveryCharge; %>
+                    <% let grandTotal=calculatedValues.grandTotal; %>
+                        <div id="grandtotal" data-value="<%= calculatedValues.grandTotal %>"></div>
+
+                        <% cart.items.forEach(item=> { %>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-white text-truncate"
+                                    style="font-size: 0.95rem; max-width: 70%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    <%= item.quantity %>x <%= item.productId.name %>
+                                </span>
+                                <span class="text-white fw-medium flex-shrink-0">
+                                    ₹ <%= (item.quantity * item.price).toLocaleString('en-IN') %>
+                                </span>
+                            </div>
+                            <% }) %>
+
+                                <!-- Delivery Charges -->
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-white" style="font-size: 0.95rem;">Delivery
+                                        Charges</span>
+                                    <span class="<%= deliveryCharge ? 'text-danger' : 'text-success' %> flex-shrink-0">
+                                        <%= deliveryCharge ? `₹ ${deliveryCharge}` : 'Free' %>
+                                    </span>
+                                </div>
+
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-white" style="font-size: 0.95rem;" id="couponText"></span>
+                                    <span class="text-success" id="couponValue"></span>
+                                </div>
+
+                                <hr class="my-2" style="border-color: #E0E0E0;">
+
+                                <!-- Coupon Code -->
+                                <div class="mb-2">
+                                    <label for="coupon" class="form-label fw-medium text-white"
+                                        style="font-size: 0.9rem;">Coupon Code</label>
+                                    <div class="input-group coupon-input">
+                                        <input type="text" id="coupon" name="coupon"
+                                            class="form-control form-control-sm px-3" placeholder="Enter coupon code"
+                                            style="border-radius: 6px 0 0 6px; height: 52px; font-size: 0.9rem;">
+
+                                        <input type="hidden" id="couponDiscount" name="couponDiscount" value="0">
+
+                                        <input type="hidden" id="couponId" name="couponId" value="">
+                                        
+                                        <button class="btn btn-outline-secondary btn-sm apply-coupon" type="button"
+                                            style="border-radius: 0 6px 6px 0; height: 52px; font-size: 0.9rem;">
+                                            Apply
+                                        </button>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div id="couponStatus" class="coupon-status"></div>
+                                        <div id="appliedCoupon" class="applied-coupon-tag d-none">
+                                            <span class="remove-coupon-sm">
+                                                <i class="fas fa-times"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <a href="#" data-bs-toggle="modal" id="availableCouponLink"
+                                        data-bs-target="#availableCouponsModal"
+                                        class="view-coupons-link text-decoration-none">
+                                        View Available Coupons
+                                    </a>
+                                </div>
+
+                                <hr class="my-2" style="border-color: #E0E0E0;">
+
+                                <!-- Total Amount (Including GST and Delivery) -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold text-white" style="font-size: 1.2rem;">Total</span>
+                                    <span class="fw-bold text-white flex-shrink-0" style="font-size: 1.2rem;">
+                                        ₹ <%= grandTotal.toLocaleString('en-IN') %>
+                                    </span>
+                                </div>
+
+                                <input type="hidden" name="userId" value="<%= user._id %>">
+                                <button type="submit" class="btn checkout-btn btn-light w-100 mt-4" id="proceedToPayment"
+                                    <%=(cart.items.length===0 || address.length===0) ? 'disabled' : '' %>>
+                                    Proceed to Payment
+                                </button>
+                                <% } else { %>
+                                    <p class="text-white text-center fs-5">No items in your cart.
+                                    </p>
+                                    <% } %>
+                            </div>
+                        </div>

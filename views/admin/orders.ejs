@@ -219,63 +219,6 @@
     padding-top: 10px;
 }
 
-/* Table styles */
-.table {
-    border-collapse: separate;
-    border-spacing: 0;
-    border-radius: 8px;
-    overflow: hidden;
-    width: 100%;
-    margin-bottom: 0;
-}
-
-.table thead th {
-    background-color: #505050;
-    color: white;
-    font-weight: 500;
-    padding: 12px;
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.table thead th:last-child {
-    border-right: none;
-    border-top-right-radius: 8px;
-}
-
-.table thead th:first-child {
-    border-top-left-radius: 8px;
-}
-
-.table tbody tr {
-    background-color: #f0f8ff;
-    border-bottom: 1px solid #eee;
-}
-
-.table tbody tr:hover {
-    background-color: #e0f0ff;
-}
-
-.table td,
-.table th {
-    padding: 10px;
-}
-
-.table td {
-    border-right: 1px solid #dddddd;
-}
-
-.table td:last-child {
-    border-right: none;
-}
-
-.table-bordered {
-    border: none;
-}
-
-.table-hover tbody tr:hover {
-    background-color: #f8f9fa;
-    transition: background-color 0.2s;
-}
 
 /* Card styles */
 .card {
@@ -369,7 +312,16 @@
         display: none !important;
     }
 }
+.table thead th {
+    background-color: #000000;
+    color: white;
+    font-weight: 500;
+    padding: 12px;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    }
     </style>
+    
+
 </head>
 <body>
     <!-- Hamburger Menu for Mobile -->
@@ -410,7 +362,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/admin/coupon">
+                <a class="nav-link" href="/admin/coupons">
                     <i class="bi bi-ticket"></i> Coupons
                 </a>
             </li>
@@ -473,7 +425,7 @@
                     <div class="d-none d-md-block">
                         <div class="card">
                             <div class="card-body p-0 m-0">
-                                <div class="table-responsive">
+                                <div class="table">
                                     <table class="table" id="ordersTable">
                                         <thead>
                                             <tr class="text-center">

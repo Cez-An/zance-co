@@ -605,12 +605,8 @@ const loadOrderDetails = async (req,res)=> {
   }
 }
 
-/**
- * Controller function to generate and download an invoice for an order
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- */
-export const downloadOrderInvoice = async (req, res) => {
+
+const downloadOrderInvoice = async (req, res) => {
   try {
     const userId = req.session.user?.id ?? req.session.user?._id ?? null;
     const orderId = req.query.id;

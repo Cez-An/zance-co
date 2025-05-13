@@ -301,21 +301,21 @@
             text-decoration: none;
         }
         .status-badge {
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.75rem;
-    font-weight: bold;
-    display: inline-block;
-}
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: bold;
+        display: inline-block;
+        }
 
-.status-placed { background-color: #e0f3ff; color: #0275d8; }
-.status-shipped { background-color: #d9f9e3; color: #28a745; }
-.status-out-for-delivery { background-color: #fff3cd; color: #856404; }
-.status-delivered { background-color: #d4edda; color: #155724; }
-.status-cancelled { background-color: #f8d7da; color: #721c24; }
-.status-failed { background-color: #f8d7da; color: #dc3545; }
-.status-returned { background-color: #ffeeba; color: #856404; }
-.status-unknown { background-color: #e2e3e5; color: #6c757d; }
+        .status-placed { background-color: #e0f3ff; color: #0275d8; }
+        .status-shipped { background-color: #d9f9e3; color: #28a745; }
+        .status-out-for-delivery { background-color: #fff3cd; color: #856404; }
+        .status-delivered { background-color: #d4edda; color: #155724; }
+        .status-cancelled { background-color: #f8d7da; color: #721c24; }
+        .status-failed { background-color: #f8d7da; color: #dc3545; }
+        .status-returned { background-color: #ffeeba; color: #856404; }
+        .status-unknown { background-color: #e2e3e5; color: #6c757d; }
         
     </style>
 </head>
@@ -396,10 +396,14 @@
                                                 <span class="status-badge status-delivered">Delivered</span>
                                             <% } else if (item.individualStatus === 'Cancelled') { %>
                                                 <span class="status-badge status-cancelled">Cancelled</span>
+                                            <% } else if (item.individualStatus === 'Rejected') { %>
+                                                <span class="status-badge status-cancelled">Retrun Rejected</span>
                                             <% } else if (item.individualStatus === 'Payment Failed') { %>
                                                 <span class="status-badge status-failed">Payment Failed</span>
                                             <% } else if (item.individualStatus === 'Returned') { %>
                                                 <span class="status-badge status-returned">Returned</span>
+                                            <% } else if (item.individualStatus === 'Refund Requested') { %>
+                                                <span class="status-badge status-returned">Refund Requested</span>
                                             <% } else { %>
                                                 <span class="status-badge status-unknown">Unknown</span>
                                             <% } %>

@@ -31,6 +31,9 @@ const requestRefund = async (req, res) => {
             return res.status(403).json({ message: 'Not authorized for this order' });
         }
 
+        const item = order.orderItems.find(item => item.product.toString() === productId);
+        item.individualStatus = "Refund Requested"
+
         // Check for existing refund
         const existingRefund = await Refund.findOne({ product: productId ,order: orderId});
         if (existingRefund) {

@@ -59,7 +59,6 @@ const customerBlocked = async (req, res) => {
 const customerUnBlocked = async (req, res) => {
   try {
     let {param2} = req.body;
-    console.log(req.body);
     await User.updateOne({ _id: param2 }, { $set: { isBlocked: false } });
     return res.status(STATUS_CODE.SUCCESS).json({message:'User unblocked Successfuly'})
   } catch (error) {

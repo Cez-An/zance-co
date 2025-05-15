@@ -10,7 +10,6 @@ import Wishlist from "../../models/wishListSchema.js"
 const loadWallet = async(req, res) =>{
     try {
         const userId = req.session.user?.id ?? req.session.user?._id ?? null;
-        console.log(userId);
         
         if(!userId){
             return res.status(STATUS_CODE.UNAUTHORIZED).json({message : 'Please login to continue..!'})

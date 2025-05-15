@@ -15,15 +15,16 @@ env.config();
 
 const renderHomepage = async (req, res) => {
   try {
-    const product = await Product.find({ isBlocked: false }).limit(12);
-
+    const product = await Product.find({ isBlocked: false }).limit(12).populate("category");
+    // console.log(product);
+    
     const userId = req.session.user?.id ?? req.session.user?._id ?? null;
     const user = await User.findOne({ _id: userId, isBlocked: false });
     if(!user){
       req.session.user = false; 
       return res.render("user/home", {user,product})
     }
-    console.log(`user data in home page is `, user);
+    console.log(`user is active `);
 
     const wishlistItems = await Wishlist.findOne({ userId }).populate("product");
 
@@ -48,7 +49,7 @@ const pageNotFound = async (req, res) => {
 };
 
 const logout = (req, res) => {
-  console.log("session destroy accessed");
+  console.log("User session destroyed");
   req.session.user=false;
   res.redirect("/user");
 };
@@ -58,9 +59,7 @@ const loadProductsDetails = async (req, res) => {
     const { id } = req.params;
     const userId = req.session.user?.id ?? req.session.user?._id ?? null;
     const user = await User.findOne({ _id: userId });
-    console.log(`user is `, user);
-
-    const product = await Product.findOne({ _id: id });
+    const product = await Product.findOne({ _id: id }).populate("category");
     const relatedProducts = await Product.find({
       category: product.category,
     }).limit(4);

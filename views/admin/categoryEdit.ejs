@@ -2,368 +2,359 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel</title>
 
-    <!-- Favicon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
+  <!-- Favicon -->
+  <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png" />
 
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <style>
-        .sidebar {
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 250px;
-            background-color: #f8f9fa;
-            padding-top: 20px;
-            transition: all 0.3s;
-            border-right: 1px solid #dee2e6;
-            z-index: 1000;
-            /* Ensure sidebar is above other content */
-        }
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        .sidebar .nav-link {
-            color: #6c757d;
-            padding: 10px 20px;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            transition: all 0.3s;
-        }
+  <style>
+    .sidebar {
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 250px;
+      background-color: #f8f9fa;
+      padding-top: 20px;
+      transition: all 0.3s;
+      border-right: 1px solid #dee2e6;
+      z-index: 1000;
+    }
 
-        .sidebar .nav-link i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
-        }
+    .sidebar .nav-link {
+      color: #6c757d;
+      padding: 10px 20px;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      transition: all 0.3s;
+    }
 
-        .error-message {
-            color: red;
-            font-size: 0.875rem;
-            margin-top: 5px;
-            font-weight: bold;
-        }
+    .sidebar .nav-link i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+    }
 
-        .sidebar .nav-link:hover {
-            background-color: #e9ecef;
-            color: #212529;
-            text-decoration: none;
-        }
+    .error-message {
+      color: red;
+      font-size: 0.875rem;
+      margin-top: 5px;
+      font-weight: bold;
+    }
 
-        .acolor {
-            text-decoration: none;
-        }
+    .sidebar .nav-link:hover {
+      background-color: #e9ecef;
+      color: #212529;
+      text-decoration: none;
+    }
 
-        .sidebar .nav-link.active {
-            background-color: #6f42c1;
-            color: #fff;
-            font-weight: bold;
-        }
+    .acolor {
+      text-decoration: none;
+    }
 
-        .sidebar .sign-out:hover {
-            background-color: #dc3545;
-            color: #fff !important;
-        }
+    .sidebar .nav-link.active {
+      background-color: #6f42c1;
+      color: #fff;
+      font-weight: bold;
+    }
 
-        .main-content {
-            margin-left: 250px;
-            padding: 20px;
-            transition: all 0.3s;
-        }
+    .sidebar .sign-out:hover {
+      background-color: #dc3545;
+      color: #fff !important;
+    }
 
-        /* Hamburger Menu Styling */
-        .navbar-toggler {
-            display: none;
-        }
+    .main-content {
+      margin-left: 250px;
+      padding: 20px;
+      transition: all 0.3s;
+    }
 
-        /* Open Sidebar Button Styling */
-        .open-sidebar-btn {
-            display: none;
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            /* Moved to top-right corner */
-            z-index: 999;
-            /* Below the sidebar but above main content */
-        }
+    .navbar-toggler {
+      display: none;
+    }
 
-        /* Close Sidebar Button Styling */
-        .close-sidebar-btn {
-            display: none;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 1001;
-            /* Above sidebar content */
-        }
+    .open-sidebar-btn {
+      display: none;
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 999;
+    }
 
-        /* .view-btn {
-            background-color: #e9ecef;
-            color: #000;
-            border: none;
-            padding: 5px 15px;
-            border-radius: 15px;
-            font-size: 12px;
-        } */
-        .block-unblock {
-            text-decoration: none;
-            color: #ffffff;
-            font-weight: bolder;
-        }
+    .close-sidebar-btn {
+      display: none;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 1001;
+    }
 
-        .toggle-switch {
-            width: 40px;
-            height: 20px;
-            background-color: #28a745;
-            border-radius: 15px;
-            position: relative;
-            display: inline-block;
-            cursor: pointer;
-        }
+    .block-unblock {
+      text-decoration: none;
+      color: #ffffff;
+      font-weight: bolder;
+    }
 
-        .toggle-switch::before {
-            content: '';
-            width: 16px;
-            height: 16px;
-            background-color: #fff;
-            border-radius: 50%;
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            transition: 0.3s;
-        }
+    .toggle-switch {
+      width: 40px;
+      height: 20px;
+      background-color: #28a745;
+      border-radius: 15px;
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+    }
 
-        /* .status-btn { */
-        /* background-color: #d4f4e2;      BUTTON TEXT COLOR */
+    .toggle-switch::before {
+      content: "";
+      width: 16px;
+      height: 16px;
+      background-color: #fff;
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      transition: 0.3s;
+    }
 
-        /* color: #28a745;
-            border: none;
-            padding: 5px 15px;
-            border-radius: 15px;
-            font-size: 12px;
-        } */
+    .sidebar.active .close-sidebar-btn {
+      display: block;
+    }
 
-        .sidebar.active .close-sidebar-btn {
-            display: block;
-            /* Show close button when sidebar is open */
-        }
+    @media (max-width: 768px) {
+      .sidebar {
+        left: -250px;
+      }
 
-        @media (max-width: 768px) {
-            .sidebar {
-                left: -250px;
-            }
+      .sidebar.active {
+        left: 0;
+      }
 
-            .sidebar.active {
-                left: 0;
-            }
+      .main-content {
+        margin-left: 0;
+      }
 
-            .main-content {
-                margin-left: 0;
-            }
+      .navbar-toggler {
+        display: block;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        z-index: 1001;
+      }
 
-            .navbar-toggler {
-                display: block;
-                position: fixed;
-                top: 10px;
-                left: 10px;
-                z-index: 1001;
-                /* Ensure toggler is above sidebar */
-            }
+      .open-sidebar-btn {
+        display: block;
+      }
 
-            .open-sidebar-btn {
-                display: block;
-            }
-
-            .sidebar.active+.main-content .open-sidebar-btn {
-                display: none;
-                /* Hide the open button when sidebar is open */
-            }
-        }
-    </style>
+      .sidebar.active+.main-content .open-sidebar-btn {
+        display: none;
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <!-- Hamburger Menu for Mobile -->
-    <button class="navbar-toggler" type="button" onclick="toggleSidebar()">
-        <span class="navbar-toggler-icon"></span>
+  <!-- Hamburger Menu for Mobile -->
+  <button class="navbar-toggler" type="button" onclick="toggleSidebar()">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <button class="btn btn-dark close-sidebar-btn" onclick="toggleSidebar()">
+      <i class="bi bi-x-lg"></i>
     </button>
 
-    <!-- Sidebar -->
-    <nav class="sidebar">
-        <!-- Close Sidebar Button -->
-        <button class="btn btn-dark close-sidebar-btn" onclick="toggleSidebar()">
-            <i class="bi bi-x-lg"></i></button>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/dashboard">
+          <i class="bi bi-house-door"></i> Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="/admin/category">
+          <i class="bi bi-grid"></i> Categories
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/products">
+          <i class="bi bi-box"></i> Products
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/customers">
+          <i class="bi bi-people"></i> Customers
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/orders">
+          <i class="bi bi-cart"></i> Orders
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/coupons">
+          <i class="bi bi-ticket"></i> Coupons
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#">
+          <i class="bi bi-bar-chart"></i> Sales Report
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link sign-out" href="/admin/logout">
+          <i class="bi bi-box-arrow-right"></i> Sign Out
+        </a>
+      </li>
+    </ul>
+  </nav>
 
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link " href="/admin/dashboard">
-                    <i class="bi bi-house-door"></i> Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link active" href="/admin/category">
-                    <i class="bi bi-grid"></i> Categories
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/admin/products">
-                    <i class="bi bi-box"></i> Products
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link " href="/admin/customers">
-                    <i class="bi bi-people"></i> Customers
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/admin/orders">
-                    <i class="bi bi-cart"></i> Orders
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/admin/coupons">
-                    <i class="bi bi-ticket"></i> Coupons
-                </a>
-            </li>
-            
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class="bi bi-bar-chart"></i> Sales Report
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link sign-out" href="/admin/logout">
-                    <i class="bi bi-box-arrow-right"></i> Sign Out
-                </a>
-            </li>
-        </ul>
-    </nav>
+  <!-- Main Content -->
+  <div class="main-content">
+    <button class="btn btn-light open-sidebar-btn" onclick="toggleSidebar()">
+      <i class="bi bi-list"></i>
+    </button>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Button to Open Sidebar -->
-        <button class="btn btn-light open-sidebar-btn" onclick="toggleSidebar()">
-            <i class="bi bi-list"></i></button>
+    <h1>Category Management</h1>
 
-        <h1>Category Management</h1>
+    <div class="container mt-5">
+      <div class="card p-4 shadow-sm">
+        <h5 class="mb-3">Edit Category</h5>
 
-        <div class="container mt-5">
-            <div class="card p-4 shadow-sm">
-                <h5 class="mb-3">Edit Category</h5>
+        <form id="editCategorform">
+          <div class="mb-3">
+            <label for="categoryName" class="form-label">Category Name</label>
+            <input type="text" class="form-control" id="categoryName" name="name" value="<%= category.name %>"
+              placeholder="Mechanical Keyboard" />
+            <input type="hidden" value="<%= category._id %>" id="categoryId" />
+            <div id="name-error" class="error-message"></div>
+          </div>
 
-                <form id="editCategorform">
-
-                    <div class="mb-3">
-                        <label for="categoryName" class="form-label">Category Name</label>
-                        <input type="text" class="form-control" id="categoryName" name="name" value="<%= category.name %>" placeholder="Mechanical Keyboard">
-                        <input type="hidden" value="<%=category._id %>" id="categoryId">
-                        <div id="name-error" class="error-message"></div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="visibilityStatus" class="form-label">Visibility Status</label>
-                            <select class="form-select" id="visibilityStatus" name="visibilityStatus" value="<%= category.isListed %>">
-                                <% if (category.isListed===true) { %>
-                                    <option selected>Active</option>
-                                    <option>Inactive</option>
-                                <% } else{ %>
-                                    <option selected>Inactive</option>
-                                    <option>Active</option>
-                                <% } %>
-                                
-                            </select>
-                            <div id="visibilityStatus-error" class="error-message"></div>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="discounts" class="form-label">Discounts/Offers</label>
-                            <input type="text" class="form-control" id="categoryDiscount" placeholder="10%"
-                                name="categoryDiscount" value="<%= category.discount %>">
-                            <div id="categoryDiscount-error" class="error-message"></div>
-                        </div>
-                    </div>
-
-                    <div class="d-flex justify-content-end">
-                        <button class="btn btn-outline-secondary me-2"><a class="acolor"
-                                href="/admin/category">Cancel</a></button>
-                        <button class="btn btn-primary" type="submit">Save</button>
-                    </div>
-                </form>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="visibilityStatus" class="form-label">Visibility Status</label>
+              <select class="form-select" id="visibilityStatus" name="visibilityStatus">
+                <% if (category.isListed === true) { %>
+                  <option selected>Active</option>
+                  <option>Inactive</option>
+                <% } else { %>
+                  <option selected>Inactive</option>
+                  <option>Active</option>
+                <% } %>
+              </select>
+              <div id="visibilityStatus-error" class="error-message"></div>
             </div>
-        </div>
+            <div class="col-md-6 mb-3">
+              <label for="discounts" class="form-label">Discounts/Offers</label>
+              <input type="text" class="form-control" id="categoryDiscount" placeholder="10%"
+                name="categoryDiscount" value="<%= category.discount %>" />
+              <div id="categoryDiscount-error" class="error-message"></div>
+            </div>
+          </div>
 
-        <!-- Bootstrap 5 JS and Bootstrap Icons -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-        <script>
+          <div class="d-flex justify-content-end">
+            <button class="btn btn-outline-secondary me-2">
+              <a class="acolor" href="/admin/category">Cancel</a>
+            </button>
+            <button class="btn btn-primary" type="submit">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
 
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-            function toggleSidebar() {
-                document.querySelector('.sidebar').classList.toggle('active');
-            }
-
-    document.getElementById('editCategorform').addEventListener('submit', async (e) => {
-    e.preventDefault(); 
-
-    let categoryName = document.getElementById('categoryName').value.trim();
-    let visibilityStatus = document.getElementById('visibilityStatus').value.trim();
-    let categoryDiscount = document.getElementById('categoryDiscount').value.trim();
-    let categoryId = document.getElementById('categoryId').value;
-    console.log(categoryId);
-    
-
-    let nameError = document.getElementById('name-error');
-    let visibilityError = document.getElementById('visibilityStatus-error');
-    let discountError = document.getElementById('categoryDiscount-error');
-
-    nameError.innerText = "";
-    visibilityError.innerText = "";
-    discountError.innerText = "";
-
-    let valid = true;
-
-    if (categoryName === '') {
-        nameError.innerText = 'Please enter the value';
-        valid = false;
+  <script>
+    function toggleSidebar() {
+      document.querySelector(".sidebar").classList.toggle("active");
     }
 
+    document.getElementById("editCategorform").addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-    if (visibilityStatus === '') {
-        visibilityError.innerText = 'Please enter the value';
+      let categoryName = document.getElementById("categoryName").value.trim();
+      let visibilityStatus = document.getElementById("visibilityStatus").value.trim();
+      let categoryDiscount = document.getElementById("categoryDiscount").value.trim();
+      let categoryId = document.getElementById("categoryId").value;
+
+      let nameError = document.getElementById("name-error");
+      let visibilityError = document.getElementById("visibilityStatus-error");
+      let discountError = document.getElementById("categoryDiscount-error");
+
+      nameError.innerText = "";
+      visibilityError.innerText = "";
+      discountError.innerText = "";
+
+      let valid = true;
+
+      if (categoryName === "") {
+        nameError.innerText = "Please enter the value";
         valid = false;
-    }
+      }
 
-    if (categoryDiscount === '') {
-        discountError.innerText = 'Please enter the value';
+      if (visibilityStatus === "") {
+        visibilityError.innerText = "Please enter the value";
         valid = false;
-    } else if (isNaN(categoryDiscount) || Number(categoryDiscount) < 0 || Number(categoryDiscount) > 100) {
-        discountError.innerText = 'Discount must be a number between 0 and 100';
+      }
+
+      if (categoryDiscount === "") {
+        discountError.innerText = "Please enter the value";
         valid = false;
-    }
+      } else if (isNaN(categoryDiscount) || Number(categoryDiscount) < 0 || Number(categoryDiscount) > 100) {
+        discountError.innerText = "Discount must be a number between 0 and 100";
+        valid = false;
+      }
 
-    const formData = {categoryName,visibilityStatus,categoryDiscount,categoryId}
-    const response = await fetch('/admin/category',{
-        method:'put',
-        headers:{
-            'content-type':'application/json'
-        },
-        body:JSON.stringify(formData)
-    })
-    if(response.ok){
-        window.location.href = '/admin/category'
-    }
-});
+      if (!valid) return;
 
-           
+      const formData = {
+        categoryName,
+        visibilityStatus,
+        categoryDiscount,
+        categoryId,
+      };
 
-        </script>
+      try {
+        const response = await fetch("/admin/category", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          window.location.href = "/admin/category";
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Update Failed",
+            text: data.error || "Something went wrong!",
+          });
+        }
+      } catch (err) {
+        Swal.fire({
+          icon: "error",
+          title: "Network Error",
+          text: "Failed to connect to server",
+        });
+      }
+    });
+  </script>
 </body>
 
 </html>

@@ -194,9 +194,26 @@
                 <h1 class="product-title"><%=product.name %></h1>
                 <p class="text-muted">104 Keys, Anti-Ghosting, Customizable Lighting</p>
                 <div class="pricing mb-3"> <br><br>
-                    <span class="original-price text-decoration-line-through">₹XXX.XX</span>
-                    <span class="discounted-price fw-bold text-success">₹ <%=product.salePrice %></span>
-                    <!-- <span class="savings text-warning">Save $30 (23% off)</span> -->
+                    
+                    
+                    <% const discountPercentage=Math.max(product.productOffer,product.category.discount) 
+                                   const discount=(product.salePrice * discountPercentage) / 100;
+                                          const discountedPrice=product.salePrice - discount; %>
+
+                                         <% if (discountPercentage && discountPercentage !==0) { %>
+                                           <p id="priceheadding">
+                                             Price: ₹<%= discountedPrice.toFixed(0) %>
+                                               <span class="text-white">
+                                                 <strike>₹<%= product.salePrice %></strike>
+                                               </span>
+                                               <span style="color: red;">(<%= discountPercentage %>% off)</span>
+                                           </p>
+                                           <% } else { %>
+                                             <p>Price: ₹<%= product.salePrice %>
+                                             </p>
+                                             <% } %>
+
+
                 </div>
                 <div class="stock mb-3 <%= product.quantity === 0 ? 'out-of-stock' : '' %>">
                     <%= product.quantity > 0 ? `In Stock (${product.quantity}) Ships in 1-2 days` : 'Item is Out of Stock' %>
@@ -246,7 +263,7 @@
                 <h2>Key Features</h2>
                 <div class="d-flex gap-4 flex-wrap">
                     <div><span class="feature-icon">🖱️</span> Clicky & Quiet Options</div>
-                    <div><span class="feature-icon">🌈</span> RGB Customization</div>
+                    <div><span class="feature-icon"></span> RGB Customization</div>
                     <div><span class="feature-icon">🔒</span> Anti-Ghosting</div>
                 </div>
             </div>

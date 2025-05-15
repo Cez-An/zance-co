@@ -8,6 +8,7 @@ import productController from "../controllers/admin/productController.js";
 import orderController from "../controllers/admin/orderController.js"
 import refundController from "../controllers/user/refundController.js";
 import couponController from "../controllers/admin/couponController.js"
+import salesController from "../controllers/admin/salesController.js";
 
 // Admin login management
 router.get('/login',adminAuth.islogin,adminController.renderAdminLoginPage)
@@ -53,5 +54,10 @@ router.get('/coupons',adminAuth.checkSession, couponController.loadCouponPage);
 router.post('/coupons',adminAuth.checkSession, couponController.addCoupon);
 router.put('/coupons', adminAuth.checkSession, couponController.editCoupon);
 router.delete('/coupons', adminAuth.checkSession, couponController.deleteCoupon);
+
+// sales report
+router.get('/sales',adminAuth.checkSession, salesController.loadSalesReport);
+router.get('/sales/download/pdf', salesController.generateSalesReportPDF);
+router.get('/sales/download/excel', salesController.downloadSalesReportExcel);
 
 export default router;

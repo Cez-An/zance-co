@@ -28,8 +28,7 @@ const loadCheckout = async (req, res) => {
             deliveryCharge = cartTotal < 499 ? 40 : 0;
             grandTotal = cartTotal + deliveryCharge;
         }
-        console.log(grandTotal);
-        
+                
         const currentDate = new Date();
 
         const coupons = await Coupon.find({
@@ -127,22 +126,17 @@ const checkoutDetails = async (req,res) => {
     req.session.deliveryAddress = selectedAddress;
     req.session.couponDiscount = couponDiscount;
     req.session.couponId = couponId;
-
     res.redirect('/payments')
+    
 }
 
 const  saveSelectedAddress = (req, res)=> {
-    console.log(`save address accessed`);
     
-    const { selectedAddress } = req.body;
-    // console.log(selectedAddress);
-    
+    const { selectedAddress } = req.body;   
     if (!selectedAddress) {
         return res.status(400).send('No address provided');
     }
-
     req.session.selectedAddress = selectedAddress;
-
     res.sendStatus(200);
 }
 

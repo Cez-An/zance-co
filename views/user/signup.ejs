@@ -70,6 +70,12 @@
                     <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="XXXXXXXXXX" value="" >
                     <div id="confirm-password-error" class="error-message"></div>
                   </div>
+
+                <div class="col-12">
+                  <label for="name" class="form-label">Enter Referal code <span class="text-danger">*</span></label>
+                  <input type="name" class="form-control" name="referal" id="referal" placeholder="" >
+                  <div id="name-error" class="error-message"></div>
+                </div>
                   
                   <% if (locals.message && message.length > 0) { %>
                    <div class="alert alert-danger text-center">
@@ -115,6 +121,7 @@
         // Get form values
         const name = document.getElementById("name").value.trim();
         const email = document.getElementById("email").value.trim();
+        const referal = document.getElementById("referal").value.trim();
         const number = document.getElementById("number").value.trim();
         const password = document.getElementById("password").value.trim();
         const confirmPassword = document.getElementById("confirmPassword").value.trim();
@@ -165,73 +172,3 @@
 
 </body>
 </html>
-
-<!-- 
-                <form>
-                  <div class="form-group">
-                    <label for="name">Full Name</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="name"
-                      placeholder="Enter Name"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label for="email">Email address</label>
-                    <input
-                      type="email"
-                      class="form-control"
-                      id="email"
-                      placeholder="Enter email"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label for="phone">Phone Number</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="phone"
-                      placeholder="Enter phone number"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label for="password">Password</label>
-                    <input
-                      type="password"
-                      class="form-control"
-                      id="password"
-                      placeholder="Password"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <label for="confirm-password">Confirm Password</label>
-                    <input
-                      type="password"
-                      class="form-control"
-                      id="confirm-password"
-                      placeholder="Confirm Password"
-                    />
-                  </div>
-                  <div
-                    class="d-flex justify-content-between align-items-center"
-                  >
-                    <button type="submit" class="btn btn-primary">
-                      Sign Up
-                    </button>
-                    <div class="mt-2px">
-                      <p>or sign up with</p>
-                    </div>
-                    <div class="social-btns">
-                      <button type="button" class="btn btn-outline-danger">
-                        <img
-                          src="img/googlesignup.png"
-                          alt="Google Logo"
-                          style="width: 24px; height: 24px"
-                        />
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-               -->

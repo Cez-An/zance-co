@@ -5,7 +5,7 @@ import User from "../../models/userSchema.js";
 
 const validateCoupon = async (req, res) => {
     try {
-        const { code, total,currentCoupon } = req.body;
+        const { code, total,currentCoupon } = req.body;                
 
         const userId = req.session.user?.id ?? req.session.user?._id ?? null;
 

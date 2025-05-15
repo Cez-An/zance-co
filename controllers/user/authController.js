@@ -18,26 +18,27 @@ env.config();
     try {
       res.render("user/signup");
     } catch (error) {
-      console.log("sign up page not loading");
       res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).send("Server Error");
     }
   };
 
   const signup = async (req, res) => {
     try {
-      const { name, email, number, password, confirmPassword } = req.body;
-  
+      const { name, email, number, password,referal, confirmPassword } = req.body;
+      req.session.referalcode = referal;
+      console.log(referal)
       if (password !== confirmPassword) {
         return res.render("/user/signup", { message: "password do not match" });
       }
       const findUser = await User.findOne({ email });
   
       if (findUser) {
-        console.log(`User ALREADY EXSIST redirected to SIGN UP PAGE`);
         return res.render("user/signup", { message: "user already exists" });
       }
   
       const otp = generateOtp();
+    
+      
   
       const emailSent = await sendVerificationEmail(email, otp);
   
@@ -134,7 +135,6 @@ env.config();
     
   const otpVerification = async (req, res) => {
     try {
-      console.log("OTP FUNCTION ACCESSED");
   
       const { otp } = req.body;
   
@@ -164,7 +164,17 @@ env.config();
         await saveUserData.save();
   
         req.session.user = saveUserData;
-  
+        const referalcode = req.session.referalcode;
+
+        const referedUser = await User.findOne({ referalCode: referalcode });
+        console.log(referedUser);
+        
+        if (referedUser) {
+            referedUser.wallet = (referedUser.wallet || 0) + 50;
+            referedUser.redeemedUsers.push(saveUserData._id);
+            await referedUser.save();
+        }
+
         res
           .status(STATUS_CODE.SUCCESS)
           .json({ success: true, redirectUrl: "/user/login" });
@@ -238,10 +248,8 @@ env.config();
   
   const resendOtp = async (req, res) => {
     try {
-      console.log("resend otp accessed");
-  
+
       const { email } = req.session?.userData ?? req.session?.userEmail;
-      console.log(email);
   
       if (!email) {
         return res
@@ -275,15 +283,13 @@ env.config();
 
   const validateUserEmail = async (req, res) => {
     try {
-      console.log(`EMAIL VALIDATION ACCESSED
-        `);
   
       const { email } = req.body;
       req.session.idUser = email;
       const user = await User.findOne({ email });
   
       if (!user) {
-        console.log(`rendering forgot password page`);
+        
         return res.json({
           success: false,
           redirectUrl: "/user/forgotPassword",

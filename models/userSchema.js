@@ -2,6 +2,10 @@ import mongoose, { Types } from "mongoose";
 
 const { Schema } = mongoose;
 
+const generateReferralCode = () => {
+    return Math.random().toString(36).substring(2, 8).toUpperCase();
+  };
+
 const userSchema = new Schema(
   {
     name: {
@@ -73,6 +77,25 @@ const userSchema = new Schema(
   },
   { timestamps: true }
 );
+
+userSchema.pre('save', async function (next) {
+    if (!this.referalCode) { 
+        let code;
+        let isUnique = false;
+      
+        while (!isUnique) {
+            code = generateReferralCode();
+            const existingUser = await mongoose.models.User.findOne({ referalCode: code });
+            if (!existingUser) {
+                isUnique = true;
+            }
+        }
+
+        this.referalCode = code;
+    }
+    next();
+});
+
 
 const User = mongoose.model("User", userSchema);
 

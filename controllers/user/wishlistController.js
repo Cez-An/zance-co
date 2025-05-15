@@ -11,13 +11,11 @@ const getWishlist = async (req, res) => {
     try {
         const userId = req.session.user?.id ?? req.session.user?._id ?? null;
         const user = await User.findOne({ _id: userId });
-        console.log(`user data in home page is `, user);
-
+        
         if(!userId){
             res.status(STATUS_CODE.UNAUTHORIZED).json({error : "Please login to view wishlist"})
         }
         const wishlist = await Wishlist.find({ userId }).populate('product');
-        console.log(wishlist);
         
         res.render('user/wishlist', {            
             wishlist,
@@ -99,12 +97,10 @@ const toggleWishlist = async (req, res) => {
 const removeFromWishlist = async (req, res) => {
     try {
         const { wishlistId } = req.body;
-        console.log(wishlistId);
-        
+
         if (!wishlistId) {
             return res.status(400).json({ error: 'Wishlist ID is required' });
         }
-
         
         const wishlistEntry = await Wishlist.findOneAndUpdate(
             { 'product': wishlistId },

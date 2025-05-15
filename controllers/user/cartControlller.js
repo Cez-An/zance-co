@@ -46,7 +46,7 @@ const addItemToCart = async (req, res) => {
         if (!product) {
             return res.status(STATUS_CODE.NOT_FOUND).json({ error: 'Product not found.' });
         }
-        console.log(product.category);
+        
         
         // const category = await Category.findOne({category:product.category})
 
@@ -104,11 +104,10 @@ const addItemToCart = async (req, res) => {
 };
 
 const updateQuantity = async (req, res) => {
-    console.log(`update quantity accessed`);
 
     const { productId, change } = req.body;
     const userId = req.session.user?.id ?? req.session.user?._id ?? null;
-    console.log(userId);
+    
 
     if (!userId) {
         return res.status(401).json({ error: "User not authenticated" });

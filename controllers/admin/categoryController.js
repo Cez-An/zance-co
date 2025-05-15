@@ -6,8 +6,6 @@ import Order from "../../models/orderSchema.js";
 const renderCategoryInfo = async (req, res) => {
   try {
     let search = req.query.search ? req.query.search.trim() : "";
-    console.log("Search Query:", search);
-    console.log("Accessed categoryInfo");
 
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
@@ -38,14 +36,11 @@ const renderCategoryInfo = async (req, res) => {
 };
 
 const addCategory = async (req, res) => {
-  console.log("accessed add category");
 
   const { name, visibilityStatus, categoryDiscount } = req.body;
-  console.log(req.body);
 
   try {
     const existingCategory = await Category.findOne({ name: { $regex: new RegExp(name, 'i') } });
-    console.log(existingCategory);
 
     if (existingCategory) {
       return res.render("admin/categoryAdd", {
@@ -67,7 +62,6 @@ const addCategory = async (req, res) => {
     });
 
     await newCategory.save();
-    console.log(newCategory);
 
     return res.redirect("/admin/category");
   } catch (error) {
@@ -89,7 +83,6 @@ const renderCategoryEdit = async (req, res) => {
   try {
     const id = req.params.id;
     const category = await Category.findOne({ _id: id });
-    console.log(category);
 
     res.render("admin/categoryEdit", { category });
   } catch (error) {
@@ -99,23 +92,32 @@ const renderCategoryEdit = async (req, res) => {
 
 const updateCategory = async (req, res) => {
   try {
-    let { categoryName, visibilityStatus, categoryDiscount, categoryId } =
-      req.body;
+    let { categoryName, visibilityStatus, categoryDiscount, categoryId } = req.body;
 
-    if (visibilityStatus === "Active") {
-      visibilityStatus = true;
-    } else {
-      visibilityStatus = false;
+    visibilityStatus = visibilityStatus === "Active";
+
+    const existingCategory = await Category.findOne({
+      name: { $regex: new RegExp(categoryName, 'i') },
+      _id: { $ne: categoryId }, 
+    });
+
+    if (existingCategory) {
+      return res.status(400).json({ error: "Category Already Exists" });
     }
 
-    const category = await Category.findById({ _id: categoryId });
+    const category = await Category.findById(categoryId);
+    if (!category) return res.status(404).json({ error: "Category not found" });
+
     category.name = categoryName;
     category.isListed = visibilityStatus;
     category.discount = categoryDiscount;
     await category.save();
-    res.status(STATUS_CODE.SUCCESS).json({ message: "done" });
+
+    res.status(200).json({ message: "Category updated successfully" });
+
   } catch (error) {
-    return res.status(STATUS_CODE.NOT_FOUND);
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 

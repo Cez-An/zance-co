@@ -6,9 +6,7 @@ import fs from 'fs';
 
 const renderProductAddPage = async (req, res) => {
   try {
-    console.log(`Rendering Add Product Page
-      `);
-    
+
     const category = await Category.find({ isListed: true });
 
     return res.render("admin/productsAdd", {
@@ -28,8 +26,6 @@ const renderProductsListPage = async (req, res) => {
     if (req.query.search) {
       search = req.query.search;
     }
-    console.log(`Rendering Product Listing Page
-      `);
 
     const page = parseInt(req.query.page) || 1;
 
@@ -169,7 +165,6 @@ const productUnBlocked = async (req, res) => {
 
 const renderProductsEditPage = async (req, res) => {
   try {
-    console.log("edit age loaded");
 
     const { id } = req.params;
 
@@ -188,8 +183,7 @@ const renderProductsEditPage = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   try {
-    console.log("ACCCCCCEDED UPDATE PRODUCT");
-
+    
     const { id } = req.params;
     const {
       name,

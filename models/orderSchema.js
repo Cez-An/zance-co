@@ -81,7 +81,7 @@ const orderSchema = new Schema({
     },
     paymentMethod: {
         type: String,
-        enum: ['cod', 'card', 'wallet', 'netbanking']
+        enum: ['cod', 'card', 'wallet', 'razorpay']
     },
     failureReason : {
         type: String,

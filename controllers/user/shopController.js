@@ -12,53 +12,53 @@ import { log } from "console";
 import Wishlist from "../../models/wishListSchema.js";
 env.config();
 
-
 const renderShopPage = async (req, res) => {
   try {
-    console.log(`renderShopPage ACCESS`);
 
     const userId = req.session.user?.id ?? req.session.user?._id ?? null;
     const user = await User.findOne({ _id: userId });
-    console.log(`user data in home page is `, user);
 
     const wishlistItems = await Wishlist.findOne({ userId }).populate("product");
-
     let wishlistProductIds = false;
     if (wishlistItems?.product?.length) {
       wishlistProductIds = wishlistItems.product.map((p) => p._id.toString());
     }
-    const page = parseInt(req.query.page) || 1;
 
-    const limit = 9;
+    const page = parseInt(req.query.page) || 1;
+    const limit = 6;
     const skip = (page - 1) * limit;
 
     let filter = { isBlocked: false };
 
+    // Search filter
     if (req.query.result) {
       filter.name = { $regex: req.query.result, $options: "i" };
     }
 
+    // Category filter
     if (req.query.category) {
-      let categories = req.query.category;
+      const categories = Array.isArray(req.query.category) 
+        ? req.query.category 
+        : [req.query.category];
+      
       const matchedCategories = await Category.find({
         name: { $in: categories },
         isListed: true,
       }).select("_id");
-      console.log(matchedCategories);
 
       if (matchedCategories.length) {
         filter.category = { $in: matchedCategories.map((cat) => cat._id) };
-        console.log("filter is", filter.category);
       }
     }
 
+    // Price filter
     if (req.query.price) {
       filter.salePrice = { $lte: parseInt(req.query.price) };
     }
 
+    // Sorting
     const sortOption = req.query.sort || "newest";
     let sortQuery = {};
-
     switch (sortOption) {
       case "priceLowToHigh":
         sortQuery = { salePrice: 1 };
@@ -76,9 +76,26 @@ const renderShopPage = async (req, res) => {
         sortQuery = { createdAt: -1 };
     }
 
-    console.log(sortQuery);
-    console.log(filter);
+    // Get total count based on the same filter
+    const totalProducts = await Product.aggregate([
+      { $match: filter },
+      {
+        $lookup: {
+          from: "categories",
+          localField: "category",
+          foreignField: "_id",
+          as: "category",
+        },
+      },
+      { $unwind: "$category" },
+      { $match: { "category.isListed": true } },
+      { $count: "count" },
+    ]);
 
+    const productCount = totalProducts[0]?.count || 0;
+    const totalPages = Math.ceil(productCount / limit);
+
+    // Get paginated products
     const products = await Product.aggregate([
       { $match: filter },
       {
@@ -89,36 +106,22 @@ const renderShopPage = async (req, res) => {
           as: "category",
         },
       },
-      {
-        $unwind: {
-          path: "$category",
-        },
-      },
+      { $unwind: "$category" },
+      { $match: { "category.isListed": true } },
       { $sort: sortQuery },
       { $skip: skip },
+      { $limit: limit },
     ]);
 
-    console.log(products.length);
-
-    const filterProduct = products
-      .filter((product) => {
-        return product.category.isListed === true;
-      })
-      .slice(0, limit);
-
-    console.log(filterProduct.length);
-
     const categories = await Category.find({ isListed: true });
-    const totalProducts = await Product.countDocuments(filter);
-    const totalPages = Math.ceil(totalProducts / limit);
 
     res.render("user/shop", {
-      product: filterProduct,
+      product: products,
       category: categories,
       appliedFilters: req.query,
       currentPage: page,
       totalPages,
-      totalProducts,
+      totalProducts: productCount,
       sortOption,
       user,
       wishlistProductIds,
@@ -126,10 +129,11 @@ const renderShopPage = async (req, res) => {
     });
   } catch (error) {
     console.error("Error loading shop:", error);
-    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR);
+    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).render("error", { 
+      message: "Something went wrong when loading the shop page."
+    });
   }
 };
-
 
 export default {
     renderShopPage

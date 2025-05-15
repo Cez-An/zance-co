@@ -27,7 +27,7 @@ const renderProfileInfo = async (req, res) => {
 
   } catch (error) {
     console.log(`error loading User Profile`, error);
-    res.status(STATUS_CODES.NOT_FOUND);
+    res.status(STATUS_CODE.NOT_FOUND);
   }
 };
 
@@ -39,7 +39,7 @@ const renderProfileEdit = async (req,res)=>{
     
   } catch (error) {
     console.log(`error loading User Profile`, error);
-    res.status(STATUS_CODES.NOT_FOUND);
+    res.status(STATUS_CODE.NOT_FOUND);
   }
 }
 
@@ -126,7 +126,6 @@ async function sendVerificationEmail(email, otp) {
 
 const otpVerification = async (req, res) => {
   try {
-    console.log("OTP FUNCTION ACCESSED");
 
     const { otp } = req.body;
 
@@ -460,7 +459,6 @@ const updatePassword = async (req, res) => {
 
 const loadOrders = async (req,res) => {
   try {
-    console.log(`order loading accessed`);
     
       const userId = req.session.user?.id ?? req.session.user?._id ?? null;
 
@@ -476,89 +474,12 @@ const loadOrders = async (req,res) => {
               })
               .sort({ createdAt: -1 });
 
-      console.log(orders)
-
       res.render('user/myOrders',{title : "My Orders",orders, user, firstName});
 
   } catch (error) {
       console.error('Error loading orders:', error.message);
   }
 }
-
-// const loadOrderDetails = async (req,res)=> {
-//   try {
-//       const userId = req.session.user?.id ?? req.session.user?._id ?? null;
-      
-//       const orderId = req.query.id;
-
-//       if (!userId) {
-//           return res.status(401).redirect('/user/login');
-//       }
-
-//       const user = await User.findOne({_id : userId})
-
-//       const firstName = user.name;
-
-//       const order = await Order.findOne({ orderId });
-
-//       const addressId = order.address
-
-//       console.log(addressId)
-
-//       const addresses = await Address.findOne(
-//           { 'details._id': addressId },
-//           { details: { $elemMatch: { _id: addressId } } }
-//       );
-      
-//       const address = addresses?.details?.[0] || null;
-      
-
-//       res.render('user/orderDetails',{title : "My Orders",order, address, user, firstName});
-
-//   } catch (error) {
-//       console.error('Error loading orders:', error.message);
-//   }
-// }
-
-// const loadOrderDetails = async (req, res) => {
-//   try {
-//     const userId = req.session.user?.id ?? req.session.user?._id ?? null;
-//     const orderId = req.query.id;
-
-//     if (!userId) {
-//       return res.status(401).redirect('/user/login');
-//     }
-
-//     const user = await User.findById(userId);
-//     const firstName = user?.name ?? "";
-
-//     const order = await Order.findById(orderId) || await Order.findOne({ orderId });
-
-//     if (!order) {
-//       console.log("No order found with given ID");
-//       return res.status(404).send("Order not found");
-//     }
-
-//     const addressId = order.address;
-//     const addresses = await Address.findOne(
-//       { 'details._id': addressId },
-//       { details: { $elemMatch: { _id: addressId } } }
-//     );
-
-//     const address = addresses?.details?.[0] || null;
-
-//     res.render('user/orderDetails2', {
-//       order,
-//       address,
-//       user,
-//       firstName
-//     });
-
-//   } catch (error) {
-//     console.error('Error loading orders:', error.message);
-//     res.status(500).send("Server Error");
-//   }
-// };
 
 const loadOrderDetails = async (req,res)=> {
   try {

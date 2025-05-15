@@ -9,8 +9,6 @@ import Refund from "../../models/refundSchema.js";
 
 const renderAdminLoginPage = (req, res) => {
   try {
-    console.log(`Rendering Admin Login Page
-      `);
 
     if (req.session.admin) {
       return res.status(302).redirect("/admin/dashboard");
@@ -29,9 +27,6 @@ const renderAdminLoginPage = (req, res) => {
 
 const adminLogin = async (req, res) => {
   try {
-    console.log(`Login POST req accessed
-      `);
-
     const { email, password } = req.body;
 
     const admin = await Admin.findOne({ email });
@@ -69,7 +64,7 @@ const adminLogin = async (req, res) => {
 
 const renderDashboard = (req, res) => {
   try {
-    console.log(`Rendering Dashboard Page
+    console.log(`Admin Logged in
       `);
     res.status(STATUS_CODE.SUCCESS).render("admin/dashboard.ejs");
   } catch (error) {
@@ -80,8 +75,6 @@ const renderDashboard = (req, res) => {
 
 const logout = (req, res) => {
   try {
-    console.log(`Logout button clicked
-      `);
 
     req.session.destroy();
     res.status(STATUS_CODE.SUCCESS).redirect("/admin/login");

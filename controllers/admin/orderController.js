@@ -60,7 +60,7 @@ const viewOrders = async (req, res) => {
     const orderId = req.query.id;
   
     const order = await Order.findOne({ _id : orderId }).populate('userId').populate('orderItems.product');
-    // console.log(order);
+
     if(!order){
         return res.status(STATUS_CODE.NOT_FOUND).json({message : 'Order not found'})
     }
@@ -126,8 +126,7 @@ const updateAllOrderItemsStatus = async (req, res) => {
 
 async function updateStatus(req, res) {
     
-    const { id } = req.query;
-    console.log(id);    
+    const { id } = req.query;   
     const { productId, status, cancelReason } = req.body;  
     try {
         const order = await Order.findOne({ _id: id });

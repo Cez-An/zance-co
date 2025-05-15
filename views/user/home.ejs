@@ -53,6 +53,7 @@
         color: rgb(225, 255, 200) !important;
     }
 </style>
+
     <!-- Hero Section Begin -->
               
     <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
@@ -137,8 +138,24 @@
                                     <i class="fa fa-star-o"></i>
                                     <i class="fa fa-star-o"></i>
                                 </div>
-                                <h5>₹&nbsp;<%=element.salePrice  %> </h5>
-                            </div>
+                                <% const discountPercentage=Math.max(element.productOffer,element.category.discount) 
+                                   const discount=(element.salePrice * discountPercentage) / 100;
+                                          const discountedPrice=element.salePrice - discount; %>
+
+                                         <% if (discountPercentage && discountPercentage !==0) { %>
+                                           <p id="priceheadding">
+                                             Price: ₹<%= discountedPrice.toFixed(0) %>
+                                               <span class="text-white">
+                                                 <strike>₹<%= element.salePrice %></strike>
+                                               </span>
+                                               <span style="color: red;">(<%= discountPercentage %>% off)</span>
+                                           </p>
+                                           <% } else { %>
+                                             <p>Price: ₹<%= element.salePrice %>
+                                             </p>
+                                             <% } %>
+                                                     <!-- <h5>₹&nbsp;<%=element.salePrice  %> </h5> -->
+                                                 </div>
 
                             <p class="add-to-cart-btn add-to-cart" 
                             data-userid="<%= user?._id %>" 

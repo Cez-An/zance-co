@@ -14,7 +14,6 @@ const requestRefund = async (req, res) => {
     const orderId = req.query.id;
     const userId = req.session.user?.id || req.session.user?._id;
 
-    // Input validation
     if (!orderId || !reason || !productId || !userId) {
         return res.status(400).json({ 
             message: 'Missing required fields: orderId, reason, productId, or userId' 
@@ -22,7 +21,7 @@ const requestRefund = async (req, res) => {
     }
 
     try {
-        // Check order exists and belongs to user
+        
         const order = await Order.findById(orderId);
         if (!order) {
             return res.status(404).json({ message: 'Order not found' });
@@ -34,13 +33,11 @@ const requestRefund = async (req, res) => {
         const item = order.orderItems.find(item => item.product.toString() === productId);
         item.individualStatus = "Refund Requested"
 
-        // Check for existing refund
         const existingRefund = await Refund.findOne({ product: productId ,order: orderId});
         if (existingRefund) {
             return res.status(400).json({ message: 'Refund already requested' });
         }
 
-        // Create new refund
         const refund = new Refund({
             order: orderId,
             userId,
@@ -54,9 +51,6 @@ const requestRefund = async (req, res) => {
         res.status(201).json({ message: 'Refund request submitted' });
     } catch (error) {
         console.error('Refund request error:', error);
-        if (error.name === 'CastError') {
-            return res.status(400).json({ message: 'Invalid ID format' });
-        }
         res.status(500).json({ message: 'Server error' });
     }
 };

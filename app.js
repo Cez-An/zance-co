@@ -9,8 +9,7 @@ import session from "express-session";
 import passport from "./config/passport.js";
 import googleRouter from "./routes/googleRouter.js";
 import adminRouter from "./routes/adminRouter.js";
-// import multer from "multer";
-import paymentRoutes from "./routes/paymentRouter.js"
+import paymentRouter from "./routes/paymentRouter.js"
 import fileUpload from 'express-fileupload';
 
 dotenv.config(); 
@@ -66,7 +65,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(['/user','/'], userRouter);
 app.use("/auth", googleRouter);
 app.use("/admin", adminRouter);
-app.use('/payments', paymentRoutes);
+app.use('/payments', paymentRouter);
 
 app.use((req, res, next) => {
   res.status(STATUS_CODE.NOT_FOUND).render("partials/404");

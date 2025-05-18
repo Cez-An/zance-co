@@ -294,29 +294,21 @@
                         <td><%=element.productId %></td>
 
                         
-                            <% if (element.isBlocked===false) { %>
                             <td>
-                                <button class="status-btn btn btn-success" disabled><a class="block-unblock">ACTIVE</a></button>
-                                <!-- <button class="view-btn btn btn-secondary block-unblock "">View</button> -->
+                              <button class="status-btn btn <%= element.isBlocked ? 'btn-danger' : 'btn-success' %> status-indicator"
+                                      data-id="<%= element._id %>">
+                                <%= element.isBlocked ? 'BLOCKED' : 'ACTIVE' %>
+                              </button>
                             </td>
-                            <% } else { %>
-
-                                <td><button class="status-btn btn btn-danger" disabled><a>BLOCKED</a></button>
-                                <!-- <button class="view-btn btn btn-secondary block-unblock ">View</button> -->
-                                    
-                        <% } %>
-                    </td>
-
-                    <% if (element.isBlocked===false) { %>
-                        <td>
-                            <button class="status-btn btn btn-danger"
-                                onclick="blockProduct('<%=element._id%>')">Block</button>
-                        </td>
-                        <% } else { %>
-                            <td><button class="status-btn btn btn-success"
-                                    onclick="unblockCustomer('<%=element._id%>')">Unblock</button>
+                            <td>
+                              <button class="status-btn btn <%= element.isBlocked ? 'btn-success' : 'btn-danger' %> action-btn"
+                                      data-id="<%= element._id %>"
+                                      data-action="<%= element.isBlocked ? 'unblock' : 'block' %>">
+                                <%= element.isBlocked ? 'Unblock' : 'Block' %>
+                              </button>
                             </td>
-                            <% } %>
+
+
                         
                     <td><a href="/admin/products/<%=element._id %>"><button class="btn btn-dark">Edit</button></a></td>                                                                        
          
@@ -350,15 +342,53 @@
             function toggleSidebar() {
                 document.querySelector('.sidebar').classList.toggle('active');
             }
-        </script>
-        <script>
-            function blockProduct(id) {
-              window.location.href = `/admin/blockProduct?id=${id}`;
-            }
-            function unblockCustomer(id) {
-              window.location.href = `/admin/unBlockProduct?id=${id}`;
-            }
-          </script>
+                                
+                          document.querySelectorAll('.action-btn').forEach(button => {
+                            button.addEventListener('click', async () => {
+                              const id = button.getAttribute('data-id');
+                              const action = button.getAttribute('data-action');
+                              const url = action === 'block' ? `/admin/blockProduct?id=${id}` : `/admin/unBlockProduct?id=${id}`;
+                            
+                              try {
+                                const res = await fetch(url);
+                                const data = await res.json();
+                            
+                                if (data.success) {
+                                  const statusBtn = document.querySelector(`.status-indicator[data-id="${id}"]`);
+                                
+                                  if (data.isBlocked) {
+                                    // Update status button
+                                    statusBtn.classList.remove('btn-success');
+                                    statusBtn.classList.add('btn-danger');
+                                    statusBtn.innerText = 'BLOCKED';
+                                
+                                    // Update action button
+                                    button.innerText = 'Unblock';
+                                    button.classList.remove('btn-danger');
+                                    button.classList.add('btn-success');
+                                    button.setAttribute('data-action', 'unblock');
+                                  } else {
+                                    // Update status button
+                                    statusBtn.classList.remove('btn-danger');
+                                    statusBtn.classList.add('btn-success');
+                                    statusBtn.innerText = 'ACTIVE';
+                                
+                                    // Update action button
+                                    button.innerText = 'Block';
+                                    button.classList.remove('btn-success');
+                                    button.classList.add('btn-danger');
+                                    button.setAttribute('data-action', 'block');
+                                  }
+                                } else {
+                                  alert('Failed to update status.');
+                                }
+                              } catch (err) {
+                                console.error('Error:', err);
+                                alert('An error occurred while updating status.');
+                              }
+                            });
+                          });
+</script>
           
 </body>
 

@@ -47,23 +47,31 @@ const renderCustomerInfo = async (req, res) => {
 
 const customerBlocked = async (req, res) => { 
   try {
-    let {param:id} = req.body;
-    await User.updateOne({ _id: id }, { $set: { isBlocked: true } }); 
-    req.session.user = false;   
-    return res.status(STATUS_CODE.SUCCESS).json({message:"User Blocked Successfully"});
+    const { id } = req.body;  
+
+    await User.updateOne({ _id: id }, { $set: { isBlocked: true } });
+
+    return res.status(STATUS_CODE.SUCCESS).json({ message: "User Blocked Successfully" });
+
   } catch (error) {
-    return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({error:'User not blocked'})
+    console.error("Block error:", error);
+    return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: 'User not blocked' });
   }
 };
 
 const customerUnBlocked = async (req, res) => {
   try {
-    let {param2} = req.body;
-    await User.updateOne({ _id: param2 }, { $set: { isBlocked: false } });
-    return res.status(STATUS_CODE.SUCCESS).json({message:'User unblocked Successfuly'})
+    const { id } = req.body;
+
+    await User.updateOne({ _id: id }, { $set: { isBlocked: false } });
+
+    return res.status(STATUS_CODE.SUCCESS).json({ message: 'User Unblocked Successfully' });
+
   } catch (error) {
-    return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({error:'User not unblocked'})
+    console.error("Unblock error:", error);
+    return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: 'User not unblocked' });
   }
 };
+
 
 export default { renderCustomerInfo, customerBlocked, customerUnBlocked };

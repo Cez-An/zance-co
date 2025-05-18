@@ -147,9 +147,11 @@ const productBlocked = async (req, res) => {
   try {
     let id = req.query.id;
     await Product.updateOne({ _id: id }, { $set: { isBlocked: true } });
-    res.redirect("/admin/products");
+    res.json({ success: true, isBlocked: true });
+
   } catch (error) {
-    res.redirect("/error-admin");
+    console.error("Error blocking product:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -157,9 +159,11 @@ const productUnBlocked = async (req, res) => {
   try {
     let id = req.query.id;
     await Product.updateOne({ _id: id }, { $set: { isBlocked: false } });
-    res.redirect("/admin/products");
+    res.json({ success: true, isBlocked: false });
+
   } catch (error) {
-    res.redirect("/error-admin");
+    console.error("Error unblocking product:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -167,7 +171,6 @@ const renderProductsEditPage = async (req, res) => {
   try {
 
     const { id } = req.params;
-
     const product = await Product.findOne({ _id: id });
     if (!product) {
       return res.status(404).send("Product not found");

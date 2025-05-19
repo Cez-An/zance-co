@@ -179,7 +179,16 @@
         color: rgb(225, 255, 200) !important;
     }
     </style>
-
+    <style>
+        p {
+	font-size: 15px;
+	font-family: "Nunito Sans", sans-serif;
+	color: #ffffff;
+	font-weight: 400;
+	line-height: 25px;
+	margin: 0 0 15px 0;
+}
+    </style>
     <!-- Breadcrumb Section Begin -->
     <section class="breadcrumb-option">
         <div class="container">
@@ -351,7 +360,22 @@
                                             <i class="fa fa-star-o"></i>
                                             <i class="fa fa-star-o"></i>
                                         </div>
-                                        <h5>₹&nbsp;<%=element.salePrice  %> </h5>
+                                         <% const discountPercentage=Math.max(element.productOffer,element.category.discount) 
+                                   const discount=(element.salePrice * discountPercentage) / 100;
+                                          const discountedPrice=element.salePrice - discount; %>
+
+                                         <% if (discountPercentage && discountPercentage !==0) { %>
+                                           <p id="priceheadding">
+                                             Price: ₹<%= discountedPrice.toFixed(0) %>
+                                               <span class="text-white">
+                                                 <strike>₹<%= element.salePrice %></strike>
+                                               </span>
+                                               <span style="color: red;">(<%= discountPercentage %>% off)</span>
+                                           </p>
+                                           <% } else { %>
+                                             <p>Price: ₹<%= element.salePrice %>
+                                             </p>
+                                             <% } %>
                                     </div>
                                         <p class="add-to-cart-btn add-to-cart" 
                                         data-userid="<%= user?._id %>" 

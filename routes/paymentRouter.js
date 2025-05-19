@@ -1,4 +1,3 @@
-// Updated routes for payment
 import express from 'express';
 import paymentController from '../controllers/user/paymentController.js';
 const router = express.Router();

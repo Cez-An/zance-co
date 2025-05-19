@@ -6,9 +6,9 @@ import Address from "../../models/addressSchema.js";
 import Order from "../../models/orderSchema.js";
 import STATUS_CODE from "../../helpers/statusCode.js";
 import mongoose from "mongoose";
-import Razorpay from "razorpay"; // Make sure to install this: npm install razorpay
+import Razorpay from "razorpay"; 
 
-// Initialize Razorpay with your API credentials
+
 const razorpay = new Razorpay({
   key_id: process.env.RAZOR_API_KEY,
   key_secret: process.env.RAZOR_API_SECRET
@@ -47,8 +47,7 @@ const loadPayments = async (req, res) => {
         grandTotal = cartTotal + deliveryCharge - couponDiscount;
         
         
-        res.render('user/payment', {
-            title: "Checkout", 
+        res.render('user/payment', { 
             user, 
             cart, 
             cartTotal, 
@@ -71,7 +70,6 @@ const generateOrderId = async () => {
     return ifExists ? generateOrderId() : id;
 };
 
-// New function to create Razorpay order
 const createRazorpayOrder = async (req, res) => {
     try {
         const userId = req.session.user?.id ?? req.session.user?._id ?? null;
@@ -117,7 +115,7 @@ const createRazorpayOrder = async (req, res) => {
 
 const paymentSuccess = async (req, res) => {
     try {
-        
+
         const discount = req.session.couponDiscount;
 
         if (req.session.couponDiscount) {
@@ -129,20 +127,20 @@ const paymentSuccess = async (req, res) => {
         const userId = req.session.user?.id ?? req.session.user?._id ?? null;
         const { paymentMethod } = req.body;
         const addressId = req.session.selectedAddress;
-        
+
         if (!addressId) {
             return res.status(400).json({ error: 'No address selected' });
         }
 
         const objectId = new mongoose.Types.ObjectId(addressId);
         const cart = await Cart.findOne({ userId }).populate('items.productId');
-        
+
         if (!cart || cart.items.length === 0) {
             return res.status(400).json({ error: 'Cart is empty' });
         }
-        
+
         const orderID = await generateOrderId();
-        
+
         if (paymentMethod === 'cod') {
             const address = await Address.findOne(
                 { 'details._id': objectId },
@@ -152,11 +150,16 @@ const paymentSuccess = async (req, res) => {
             if (!address) {
                 return res.status(404).json({ error: 'Address not found' });
             }
-            
+
             let cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.basePrice, 0);
             const deliveryCharge = cartTotal < 499 ? 40 : 0;
             const couponDiscount = discount || 0;
             const grandTotal = cartTotal + deliveryCharge - couponDiscount;
+
+            // COD not allowed if order total exceeds Rs 1000
+            if (grandTotal > 1000) {
+                return res.status(400).json({ error: 'Cash on Delivery is not allowed for orders above Rs 1000' });
+            }
 
             const order = new Order({
                 userId,
@@ -173,40 +176,37 @@ const paymentSuccess = async (req, res) => {
                 })),
                 totalPrice: grandTotal,
                 paymentMethod,
-                coupon:couponDiscount,
+                coupon: couponDiscount,
                 paymentStatus: 'Pending',
                 address: addressId,
-                status: 'Placed',                
+                status: 'Placed',
             });
 
-            // Update product quantities
             for (let item of cart.items) {
                 await Product.findOneAndUpdate(
                     { _id: item.productId._id },
                     { $inc: { quantity: -item.quantity } }
                 );
             }
-                    
+
             await order.save();
             await Cart.findByIdAndDelete(cart._id);
 
             return res.status(200).json({ message: 'Order placed successfully' });
 
         } else if (paymentMethod === 'razorpay') {
-                                   
 
             const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
-            
+
             // Verify the payment
             if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature) {
                 return res.status(400).json({ error: 'Payment verification failed: Missing parameters' });
             }
-            
-            
+
             if (razorpay_order_id !== req.session.razorpayOrderId) {
                 return res.status(400).json({ error: 'Payment verification failed: Order ID mismatch' });
             }
-            
+
             const address = await Address.findOne(
                 { 'details._id': objectId },
                 { 'details.$': 1 }
@@ -214,14 +214,13 @@ const paymentSuccess = async (req, res) => {
 
             if (!address) {
                 return res.status(404).json({ error: 'Address not found' });
-            }                                  
+            }
 
             let cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.basePrice, 0);
             const deliveryCharge = cartTotal < 499 ? 40 : 0;
-            const couponDiscount = discount || 0;            
+            const couponDiscount = discount || 0;
             const grandTotal = cartTotal + deliveryCharge - couponDiscount;
-            
-            
+
             const order = new Order({
                 userId,
                 orderId: orderID,
@@ -240,8 +239,8 @@ const paymentSuccess = async (req, res) => {
                 paymentStatus: 'Paid',
                 paymentId: razorpay_payment_id,
                 address: addressId,
-                coupon:couponDiscount,
-                status: 'Placed',                
+                coupon: couponDiscount,
+                status: 'Placed',
             });
 
             // Update product quantities
@@ -251,7 +250,7 @@ const paymentSuccess = async (req, res) => {
                     { $inc: { quantity: -item.quantity } }
                 );
             }
-                        
+
             await order.save();
             await Cart.findByIdAndDelete(cart._id);
 
@@ -266,10 +265,6 @@ const paymentSuccess = async (req, res) => {
 };
 
 
-
-
-
-// Handle payment verification failure
 const paymentFailed = async (req, res) => {
     try {
         const { error } = req.body;
@@ -281,11 +276,6 @@ const paymentFailed = async (req, res) => {
         return res.status(500).json({ error: 'Internal server error' });
     }
 };
-
-
-
-
-
 
 const confirmOrder = async (req, res) => {
     try {

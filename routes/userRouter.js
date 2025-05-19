@@ -13,12 +13,6 @@ import couponController from "../controllers/user/couponControler.js"
 
 const router = express.Router();
 
-router.get("/pagenotfound", userController.pageNotFound);
-
-router.get("/",userController.renderHomepage);
-
-router.get('/renderShopPage',shopController.renderShopPage)
-
 // signup route
 router.route("/signup")
   .get(authController.renderSignUp)
@@ -39,6 +33,12 @@ router.post("/resendOtp", authController.resendOtp);
 
 //log out route
 router.get("/logout", userController.logout);
+
+//home page
+router.get("/",userController.renderHomepage);
+
+//shop page
+router.get('/renderShopPage',shopController.renderShopPage)
 
 //products details page
 router.get("/loadProductsDetailsPage/:id", userController.loadProductsDetails);
@@ -90,7 +90,6 @@ router.delete('/wishlist', userAuth.checkStatus,wishlistController.removeFromWis
 router.post('/wishlist-to-cart',userAuth.checkStatus,wishlistController.wishlistToCart)
 
 //order Routes
-
 router.get('/order', userAuth.checkStatus,profileController.loadOrders);
 router.get('/orderDetails', userAuth.checkStatus,profileController.loadOrderDetails);
 router.post('/order/return', userAuth.checkStatus,refundController.requestRefund);
@@ -100,10 +99,9 @@ router.get('/order/invoiceDownload',userAuth.checkStatus,profileController.downl
 //wallet
 router.get('/wallet', userAuth.checkStatus,walletController.loadWallet);
 
-router.get("/testing",userController.testing);
-
 //coupon
 router.post('/couponValidate', userAuth.checkStatus,couponController.validateCoupon);
 
+router.get("/pagenotfound", userController.pageNotFound);
 
 export default router;

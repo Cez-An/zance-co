@@ -5,13 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
-      <!-- Favicon -->
-      <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
-      <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
-      <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
 
-      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-      
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -101,11 +101,12 @@
             border-radius: 15px;
             font-size: 12px;
         } */
-        .block-unblock{
+        .block-unblock {
             text-decoration: none;
             color: #ffffff;
             font-weight: bolder;
         }
+
         .toggle-switch {
             width: 40px;
             height: 20px;
@@ -129,9 +130,9 @@
         }
 
         /* .status-btn { */
-            /* background-color: #d4f4e2;      BUTTON TEXT COLOR */
-            
-            /* color: #28a745;
+        /* background-color: #d4f4e2;      BUTTON TEXT COLOR */
+
+        /* color: #28a745;
             border: none;
             padding: 5px 15px;
             border-radius: 15px;
@@ -175,14 +176,14 @@
             }
         }
     </style>
-      <style>
+    <style>
         .table thead th {
-    background-color: #000000;
-    color: white;
-    font-weight: 500;
-    padding: 12px;
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
-}
+            background-color: #000000;
+            color: white;
+            font-weight: 500;
+            padding: 12px;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
     </style>
 </head>
 
@@ -197,7 +198,7 @@
         <!-- Close Sidebar Button -->
         <button class="btn btn-dark close-sidebar-btn" onclick="toggleSidebar()">
             <i class="bi bi-x-lg"></i></button>
-            <img src="/img/logo/ZANCE&c.svg" class="image-fluid mx-5 mb-2" alt="">
+        <img src="/img/logo/ZANCE&c.svg" class="image-fluid mx-5 mb-2" alt="">
 
         <ul class="nav flex-column">
             <li class="nav-item">
@@ -230,7 +231,7 @@
                     <i class="bi bi-ticket"></i> Coupons
                 </a>
             </li>
-            
+
             <li class="nav-item">
                 <a class="nav-link" href="/admin/sales">
                     <i class="bi bi-bar-chart"></i> Sales Report
@@ -251,20 +252,21 @@
             <i class="bi bi-list"></i></button>
 
         <h1>Product Management</h1>
-        
+
         <div class="d-flex justify-content-end gap-4">
             <form action="/admin/productAdd/" method="get">
-                <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit"><i class="bi bi-plus-circle"></i>&nbsp; &nbsp;Add Products</button>
+                <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit"><i
+                        class="bi bi-plus-circle"></i>&nbsp; &nbsp;Add Products</button>
             </form>
 
             <form action="/admin/products/" method="get" class="d-flex justify-content-end gap-2">
                 <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
-                name="search">
+                    name="search">
                 <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit">Search</button>
             </form>
         </div>
 
-        
+
         <br>
 
         <div class="table-responsive">
@@ -284,37 +286,49 @@
                 <tbody>
 
                     <% i=1 %>
-                    <% product.forEach(element => {%>
-                                        
-                    <tr class="text-center" >
-                        <td><%=i++ %></td>
-                        <td><%=element.name %></td>
-                        <td><%=element.category?.name%></td>
-                        <td>₹&nbsp;<%=element.salePrice %></td>
-                        <td><%=element.productId %></td>
+                        <% product.forEach(element=> {%>
 
-                        
-                            <td>
-                              <button class="status-btn btn <%= element.isBlocked ? 'btn-danger' : 'btn-success' %> status-indicator"
-                                      data-id="<%= element._id %>">
-                                <%= element.isBlocked ? 'BLOCKED' : 'ACTIVE' %>
-                              </button>
-                            </td>
-                            <td>
-                              <button class="status-btn btn <%= element.isBlocked ? 'btn-success' : 'btn-danger' %> action-btn"
-                                      data-id="<%= element._id %>"
-                                      data-action="<%= element.isBlocked ? 'unblock' : 'block' %>">
-                                <%= element.isBlocked ? 'Unblock' : 'Block' %>
-                              </button>
-                            </td>
+                            <tr class="text-center">
+                                <td>
+                                    <%=i++ %>
+                                </td>
+                                <td>
+                                    <%=element.name %>
+                                </td>
+                                <td>
+                                    <%=element.category?.name%>
+                                </td>
+                                <td>₹&nbsp;<%=element.salePrice %>
+                                </td>
+                                <td>
+                                    <%=element.productId %>
+                                </td>
 
 
-                        
-                    <td><a href="/admin/products/<%=element._id %>"><button class="btn btn-dark">Edit</button></a></td>                                                                        
-         
-                    </tr>
-                    
-                    <% });  %>
+                                <td>
+                                    <button
+                                        class="status-btn btn <%= element.isBlocked ? 'btn-danger' : 'btn-success' %> status-indicator"
+                                        data-id="<%= element._id %>">
+                                        <%= element.isBlocked ? 'BLOCKED' : 'ACTIVE' %>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button
+                                        class="status-btn btn <%= element.isBlocked ? 'btn-success' : 'btn-danger' %> action-btn"
+                                        data-id="<%= element._id %>"
+                                        data-action="<%= element.isBlocked ? 'unblock' : 'block' %>">
+                                        <%= element.isBlocked ? 'Unblock' : 'Block' %>
+                                    </button>
+                                </td>
+
+
+
+                                <td><a href="/admin/products/<%=element._id %>"><button
+                                            class="btn btn-dark">Edit</button></a></td>
+
+                            </tr>
+
+                            <% }); %>
 
 
                 </tbody>
@@ -323,73 +337,100 @@
 
         <nav aria-label="Page navigation">
             <ul class="pagination">
-                <% for(let i = 1; i <= totalPages; i++) { %>
+                <% for(let i=1; i <=totalPages; i++) { %>
                     <li class="page-item <%= (i === currentPage) ? 'active' : '' %>">
-                        <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                        <a class="page-link" href="?page=<%= i %>">
+                            <%= i %>
+                        </a>
                     </li>
-                <% } %>
+                    <% } %>
             </ul>
         </nav>
-        
+
 
         <!-- Bootstrap 5 JS and Bootstrap Icons -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
         <script>
 
-            
+
 
             function toggleSidebar() {
                 document.querySelector('.sidebar').classList.toggle('active');
             }
-                                
-                          document.querySelectorAll('.action-btn').forEach(button => {
-                            button.addEventListener('click', async () => {
-                              const id = button.getAttribute('data-id');
-                              const action = button.getAttribute('data-action');
-                              const url = action === 'block' ? `/admin/blockProduct?id=${id}` : `/admin/unBlockProduct?id=${id}`;
-                            
-                              try {
-                                const res = await fetch(url);
-                                const data = await res.json();
-                            
-                                if (data.success) {
-                                  const statusBtn = document.querySelector(`.status-indicator[data-id="${id}"]`);
-                                
-                                  if (data.isBlocked) {
-                                    // Update status button
+
+            document.querySelectorAll('.action-btn').forEach(button => {
+                button.addEventListener('click', async () => {
+                    const id = button.getAttribute('data-id');
+                    const action = button.getAttribute('data-action');
+                    const isBlocking = action === 'block';
+                    const url = isBlocking ? `/admin/blockProduct?id=${id}` : `/admin/unBlockProduct?id=${id}`;
+
+                    const result = await Swal.fire({
+                        title: "Are you sure?",
+                        text: `You want to ${isBlocking ? 'block' : 'unblock'} this product?`,
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: `Yes, ${isBlocking ? 'block' : 'unblock'} it!`
+                    });
+
+                    if (result.isConfirmed) {
+                        try {
+
+                            const res = await fetch(url, {
+                                method: "POST",
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            });
+                            const data = await res.json();
+
+                            if (data.success) {
+                                await Swal.fire({
+                                    title: isBlocking ? "Blocked!" : "Unblocked!",
+                                    text: `The product has been ${isBlocking ? 'blocked' : 'unblocked'}.`,
+                                    icon: "success",
+                                    timer: 1000,
+                                    showConfirmButton: false
+                                });
+
+                                const statusBtn = document.querySelector(`.status-indicator[data-id="${id}"]`);
+
+                                if (data.isBlocked) {
                                     statusBtn.classList.remove('btn-success');
                                     statusBtn.classList.add('btn-danger');
                                     statusBtn.innerText = 'BLOCKED';
-                                
-                                    // Update action button
+
                                     button.innerText = 'Unblock';
                                     button.classList.remove('btn-danger');
                                     button.classList.add('btn-success');
                                     button.setAttribute('data-action', 'unblock');
-                                  } else {
-                                    // Update status button
+                                } else {
                                     statusBtn.classList.remove('btn-danger');
                                     statusBtn.classList.add('btn-success');
                                     statusBtn.innerText = 'ACTIVE';
-                                
-                                    // Update action button
+
                                     button.innerText = 'Block';
                                     button.classList.remove('btn-success');
                                     button.classList.add('btn-danger');
                                     button.setAttribute('data-action', 'block');
-                                  }
-                                } else {
-                                  alert('Failed to update status.');
                                 }
-                              } catch (err) {
-                                console.error('Error:', err);
-                                alert('An error occurred while updating status.');
-                              }
-                            });
-                          });
-</script>
-          
+
+                            } else {
+                                Swal.fire("Oops!", "Failed to update status.", "error");
+                            }
+                        } catch (err) {
+                            console.error('Error:', err);
+                            Swal.fire("Error", "An error occurred while updating status.", "error");
+                        }
+                    }
+                });
+            });
+
+        </script>
+
 </body>
 
 </html>

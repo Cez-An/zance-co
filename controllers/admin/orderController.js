@@ -168,6 +168,3 @@ async function updateStatus(req, res) {
   }
 
 export default {  updateStatus, updateAllOrderItemsStatus, loadOrders, viewOrders, }
-
-
-

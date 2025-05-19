@@ -271,7 +271,6 @@ const updateProduct = async (req, res) => {
   }
 };
 
-
 export default {
   renderProductAddPage,
   renderProductsListPage,

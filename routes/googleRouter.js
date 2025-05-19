@@ -2,7 +2,7 @@ import passport from "passport";
 import express from "express";
 const router = express.Router();
 
-// Start Google OAuth
+
 router.get('/google', passport.authenticate('google', {
   scope: ['profile', 'email']
 }));

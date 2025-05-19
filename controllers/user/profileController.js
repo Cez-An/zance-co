@@ -574,25 +574,7 @@ const downloadOrderInvoice = async (req, res) => {
 };
 
 export default {
-    renderProfileInfo,
-    renderProfileEdit,
-    updateProfile,
-    generateOtp,
-    sendVerificationEmail,
-    otpVerification,
-    sendOTP,
-    verifyOTP,
-    loadAddress,
-    loadAddAddress,
-    addAddress,
-    deleteAddress,
-    loadEditAddress,
-    editAddress,
-    loadPrivacy,
-    updatePassword,
-    loadOrders,
-    loadOrderDetails,
-    downloadOrderInvoice,
-    
-
+    renderProfileInfo, renderProfileEdit, updateProfile, generateOtp, sendVerificationEmail, otpVerification, 
+    sendOTP, verifyOTP, loadAddress, loadAddAddress, addAddress, deleteAddress, loadEditAddress, editAddress,
+    loadPrivacy, updatePassword, loadOrders, loadOrderDetails, downloadOrderInvoice,
 }

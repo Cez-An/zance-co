@@ -45,33 +45,32 @@ const renderCustomerInfo = async (req, res) => {
   }
 };
 
+
 const customerBlocked = async (req, res) => { 
   try {
-    const { id } = req.body;  
-
+    const id = req.query.id;
     await User.updateOne({ _id: id }, { $set: { isBlocked: true } });
-
-    return res.status(STATUS_CODE.SUCCESS).json({ message: "User Blocked Successfully" });
+    return res.json({ success: true, isBlocked: true });
 
   } catch (error) {
+
     console.error("Block error:", error);
     return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: 'User not blocked' });
   }
 };
 
+
 const customerUnBlocked = async (req, res) => {
   try {
-    const { id } = req.body;
-
+    const id = req.query.id;
     await User.updateOne({ _id: id }, { $set: { isBlocked: false } });
-
-    return res.status(STATUS_CODE.SUCCESS).json({ message: 'User Unblocked Successfully' });
+    return res.json({ success: true, isBlocked: false });
 
   } catch (error) {
+
     console.error("Unblock error:", error);
     return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: 'User not unblocked' });
   }
 };
-
 
 export default { renderCustomerInfo, customerBlocked, customerUnBlocked };

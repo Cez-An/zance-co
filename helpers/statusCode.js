@@ -1,4 +1,5 @@
 const STATUS_CODE = {
+
     SUCCESS : 200,
     CREATED : 201,
     FOUND : 302,
@@ -7,6 +8,7 @@ const STATUS_CODE = {
     FORBIDDEN : 403,
     NOT_FOUND : 404,
     INTERNAL_SERVER_ERROR : 500,
+    
 }
 
 export default STATUS_CODE;

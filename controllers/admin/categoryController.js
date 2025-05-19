@@ -129,6 +129,4 @@ export default {
   renderCategoryAdd,
   renderCategoryEdit,
   updateCategory,
-
-
 };

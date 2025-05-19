@@ -16,8 +16,6 @@ env.config();
 const renderHomepage = async (req, res) => {
   try {
     const product = await Product.find({ isBlocked: false }).limit(12).populate("category");
-    // console.log(product);
-    
     const userId = req.session.user?.id ?? req.session.user?._id ?? null;
     const user = await User.findOne({ _id: userId, isBlocked: false });
     if(!user){
@@ -166,21 +164,6 @@ const newPassword = async (req, res) => {
   }
 };
 
-const testing = async (req, res) => {
-  try {
-    const userId = req.session.user?.id ?? req.session.user?._id ?? null;
-    const user = await User.findOne({ _id: userId, isBlocked: false });
-    const product = await Product.find({ isBlocked: false }).limit(12);
-
-    let page = "myWallet";
-
-    res.render(`user/${page}`, { product,user: { wallet: 0 } });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
 export default {
   renderHomepage, 
   pageNotFound, 
@@ -191,6 +174,4 @@ export default {
   FPotpVarification,
   renderNewPassPage,
   newPassword,
-
-  testing,
 };

@@ -202,11 +202,9 @@ const deleteFromcart = async (req,res)=> {
     }
 }
 
-
 export default {
     loadCart,
     addItemToCart,
     updateQuantity,
     deleteFromcart,
-
 }

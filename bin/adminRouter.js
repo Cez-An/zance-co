@@ -25,19 +25,15 @@ router.post('/blockCustomer',adminAuth.checkSession,customerController.customerB
 router.post('/unBlockCustomer',adminAuth.checkSession,customerController.customerUnBlocked)
 
 // category Management
-router.route('/category')
-  .get(adminAuth.checkSession, categoryController.renderCategoryInfo)
-  .post(adminAuth.checkSession, categoryController.addCategory);
-
+router.get('/category',adminAuth.checkSession,categoryController.renderCategoryInfo)
+router.post('/category',adminAuth.checkSession,categoryController.addCategory)
 router.put('/category/',adminAuth.checkSession,categoryController.updateCategory)
 router.get('/categoryAdd',adminAuth.checkSession,categoryController.renderCategoryAdd)
 router.get('/category/:id',adminAuth.checkSession,categoryController.renderCategoryEdit)
 
 // product Management
-router.route('/products')
-  .get(adminAuth.checkSession, productController.renderProductsListPage)
-  .post(adminAuth.checkSession, productController.addProduct);
-
+router.get('/products',adminAuth.checkSession,productController.renderProductsListPage)
+router.post('/products',adminAuth.checkSession,productController.addProduct)
 router.put('/products/:id',adminAuth.checkSession,productController.updateProduct);
 router.get('/productAdd',adminAuth.checkSession,productController.renderProductAddPage)
 router.get('/products/:id',adminAuth.checkSession,productController.renderProductsEditPage)
@@ -45,10 +41,8 @@ router.post('/blockProduct',adminAuth.checkSession,productController.productBloc
 router.post('/unBlockProduct',adminAuth.checkSession,productController.productUnBlocked)
 
 // order
-router.route('/orders')
-  .get(adminAuth.checkSession, orderController.loadOrders)
-  .patch(adminAuth.checkSession, orderController.updateStatus);
-
+router.get('/orders',adminAuth.checkSession, orderController.loadOrders);
+router.patch('/orders',adminAuth.checkSession, orderController.updateStatus);
 router.patch('/orders/all-status',adminAuth.checkSession, orderController.updateAllOrderItemsStatus);
 router.get('/vieworders', adminAuth.checkSession, orderController.viewOrders);
 
@@ -56,12 +50,10 @@ router.get('/vieworders', adminAuth.checkSession, orderController.viewOrders);
 router.patch('/refunds',adminAuth.checkSession, refundController.updateRefundStatus);
 
 // coupon management
-router.route('/coupons')
-  .get(adminAuth.checkSession, couponController.loadCouponPage)
-  .post(adminAuth.checkSession, couponController.addCoupon)
-  .put(adminAuth.checkSession, couponController.editCoupon)
-  .delete(adminAuth.checkSession, couponController.deleteCoupon);
-
+router.get('/coupons',adminAuth.checkSession, couponController.loadCouponPage);
+router.post('/coupons',adminAuth.checkSession, couponController.addCoupon);
+router.put('/coupons', adminAuth.checkSession, couponController.editCoupon);
+router.delete('/coupons', adminAuth.checkSession, couponController.deleteCoupon);
 
 // sales report
 router.get('/sales',adminAuth.checkSession, salesController.loadSalesReport);

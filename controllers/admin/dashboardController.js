@@ -1,6 +1,7 @@
 import Order from "../../models/orderSchema.js";
 import Category from "../../models/categorySchema.js";
 import mongoose from "mongoose";
+import STATUS_CODE from "../../helpers/statusCode.js";
 
 const renderDashboardStats = async (req, res) => {
   try {
@@ -83,7 +84,7 @@ const renderDashboardStats = async (req, res) => {
 
   } catch (err) {
     console.error("Dashboard Stats Error:", err);
-    res.status(500).json({ message: "Server Error" });
+    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ message: "Server Error" });
   }
 };
 

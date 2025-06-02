@@ -11,13 +11,13 @@ const renderAdminLoginPage = (req, res) => {
   try {
 
     if (req.session.admin) {
-      return res.status(302).redirect("/admin/dashboard");
+      return res.status(STATUS_CODE.FOUND).redirect("/admin/dashboard");
     }
-    res.status(200).render("admin/login", { message: null });
+    res.status(STATUS_CODE.SUCCESS).render("admin/login", { message: null });
     
   } catch (error) {
     console.error("Internal Server Error:", error);
-    res.status(500).render("partials/admin/404.ejs", {
+    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).render("partials/admin/404.ejs", {
       statuscode: "",
       errorname: "",
       message: "Something went wrong! Please try again later.",

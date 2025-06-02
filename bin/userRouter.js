@@ -45,69 +45,49 @@ router.get('/renderShopPage',shopController.renderShopPage)
 router.get("/loadProductsDetailsPage/:id", userController.loadProductsDetails);
 
 // forgot password
-router.route('/forgotPassword')
-  .get(userController.loadForgotPassword)
-  .post(authController.validateUserEmail);
-
-router.route('/forgotPasswordOtp')
-  .get(userController.loadForgotPasswordOtp)
-  .post(userController.FPotpVarification);
-
+router.get('/forgotPassword',userController.loadForgotPassword)
+router.post('/forgotPassword',authController.validateUserEmail)
+router.get('/forgotPasswordOtp',userController.loadForgotPasswordOtp)
+router.post('/forgotPasswordOtp',userController.FPotpVarification)
 router.get('/newPassword',userController.renderNewPassPage)
 router.post('/changePassword',userController.newPassword)
 
 //user profile
-router.route('/userProfile')
-  .get(userAuth.checkStatus, profileController.renderProfileInfo)
-  .put(userAuth.checkStatus, profileController.updateProfile);
-
+router.get('/userProfile',userAuth.checkStatus,profileController.renderProfileInfo)
 router.get('/userProfile/:id',userAuth.checkStatus,profileController.renderProfileEdit)
+router.put('/userProfile', userAuth.checkStatus,profileController.updateProfile)
 router.post('/sendotp', userAuth.checkStatus,profileController.sendOTP);
 router.post('/verifymail', userAuth.checkStatus,profileController.verifyOTP);
 
 //address management
-router.route('/address')
-  .get(userAuth.checkStatus, profileController.loadAddress)
-  .post(userAuth.checkStatus, profileController.addAddress)
-  .put(userAuth.checkStatus, productControllerTwo.editAddress)
-  .delete(userAuth.checkStatus, productControllerTwo.deleteAddress);
-
+router.get('/address',userAuth.checkStatus,profileController.loadAddress);
+router.post('/address',userAuth.checkStatus,profileController.addAddress);
 router.get('/addAddress',userAuth.checkStatus,profileController.loadAddAddress);
 router.get('/editaddress', userAuth.checkStatus,productControllerTwo.loadEditAddress);
-
-
+router.put('/address', userAuth.checkStatus,productControllerTwo.editAddress);
+router.delete('/address', userAuth.checkStatus,productControllerTwo.deleteAddress);
 
 //privacy settings
-router.route('/privacy')
-  .get(userAuth.checkStatus, productControllerTwo.loadPrivacy)
-  .post(userAuth.checkStatus, productControllerTwo.updatePassword);
-
+router.get('/privacy', userAuth.checkStatus,productControllerTwo.loadPrivacy);
+router.post('/privacy', userAuth.checkStatus,productControllerTwo.updatePassword);
 
 //cart routes
-router.route('/cart')
-  .post(userAuth.checkStatus, cartControlller.addItemToCart)
-  .get(userAuth.checkStatus, cartControlller.loadCart)
-  .patch(userAuth.checkStatus, cartControlller.updateQuantity)
-  .delete(userAuth.checkStatus, cartControlller.deleteFromcart);
-
+router.post('/cart', userAuth.checkStatus,cartControlller.addItemToCart);
+router.get('/cart', userAuth.checkStatus,cartControlller.loadCart);
+router.patch('/cart', userAuth.checkStatus,cartControlller.updateQuantity);
+router.delete('/cart', userAuth.checkStatus,cartControlller.deleteFromcart);
 
 // payment and checkout routes
-router.route('/checkout')
-  .get(userAuth.checkStatus, checkoutController.loadCheckout)
-  .post(userAuth.checkStatus, checkoutController.checkoutDetails);
-
-router.route('/shoppingAddress')
-  .post(userAuth.checkStatus, checkoutController.addShoppingAddress)
-  .put(userAuth.checkStatus, checkoutController.editshoppingAddress);
-
+router.get('/checkout', userAuth.checkStatus,checkoutController.loadCheckout);
+router.post('/checkout', userAuth.checkStatus,checkoutController.checkoutDetails);
+router.post('/shoppingAddress', userAuth.checkStatus,checkoutController.addShoppingAddress);
+router.put('/shoppingAddress', userAuth.checkStatus,checkoutController.editshoppingAddress);
 router.post('/select-address', userAuth.checkStatus,checkoutController.saveSelectedAddress);
 
 // wishlist routes
-router.route('/wishlist')
-  .get(userAuth.checkStatus, wishlistController.getWishlist)
-  .post(userAuth.checkStatus, wishlistController.toggleWishlist)
-  .delete(userAuth.checkStatus, wishlistController.removeFromWishlist);
-
+router.get('/wishlist',userAuth.checkStatus, wishlistController.getWishlist);
+router.post('/wishlist', userAuth.checkStatus,wishlistController.toggleWishlist);
+router.delete('/wishlist', userAuth.checkStatus,wishlistController.removeFromWishlist);
 router.post('/wishlist-to-cart',userAuth.checkStatus,wishlistController.wishlistToCart)
 
 //order Routes
@@ -115,7 +95,7 @@ router.get('/order', userAuth.checkStatus,productControllerTwo.loadOrders);
 router.get('/orderDetails', userAuth.checkStatus,productControllerTwo.loadOrderDetails);
 router.post('/order/return', userAuth.checkStatus,refundController.requestRefund);
 router.patch('/order/cancel', userAuth.checkStatus,refundController.cancelOrder);
-router.get('/order/invoice',userAuth.checkStatus,productControllerTwo.downloadOrderInvoice);
+router.get('/order/invoiceDownload',userAuth.checkStatus,productControllerTwo.downloadOrderInvoice);
 
 //wallet
 router.get('/wallet', userAuth.checkStatus,walletController.loadWallet);

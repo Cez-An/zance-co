@@ -57,15 +57,25 @@ const loadProductsDetails = async (req, res) => {
     const { id } = req.params;
     const userId = req.session.user?.id ?? req.session.user?._id ?? null;
     const user = await User.findOne({ _id: userId });
+
     const product = await Product.findOne({ _id: id }).populate("category");
-    const relatedProducts = await Product.find({
-      category: product.category,
-    }).limit(4);
+
+    const relatedProducts = await Product.find({category: product.category,}).limit(4);
+
     const category = await Category.findOne({});
+
+    const wishlistItems = await Wishlist.findOne({ userId }).populate("product");
+
+    let wishlistProductIds = false;
+    if (wishlistItems?.product?.length) {
+      wishlistProductIds = wishlistItems.product.map((p) => p._id.toString());
+    }
+
     return res.render("user/productDetailsPage", {
       product,
       user,
       relatedProducts,
+      wishlistProductIds,
     });
   } catch (error) {
     console.error("Error loading product details:", error);
@@ -160,7 +170,7 @@ const newPassword = async (req, res) => {
       });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: "Internal Server Error" });
   }
 };
 

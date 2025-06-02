@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 
 
 export const salesReportPDF = (salesData) => {
-
+    
     let totalOrders = salesData.length;
     let totalAmount = 0;
     let totalDiscounts = 0;
@@ -28,7 +28,7 @@ export const salesReportPDF = (salesData) => {
         <tr class="text-center">
             <td>${serial++}</td>
             <td>${order.orderId}</td>
-            <td>${order.userId?.name || 'salva'}</td>
+            <td>${order.userId?.name || ' '}</td>
             <td>${new Date(order.createdAt).toISOString().split('T')[0]}</td>
             
             <td>${item.quantity}</td>
@@ -118,9 +118,9 @@ export const salesReportExcel = async (salesData) => {
 
     salesData.forEach(order => {
         order.orderItems.forEach(item => {
-            const itemAmount = item.discountPrice * item.quantity;
-            const itemDiscount = item.coupon || 0;
-
+            const itemAmount = item.basePrice * item.quantity;
+            const itemDiscount = order.coupon || 0;
+            const productName = item.product?.name || item.product?.productId || item.name || 'N/A';
             totalAmount += itemAmount;
             totalDiscounts += itemDiscount;
 
@@ -129,7 +129,7 @@ export const salesReportExcel = async (salesData) => {
                 orderId: `#${order.orderId}`,
                 customer: order.userId?.name || 'N/A',
                 orderDate: new Date(order.createdAt).toISOString().split('T')[0],
-                product: item.product.name || item.product.productId || 'N/A',
+                product: productName,
                 quantity: item.quantity,
                 amount: `₹${itemAmount.toLocaleString('en-IN')}`,
                 discount: `₹${itemDiscount.toLocaleString('en-IN')}`,
@@ -148,7 +148,7 @@ export const salesReportExcel = async (salesData) => {
     worksheet.addRow({ slNo: '', orderId: 'Total Discounts (₹)', amount: `₹${totalDiscounts.toLocaleString('en-IN')}` });
     worksheet.addRow({ slNo: '', orderId: 'Net Sales (₹)', amount: `₹${netSales.toLocaleString('en-IN')}` });
 
-    const filePath = path.join(__dirname, '../invoices/sales_report.xlsx');
+    const filePath = path.join(__dirname, '/sales_report.xlsx');
     await workbook.xlsx.writeFile(filePath);
 
     return filePath;

@@ -110,38 +110,38 @@ const updateQuantity = async (req, res) => {
     
 
     if (!userId) {
-        return res.status(401).json({ error: "User not authenticated" });
+        return res.status(STATUS_CODE.UNAUTHORIZED).json({ error: "User not authenticated" });
     }
     if (!productId || ![-1, 1].includes(change)) {
-        return res.status(400).json({ error: "Invalid product ID or quantity change" });
+        return res.status(STATUS_CODE.NOT_FOUND).json({ error: "Invalid product ID or quantity change" });
     }
 
     try {
         const cart = await Cart.findOne({ userId });
         if (!cart) {
-            return res.status(404).json({ error: "Cart not found" });
+            return res.status(STATUS_CODE.NOT_FOUND).json({ error: "Cart not found" });
         }
 
         const item = cart.items.find((item) =>
             item.productId.toString() === productId
         );
         if (!item) {
-            return res.status(404).json({ error: "Product not found in cart" });
+            return res.status(STATUS_CODE.NOT_FOUND).json({ error: "Product not found in cart" });
         }
 
         const product = await Product.findById(productId);
         if (!product) {
-            return res.status(404).json({ error: "Product not found" });
+            return res.status(STATUS_CODE.NOT_FOUND).json({ error: "Product not found" });
         }
 
         if (product.status !== "Available") {
-            return res.status(400).json({ error: `Product is ${product.status}` });
+            return res.status(STATUS_CODE.BAD_REQUEST).json({ error: `Product is ${product.status}` });
         }
 
         // Increase quantity
         if (change > 0) {
             if (item.quantity >= product.quantity) {
-                return res.status(400).json({ error: "Product stock limit reached" });
+                return res.status(STATUS_CODE.BAD_REQUEST).json({ error: "Product stock limit reached" });
             }
             item.quantity += 1;
             product.quantity -= 1;
@@ -154,7 +154,7 @@ const updateQuantity = async (req, res) => {
         // Decrease quantity
         else if (change < 0) {
             if (item.quantity <= 1) {
-                return res.status(400).json({ error: "Cannot reduce quantity below 1" });
+                return res.status(STATUS_CODE.BAD_REQUEST).json({ error: "Cannot reduce quantity below 1" });
             }
             item.quantity -= 1;
             product.quantity += 1;
@@ -166,16 +166,16 @@ const updateQuantity = async (req, res) => {
 
         // Business rule: max 5 units
         if (item.quantity > 5) {
-            return res.status(400).json({ error: "Only 5 units can be purchased in one order." });
+            return res.status(STATUS_CODE.BAD_REQUEST).json({ error: "Only 5 units can be purchased in one order." });
         }
 
         await cart.save();
         await product.save();
 
-        return res.status(200).json({ message: "Quantity updated successfully", cart });
+        return res.status(STATUS_CODE.SUCCESS).json({ message: "Quantity updated successfully", cart });
     } catch (error) {
         console.error("Error updating quantity:", error);
-        return res.status(500).json({ error: "Internal server error" });
+        return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
     }
 };
 

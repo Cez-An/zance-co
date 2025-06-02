@@ -71,7 +71,7 @@ const toggleWishlist = async (req, res) => {
         const wishlist = await Wishlist.findOne({ userId });
 
         if (wishlist && wishlist.product.includes(productId)) {
-            // 🔻 If already exists, remove it
+            
             await Wishlist.findOneAndUpdate(
                 { userId },
                 { $pull: { product: productId } },
@@ -79,7 +79,7 @@ const toggleWishlist = async (req, res) => {
             );
             return res.json({ message: 'Removed from wishlist' });
         } else {
-            // 🔺 Else, add it
+            
             await Wishlist.findOneAndUpdate(
                 { userId },
                 { $addToSet: { product: productId } },

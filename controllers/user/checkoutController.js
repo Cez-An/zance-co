@@ -12,7 +12,7 @@ const loadCheckout = async (req, res) => {
         const userId = req.session.user?.id ?? req.session.user?._id ?? null;
 
         if (!userId) {
-            return res.status(401).send('User not authenticated');
+            return res.status(STATUS_CODE.UNAUTHORIZED).send('User not authenticated');
         }
 
         const user = await User.findOne({ _id: userId });
@@ -134,7 +134,7 @@ const  saveSelectedAddress = (req, res)=> {
     
     const { selectedAddress } = req.body;   
     if (!selectedAddress) {
-        return res.status(400).send('No address provided');
+        return res.status(STATUS_CODE.BAD_REQUEST).send('No address provided');
     }
     req.session.selectedAddress = selectedAddress;
     res.sendStatus(200);

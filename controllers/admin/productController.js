@@ -3,6 +3,7 @@ import User from "../../models/userSchema.js";
 import Category from "../../models/categorySchema.js";
 import cloudinary from '../../helpers/cloudinary.js'
 import fs from 'fs';
+import STATUS_CODE from "../../helpers/statusCode.js";
 
 const renderProductAddPage = async (req, res) => {
   try {
@@ -52,7 +53,7 @@ const renderProductsListPage = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).send("Error saving product");
+    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).send("Error saving product");
   }
 };
 
@@ -72,7 +73,7 @@ const addProduct = async (req, res) => {
     let status = visibilityStatus === "Active" ? false : true;
 
     if (!req.files || !req.files.variantImages) {
-      return res.status(400).json({
+      return res.status(STATUS_CODE.BAD_REQUEST).json({
         success: false,
         message: "No images provided"
       });
@@ -101,7 +102,7 @@ const addProduct = async (req, res) => {
 
     const categoryFind = await Category.findOne({ name: category });
     if (!categoryFind) {
-      return res.status(400).json({
+      return res.status(STATUS_CODE.BAD_REQUEST).json({
         success: false,
         message: "Invalid category"
       });
@@ -127,7 +128,7 @@ const addProduct = async (req, res) => {
 
     await newProduct.save();
 
-    res.status(200).json({
+    res.status(STATUS_CODE.SUCCESS).json({
       success: true,
       message: "Product added successfully",
       redirect: "/admin/products"
@@ -135,7 +136,7 @@ const addProduct = async (req, res) => {
 
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({
+    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: "Error saving product",
       error: error.message
@@ -151,7 +152,7 @@ const productBlocked = async (req, res) => {
 
   } catch (error) {
     console.error("Error blocking product:", error);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ success: false, message: "Server error" });
   }
 };
 
@@ -163,7 +164,7 @@ const productUnBlocked = async (req, res) => {
 
   } catch (error) {
     console.error("Error unblocking product:", error);
-    res.status(500).json({ success: false, message: "Server error" });
+    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ success: false, message: "Server error" });
   }
 };
 
@@ -173,14 +174,14 @@ const renderProductsEditPage = async (req, res) => {
     const { id } = req.params;
     const product = await Product.findOne({ _id: id });
     if (!product) {
-      return res.status(404).send("Product not found");
+      return res.status(STATUS_CODE.NOT_FOUND).send("Product not found");
     }
     const cat = await Category.find();
     res.render("admin/productsEdit", { product, cat });
     
   } catch (error) {
     console.error(error);
-    res.status(500).send("Error loading product");
+    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).send("Error loading product");
   }
 };
 
@@ -200,7 +201,7 @@ const updateProduct = async (req, res) => {
 
     const existingProduct = await Product.findById(id);
     if (!existingProduct) {
-      return res.status(404).json({ success: false, message: 'Product not found' });
+      return res.status(STATUS_CODE.NOT_FOUND).json({ success: false, message: 'Product not found' });
     }
 
     
@@ -224,7 +225,7 @@ const updateProduct = async (req, res) => {
 
     
     if (imageSlots.length !== 4 || imageSlots.some(url => !url)) {
-      return res.status(400).json({
+      return res.status(STATUS_CODE.BAD_REQUEST).json({
         success: false,
         message: 'Exactly four images are required',
       });
@@ -233,7 +234,7 @@ const updateProduct = async (req, res) => {
     
     const categoryFind = await Category.findById(category);
     if (!categoryFind) {
-      return res.status(400).json({ success: false, message: 'Invalid category' });
+      return res.status(STATUS_CODE.BAD_REQUEST).json({ success: false, message: 'Invalid category' });
     }
 
     
@@ -257,14 +258,14 @@ const updateProduct = async (req, res) => {
       { new: true, runValidators: true }
     );
 
-    res.status(200).json({
+    res.status(STATUS_CODE.SUCCESS).json({
       success: true,
       message: 'Product updated successfully',
       redirect: '/admin/products',
     });
   } catch (error) {
     console.error('Error updating product:', error);
-    res.status(500).json({
+    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: 'Error updating product: ' + error.message,
     });

@@ -125,10 +125,13 @@
         const number = document.getElementById("number").value.trim();
         const password = document.getElementById("password").value.trim();
         const confirmPassword = document.getElementById("confirmPassword").value.trim();
+        
 
         // Validate Name
-        if (name === "") {
-            document.getElementById("name-error").textContent = "Full name is required.";
+        const namePattern = /^[A-Za-z\s]+$/;
+
+        if (!name || !namePattern.test(name)) {
+            document.getElementById("name-error").textContent = "Full name is required and must contain only letters and spaces.";
             isValid = false;
         }
 
@@ -140,9 +143,11 @@
         }
 
         // Validate Phone Number
-        const phonePattern = /^\+?\d{10,15}$/;
-        if (!phonePattern.test(number)) {
-            document.getElementById("number-error").textContent = "Enter a valid phone number.";
+        const phonePattern = /^\d{10}$/; // Exactly 10 digits, no '+' allowed
+        const isAllSameDigit = /^(\d)\1{9}$/; // Exactly 10 of the same digit
+              
+        if (!phonePattern.test(number) || isAllSameDigit.test(number)) {
+            document.getElementById("number-error").textContent = "Enter a valid 10-digit phone number.";
             isValid = false;
         }
 

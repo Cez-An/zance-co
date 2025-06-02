@@ -143,7 +143,9 @@ const generateSalesReportPDF = async (req, res) => {
             paymentStatus: { $ne: "Failed" }
         };
 
-        const salesData = await Order.find(queryFilter).populate('userId')
+        const salesData = await Order.find(queryFilter).populate('userId', 'name');
+
+        
 
         const htmlContent = salesReportPDF(salesData);
 
@@ -200,5 +202,7 @@ const downloadSalesReportExcel = async (req, res) => {
         res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
     }
 };
+
+
 
 export default { loadSalesReport, generateSalesReportPDF, downloadSalesReportExcel };

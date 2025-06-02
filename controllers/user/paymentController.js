@@ -1,4 +1,3 @@
-// Updated paymentController.js
 import User from "../../models/userSchema.js";
 import Product from "../../models/productsShema.js";
 import Cart from "../../models/cartSchema.js";
@@ -7,7 +6,6 @@ import Order from "../../models/orderSchema.js";
 import STATUS_CODE from "../../helpers/statusCode.js";
 import mongoose from "mongoose";
 import Razorpay from "razorpay"; 
-
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZOR_API_KEY,
@@ -59,7 +57,7 @@ const loadPayments = async (req, res) => {
         });
     } catch (error) {
         console.error('Error loading payment:', error);
-        res.status(500).render('error', { message: 'Something went wrong. Please try again later.' });
+        res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).render('error', { message: 'Something went wrong. Please try again later.' });
     }
 };
 
@@ -74,12 +72,12 @@ const createRazorpayOrder = async (req, res) => {
     try {
         const userId = req.session.user?.id ?? req.session.user?._id ?? null;
         if (!userId) {
-            return res.status(400).json({ error: 'User not logged in' });
+            return res.status(STATUS_CODE.BAD_REQUEST).json({ error: 'User not logged in' });
         }
 
         const cart = await Cart.findOne({ userId }).populate('items.productId');
         if (!cart || !cart.items.length === 0) {
-            return res.status(400).json({ error: 'Cart is empty' });
+            return res.status(STATUS_CODE.BAD_REQUEST).json({ error: 'Cart is empty' });
         }
 
         let cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.basePrice, 0);
@@ -101,7 +99,7 @@ const createRazorpayOrder = async (req, res) => {
         req.session.orderAmount = grandTotal;
         await req.session.save();
 
-        return res.status(200).json({
+        return res.status(STATUS_CODE.SUCCESS).json({
             orderId: razorpayOrder.id,
             amount: grandTotal * 100,
             currency: "INR",
@@ -109,7 +107,7 @@ const createRazorpayOrder = async (req, res) => {
         });
     } catch (error) {
         console.error('Error creating Razorpay order:', error);
-        return res.status(500).json({ error: 'Failed to create order' });
+        return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: 'Failed to create order' });
     }
 };
 
@@ -117,26 +115,21 @@ const paymentSuccess = async (req, res) => {
     try {
 
         const discount = req.session.couponDiscount;
-
-        if (req.session.couponDiscount) {
-            req.session.couponDiscount = 0;
-            req.session.couponId = "";
-            await req.session.save();
-        }
+        console.log(discount);
 
         const userId = req.session.user?.id ?? req.session.user?._id ?? null;
         const { paymentMethod } = req.body;
         const addressId = req.session.selectedAddress;
 
         if (!addressId) {
-            return res.status(400).json({ error: 'No address selected' });
+            return res.status(STATUS_CODE.BAD_REQUEST).json({ error: 'No address selected' });
         }
 
         const objectId = new mongoose.Types.ObjectId(addressId);
         const cart = await Cart.findOne({ userId }).populate('items.productId');
 
         if (!cart || cart.items.length === 0) {
-            return res.status(400).json({ error: 'Cart is empty' });
+            return res.status(STATUS_CODE.BAD_REQUEST).json({ error: 'Cart is empty' });
         }
 
         const orderID = await generateOrderId();
@@ -148,17 +141,18 @@ const paymentSuccess = async (req, res) => {
             );
 
             if (!address) {
-                return res.status(404).json({ error: 'Address not found' });
+                return res.status(STATUS_CODE.NOT_FOUND).json({ error: 'Address not found' });
             }
 
             let cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.basePrice, 0);
             const deliveryCharge = cartTotal < 499 ? 40 : 0;
             const couponDiscount = discount || 0;
+            console.log("coupon discount",couponDiscount);
+            
             const grandTotal = cartTotal + deliveryCharge - couponDiscount;
 
-            // COD not allowed if order total exceeds Rs 1000
             if (grandTotal > 1000) {
-                return res.status(400).json({ error: 'Cash on Delivery is not allowed for orders above Rs 1000' });
+                return res.status(STATUS_CODE.BAD_REQUEST).json({ error: 'Cash on Delivery is not allowed for orders above Rs 1000' });
             }
 
             const order = new Order({
@@ -190,21 +184,25 @@ const paymentSuccess = async (req, res) => {
             }
 
             await order.save();
+            if (req.session.couponDiscount) {
+            req.session.couponDiscount = 0;
+            req.session.couponId = "";
+            await req.session.save();
+        }
             await Cart.findByIdAndDelete(cart._id);
 
-            return res.status(200).json({ message: 'Order placed successfully' });
+            return res.status(STATUS_CODE.SUCCESS).json({ message: 'Order placed successfully' });
 
         } else if (paymentMethod === 'razorpay') {
 
             const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
 
-            // Verify the payment
             if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature) {
-                return res.status(400).json({ error: 'Payment verification failed: Missing parameters' });
+                return res.status(STATUS_CODE.BAD_REQUEST).json({ error: 'Payment verification failed: Missing parameters' });
             }
 
             if (razorpay_order_id !== req.session.razorpayOrderId) {
-                return res.status(400).json({ error: 'Payment verification failed: Order ID mismatch' });
+                return res.status(STATUS_CODE.BAD_REQUEST).json({ error: 'Payment verification failed: Order ID mismatch' });
             }
 
             const address = await Address.findOne(
@@ -213,14 +211,14 @@ const paymentSuccess = async (req, res) => {
             );
 
             if (!address) {
-                return res.status(404).json({ error: 'Address not found' });
+                return res.status(STATUS_CODE.NOT_FOUND).json({ error: 'Address not found' });
             }
 
             let cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.basePrice, 0);
             const deliveryCharge = cartTotal < 499 ? 40 : 0;
             const couponDiscount = discount || 0;
             const grandTotal = cartTotal + deliveryCharge - couponDiscount;
-
+            console.log("coupon discount",couponDiscount);
             const order = new Order({
                 userId,
                 orderId: orderID,
@@ -243,7 +241,6 @@ const paymentSuccess = async (req, res) => {
                 status: 'Placed',
             });
 
-            // Update product quantities
             for (let item of cart.items) {
                 await Product.findOneAndUpdate(
                     { _id: item.productId._id },
@@ -252,28 +249,32 @@ const paymentSuccess = async (req, res) => {
             }
 
             await order.save();
+            if (req.session.couponDiscount) {
+            req.session.couponDiscount = 0;
+            req.session.couponId = "";
+            await req.session.save();
+        }
             await Cart.findByIdAndDelete(cart._id);
 
-            return res.status(200).json({ message: 'Payment successful and order placed' });
+            return res.status(STATUS_CODE.SUCCESS).json({ message: 'Payment successful and order placed' });
         } else {
-            return res.status(400).json({ error: "Payment method not implemented" });
+            return res.status(STATUS_CODE.BAD_REQUEST).json({ error: "Payment method not implemented" });
         }
     } catch (error) {
         console.error('Payment processing error:', error);
-        return res.status(500).json({ error: 'Payment processing failed' });
+        return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: 'Payment processing failed' });
     }
 };
-
 
 const paymentFailed = async (req, res) => {
     try {
         const { error } = req.body;
         console.error('Payment failed:', error);
         
-        return res.status(400).json({ error: 'Payment failed', details: error });
+        return res.status(STATUS_CODE.BAD_REQUEST).json({ error: 'Payment failed', details: error });
     } catch (err) {
         console.error('Error handling payment failure:', err);
-        return res.status(500).json({ error: 'Internal server error' });
+        return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: 'Internal server error' });
     }
 };
 
@@ -283,7 +284,7 @@ const confirmOrder = async (req, res) => {
     
         if (!userId) {
             console.error('User ID is missing in session.');
-            return res.status(400).render('error', { message: 'Invalid session. Please log in again.' });
+            return res.status(STATUS_CODE.NOT_FOUND).render('error', { message: 'Invalid session. Please log in again.' });
         }
         
         const user = await User.findOne({ _id: userId });
@@ -293,7 +294,7 @@ const confirmOrder = async (req, res) => {
         }).sort({ createdAt: -1 });
 
         if (!order) {
-            return res.status(404).render('error', { message: 'Order not found' });
+            return res.status(STATUS_CODE.NOT_FOUND).render('error', { message: 'Order not found' });
         }
 
         const addressId = order.address;
@@ -305,7 +306,7 @@ const confirmOrder = async (req, res) => {
         );
 
         if (!address || !address.details || address.details.length === 0) {
-            return res.status(404).render('error', { message: 'Address not found' });
+            return res.status(STATUS_CODE.NOT_FOUND).render('error', { message: 'Address not found' });
         }
 
         const shippingAddress = address.details[0];
@@ -319,7 +320,7 @@ const confirmOrder = async (req, res) => {
         });
     } catch (error) {
         console.error(`Error confirming order: ${error.message}`);
-        return res.status(500).render('error', { message: 'Something went wrong. Please try again later.' });
+        return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).render('error', { message: 'Something went wrong. Please try again later.' });
     }
 };
 

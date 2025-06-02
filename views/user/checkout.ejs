@@ -243,33 +243,33 @@
                         <div class="col-md-8">
                             <% if (address.length > 0) { %>
                                 <% address.forEach((address) => { %>
-                                    <% address.details.forEach((detail, index) => { %>
+                                    <% address.details.forEach((addressDetail, index) => { %>
                                         <div class="card p-4 mb-4 border-0 shadow-sm address-card">
                                             <div class="form-check">
                                                 <input class="form-check-input" type="radio" name="selectedAddress" 
-                                                    id="address<%= detail._id %>" value="<%= detail._id %>" 
+                                                    id="address<%= addressDetail._id %>" value="<%= addressDetail._id %>" 
                                                     <%= index === 0 ? 'checked' : '' %>>
-                                                <label class="form-check-label w-100" for="address<%= detail._id %>">
+                                                <label class="form-check-label w-100" for="address<%= addressDetail._id %>">
                                                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
                                                         <div>
-                                                            <strong class="text-dark"><%= detail.name.toUpperCase() %></strong> 
-                                                            <span class="text-muted"><%= detail.phone %></span>
+                                                            <strong class="text-dark"><%= addressDetail.name.toUpperCase() %></strong> 
+                                                            <span class="text-muted"><%= addressDetail.phone %></span>
                                                             <p class="mb-0 text-muted mt-1" style="font-size: 0.95rem; line-height: 1.4;">
-                                                                <%= detail.addressLine1 %>, <%= detail.addressLine2 %>,<br>
-                                                                <%= detail.city %>, <%= detail.state %> - <%= detail.pincode %>
-                                                                <% if (detail.landmark) { %>
-                                                                    <br>Landmark: <%= detail.landmark %>
+                                                                <%= addressDetail.addressLine1 %>, <%= addressDetail.addressLine2 %>,<br>
+                                                                <%= addressDetail.city %>, <%= addressDetail.state %> - <%= addressDetail.pincode %>
+                                                                <% if (addressDetail.landmark) { %>
+                                                                    <br>Landmark: <%= addressDetail.landmark %>
                                                                 <% } %>
                                                             </p>
-                                                            <% if (detail.altPhone) { %>
+                                                            <% if (addressDetail.altPhone) { %>
                                                                 <p class="mb-0 text-muted" style="font-size: 0.95rem;">
-                                                                    Alt Phone: <%= detail.altPhone %>
+                                                                    Alt Phone: <%= addressDetail.altPhone %>
                                                                 </p>
                                                             <% } %>
                                                         </div>
                                                         <div class="d-flex align-items-center gap-2">
                                                             <span class="badge">
-                                                                <%= detail.addressType.charAt(0).toUpperCase() + detail.addressType.slice(1) %>
+                                                                <%= addressDetail.addressType.charAt(0).toUpperCase() + addressDetail.addressType.slice(1) %>
                                                             </span>
                                                             <div class="dropdown">
                                                                 <button class="btn btn-light border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -279,17 +279,17 @@
                                                                     <li>
                                                                         <button class="btn edit-address-btn"
                                                                             type="button"
-                                                                            data-id="<%= detail._id %>"
-                                                                            data-fullname="<%= detail.name %>"
-                                                                            data-phone="<%= detail.phone %>"
-                                                                            data-addressline1="<%= detail.addressLine1 %>"
-                                                                            data-addressline2="<%= detail.addressLine2 %>"
-                                                                            data-landmark="<%= detail.landmark %>"
-                                                                            data-city="<%= detail.city %>"
-                                                                            data-state="<%=detail.state %>"
-                                                                            data-zipcode="<%= detail.pincode %>"
-                                                                            data-altnumber="<%= detail.altNumber %>"
-                                                                            data-type="<%= detail.addressType %>"
+                                                                            data-id="<%= addressDetail._id %>"
+                                                                            data-fullname="<%= addressDetail.name %>"
+                                                                            data-phone="<%= addressDetail.phone %>"
+                                                                            data-addressline1="<%= addressDetail.addressLine1 %>"
+                                                                            data-addressline2="<%= addressDetail.addressLine2 %>"
+                                                                            data-landmark="<%= addressDetail.landmark %>"
+                                                                            data-city="<%= addressDetail.city %>"
+                                                                            data-state="<%=addressDetail.state %>"
+                                                                            data-zipcode="<%= addressDetail.pincode %>"
+                                                                            data-altnumber="<%= addressDetail.altNumber %>"
+                                                                            data-type="<%= addressDetail.addressType %>"
                                                                             data-index="<%= index %>"
                                                                             data-bs-toggle="modal"
                                                                             data-bs-target="#editAddressModal">

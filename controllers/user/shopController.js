@@ -10,6 +10,7 @@ import { render } from "ejs";
 import { generateUserId } from "../../helpers/customerId.js";
 import { log } from "console";
 import Wishlist from "../../models/wishListSchema.js";
+
 env.config();
 
 const renderShopPage = async (req, res) => {
@@ -76,7 +77,6 @@ const renderShopPage = async (req, res) => {
         sortQuery = { createdAt: -1 };
     }
 
-    // Get total count based on the same filter
     const totalProducts = await Product.aggregate([
       { $match: filter },
       {
@@ -95,7 +95,6 @@ const renderShopPage = async (req, res) => {
     const productCount = totalProducts[0]?.count || 0;
     const totalPages = Math.ceil(productCount / limit);
 
-    // Get paginated products
     const products = await Product.aggregate([
       { $match: filter },
       {
@@ -127,6 +126,7 @@ const renderShopPage = async (req, res) => {
       wishlistProductIds,
       limit,
     });
+
   } catch (error) {
     console.error("Error loading shop:", error);
     res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).render("error", { 

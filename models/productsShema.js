@@ -26,7 +26,7 @@ const productSchema = new Schema(
       ref:'Category',
       required: false,
     },
-    regularPrice: {
+    offerPrice: {
       type: Number,
       required: false,
     },

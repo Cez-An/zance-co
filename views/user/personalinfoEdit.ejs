@@ -225,9 +225,30 @@
         profileForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            formData = new FormData(profileForm);
+
+            const name = document.getElementById('firstName').value.trim();
+            newEmail = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
             userId = document.getElementById('userId').value;
-            newEmail = document.getElementById('email').value;
+            const gender = document.querySelector('input[name="gender"]:checked');
+
+            formData = new FormData(profileForm);
+
+            if (!name || !/^[a-zA-Z\s]+$/.test(name)) {
+              return Swal.fire('Validation Error', 'Name must contain only letters and spaces', 'warning');
+            }
+
+             if (!newEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
+               return Swal.fire('Validation Error', 'Enter a valid email address', 'warning');
+             }
+         
+             if (!phone || !/^[6-9]\d{9}$/.test(phone)) {
+               return Swal.fire('Validation Error', 'Enter a valid 10-digit mobile number', 'warning');
+             }
+         
+             if (!gender) {
+               return Swal.fire('Validation Error', 'Please select your gender', 'warning');
+             }
 
             if (newEmail === originalEmail) {
                 await updateProfile();
@@ -326,8 +347,6 @@
                 alert('Referral code copied to clipboard!');
             }
         </script>
-
-
 
     <script>
         window.addEventListener('load', function() {

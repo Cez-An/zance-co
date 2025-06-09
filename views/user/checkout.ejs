@@ -337,7 +337,7 @@
                                                 <%= item.quantity %> x <%= item.productId.name %>
                                             </span>
                                             <span class="text-white fw-medium flex-shrink-0">
-                                                ₹ <%= (item.quantity * item.basePrice).toLocaleString('en-IN') %>
+                                                ₹ <%= (item.quantity * item.productId.salePrice).toLocaleString('en-IN') %>
                                             </span>
                                         </div>
                                     <% }) %>
@@ -467,7 +467,7 @@
                         <form id="addAddressForm" class="p-4">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="addfullName" class="form-label required text-white">Full Name</label>
+                                    <label for="addfullName" class="form-label  text-white">Full Name</label>
                                     <input type="text" id="addfullName" name="addfullName" class="form-control">
                                     <div id="addfullNameError" style="font-size: 0.8em; color: #ff0101;"></div>
                                 </div>
@@ -496,7 +496,7 @@
                                     <input type="text" id="addlandmark" name="addlandmark" class="form-control">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="addcity" class="form-label required text-white">City</label>
+                                    <label for="addcity" class="form-label  text-white">City</label>
                                     <input type="text" id="addcity" name="addcity" class="form-control">
                                     <div id="addcityError" style="font-size: 0.8em; color: #ff0101;"></div>
                                 </div>
@@ -504,9 +504,9 @@
             
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="addstate" class="form-label required text-white">&nbsp;&nbsp;State</label>
+                                    <label for="addstate" class="form-label  text-white">&nbsp;&nbsp;State</label>
                                     <select id="addstate" name="addstate" class="form-select form-control-sm text-white">
-                                        <option value="" disabled selected>Select your state</option>
+                                        <!-- <option value="" disabled >Select your state</option> -->
                                         <option value="Andhra Pradesh">Andhra Pradesh</option>
                                         <option value="Arunachal Pradesh">Arunachal Pradesh</option>
                                         <option value="Assam">Assam</option>
@@ -518,7 +518,7 @@
                                         <option value="Himachal Pradesh">Himachal Pradesh</option>
                                         <option value="Jharkhand">Jharkhand</option>
                                         <option value="Karnataka">Karnataka</option>
-                                        <option value="Kerala">Kerala</option>
+                                        <option value="Kerala" selected>Kerala</option>
                                         <option value="Madhya Pradesh">Madhya Pradesh</option>
                                         <option value="Maharashtra">Maharashtra</option>
                                         <option value="Manipur">Manipur</option>
@@ -539,7 +539,7 @@
                                     <div id="addstateError" style="font-size: 0.8em; color: #ff0101;"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="addzipCode" class="form-label required text-white">Zip Code</label>
+                                    <label for="addzipCode" class="form-label  text-white">Zip Code</label>
                                     <input type="text" id="addzipCode" name="addzipCode" class="form-control" placeholder="e.g., 123456" pattern="[0-9]{6}">
                                     <div id="addzipCodeError" style="font-size: 0.8em; color: #ff0101;"></div>
                                 </div>
@@ -547,7 +547,7 @@
             
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="addcountry" class="form-label required text-white">Country</label>
+                                    <label for="addcountry" class="form-label  text-white">Country</label>
                                     <select id="addcountry" name="addcountry" class="form-select form-control-sm">
                                         <option value="India" selected>India</option>
                                     </select>
@@ -592,7 +592,7 @@
                         <form id="editAddressForm" class="p-4">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="editfullName" class="form-label required text-white">Full Name</label>
+                                    <label for="editfullName" class="form-label  text-white">Full Name</label>
                                     <input type="hidden" name="editAddressId" id="editAddressId">
                                     <input type="hidden" name="index" id="index">
                                     <input type="text" id="editfullName" name="editfullName" class="form-control">
@@ -623,7 +623,7 @@
                                     <input type="text" id="editlandmark" name="editlandmark" class="form-control">
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="editcity" class="form-label required text-white">City</label>
+                                    <label for="editcity" class="form-label  text-white">City</label>
                                     <input type="text" id="editcity" name="editcity" class="form-control">
                                     <div id="editcityError" style="font-size: 0.8em; color: #ff0101;"></div>
                                 </div>
@@ -631,9 +631,9 @@
     
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="editstate" class="form-label required text-white">&nbsp;&nbsp;State</label>
+                                    <label for="editstate" class="form-label  text-white">&nbsp;&nbsp;State</label>
                                     <select id="editstate" name="editstate" class="form-select form-control-sm text-white">
-                                        <option value="" disabled>Select State</option>
+                                        <!-- <option value="" disabled>Select State</option> -->
                                         <option value="Andhra Pradesh">Andhra Pradesh</option>
                                         <option value="Arunachal Pradesh">Arunachal Pradesh</option>
                                         <option value="Assam">Assam</option>
@@ -645,7 +645,7 @@
                                         <option value="Himachal Pradesh">Himachal Pradesh</option>
                                         <option value="Jharkhand">Jharkhand</option>
                                         <option value="Karnataka">Karnataka</option>
-                                        <option value="Kerala">Kerala</option>
+                                        <option value="Kerala" selected>Kerala</option>
                                         <option value="Madhya Pradesh">Madhya Pradesh</option>
                                         <option value="Maharashtra">Maharashtra</option>
                                         <option value="Manipur">Manipur</option>
@@ -666,7 +666,7 @@
                                     <div id="editstateError" style="font-size: 0.8em; color: #ff0101;"></div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label for="editzipCode" class="form-label required text-white">Zip Code</label>
+                                    <label for="editzipCode" class="form-label  text-white">Zip Code</label>
                                     <input type="text" id="editzipCode" name="editzipCode" class="form-control" placeholder="e.g., 123456" pattern="[0-9]{6}">
                                     <div id="editzipCodeError" style="font-size: 0.8em; color: #ff0101;"></div>
                                 </div>
@@ -674,7 +674,7 @@
     
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <label for="editcountry" class="form-label required text-white">&nbsp;&nbsp;&nbsp;Country</label>
+                                    <label for="editcountry" class="form-label  text-white">&nbsp;&nbsp;&nbsp;Country</label>
                                     <select id="editcountry" name="editcountry" class="form-select form-control-sm">
                                         <option value="India" selected>India</option>
                                     </select>
@@ -766,29 +766,38 @@
                     };
     
                     Object.values(errors).forEach((el) => el.innerText = "");
-    
+
+                    const phonePattern = /^[6-9]\d{9}$/;
+                    const zipPattern = /^\d{5,6}$/;
+                    const addressLine1Pattern = /^[a-zA-Z0-9\s,.-]+$/;
+                    const cityPattern = /^[A-Za-z]+(?: [A-Za-z]+)*$/;
+
+
                     let hasError = false;
     
+                    const namePattern = /^[A-Za-z]{2,}(?: [A-Za-z]{1,})*$/;
+                                
                     if (!fullName) {
                         errors.fullName.innerText = "Full name is required";
                         hasError = true;
-                    } else if (fullName.length < 3) {
-                        errors.fullName.innerText = "Full name must be at least 3 characters";
+                    } else if (!namePattern.test(fullName)) {
+                        errors.fullName.innerText = "Name must contain only letters and spaces, no symbols or numbers";
                         hasError = true;
                     }
     
                     if (!addressLine1) {
                         errors.addressLine1.innerText = "Address Line 1 is required";
                         hasError = true;
+                    } else if (!/[a-zA-Z]/.test(addressLine1) || !addressLine1Pattern.test(addressLine1)) {
+                        errors.addressLine1.innerText = "Enter a valid address with letters, numbers, and basic symbols like , . -";
+                        hasError = true;
                     }
     
-                    if (!phone) {
-                        errors.phone.innerText = "Phone number is required";
-                        hasError = true;
-                    } else if (!/^\d{10}$/.test(phone)) {
-                        errors.phone.innerText = "Phone number must be 10 digits";
-                        hasError = true;
-                    }
+                    
+                    if (!phonePattern.test(phone) || /^(\d)\1{9}$/.test(phone)) {
+                            errors.phone.innerText = "Enter a valid 10-digit phone number (not all same digits)";
+                            hasError = true;
+                        }
     
                     if (altNumber && !/^\d{10}$/.test(altNumber)) {
                         errors.phone.innerText = "Alternate number must be 10 digits";
@@ -797,6 +806,9 @@
     
                     if (!city) {
                         errors.city.innerText = "City is required";
+                        hasError = true;
+                    } else if (!cityPattern.test(city)) {
+                        errors.city.innerText = "City must contain only letters and spaces (no numbers or symbols)";
                         hasError = true;
                     }
     
@@ -861,7 +873,7 @@
                 document.getElementById("editAddressForm").addEventListener('submit', async (event) => {
                     event.preventDefault();
     
-                    const fullName = document.getElementById('editfullName').value;
+                    const fullName = document.getElementById('editfullName').value.trim();
                     const addressLine1 = document.getElementById('editaddressLine1').value;
                     const addressLine2 = document.getElementById('editaddressLine2').value;
                     const phone = document.getElementById('editphone').value;
@@ -887,27 +899,31 @@
                     Object.values(errors).forEach((el) => el.innerText = "");
     
                     let hasError = false;
-    
+                    const phonePattern = /^[6-9]\d{9}$/;
+                    const namePattern = /^[A-Za-z]{2,}(?: [A-Za-z]{1,})*$/;
+                    const addressLine1Pattern = /^[a-zA-Z0-9\s,.-]+$/;
+                    const cityPattern = /^[A-Za-z]+(?: [A-Za-z]+)*$/;
+                                
                     if (!fullName) {
                         errors.fullName.innerText = "Full name is required";
                         hasError = true;
-                    } else if (fullName.length < 3) {
-                        errors.fullName.innerText = "Full name must be at least 3 characters";
+                    } else if (!namePattern.test(fullName)) {
+                        errors.fullName.innerText = "Name must contain only letters and spaces, no symbols or numbers";
                         hasError = true;
                     }
     
                     if (!addressLine1) {
                         errors.addressLine1.innerText = "Address Line 1 is required";
                         hasError = true;
+                    } else if (!/[a-zA-Z]/.test(addressLine1) || !addressLine1Pattern.test(addressLine1)) {
+                        errors.addressLine1.innerText = "Enter a valid address with letters, numbers, and basic symbols like , . -";
+                        hasError = true;
                     }
     
-                    if (!phone) {
-                        errors.phone.innerText = "Phone number is required";
-                        hasError = true;
-                    } else if (!/^\d{10}$/.test(phone)) {
-                        errors.phone.innerText = "Phone number must be 10 digits";
-                        hasError = true;
-                    }
+                    if (!phonePattern.test(phone) || /^(\d)\1{9}$/.test(phone)) {
+                            errors.phone.innerText = "Enter a valid 10-digit phone number (not all same digits)";
+                            hasError = true;
+                        }
     
                     if (altNumber && !/^\d{10}$/.test(altNumber)) {
                         errors.phone.innerText = "Alternate number must be 10 digits";
@@ -916,6 +932,9 @@
     
                     if (!city) {
                         errors.city.innerText = "City is required";
+                        hasError = true;
+                    } else if (!cityPattern.test(city)) {
+                        errors.city.innerText = "City must contain only letters and spaces (no numbers or symbols)";
                         hasError = true;
                     }
     

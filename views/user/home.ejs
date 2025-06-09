@@ -103,8 +103,11 @@
                     </ul>
                 </div>
             </div> 
-            <div class="row product__filter">
-                <% product.forEach(element => { %>
+           
+
+                 <div class="row product__filter">
+               
+                 <% product.forEach(element => { %>
                     <div class="col-lg-3 col-md-6 col-sm-6 mix">
                         <div class="product__item">
                             
@@ -148,22 +151,19 @@
                                     <i class="fa fa-star-o"></i>
                                     <i class="fa fa-star-o"></i>
                                 </div>
-                                <% const discountPercentage=Math.max(element.productOffer,element.category.discount) 
-                                   const discount=(element.salePrice * discountPercentage) / 100;
-                                          const discountedPrice=element.salePrice - discount; %>
+                                <% const discountPercentage=Math.max(element.productOffer,element.category.discount) %>
 
-                                         <% if (discountPercentage && discountPercentage !==0) { %>
-                                           <p id="priceheadding">
-                                             Price: ₹<%= discountedPrice.toFixed(0) %>
-                                               <span class="text-white">
-                                                 <strike>₹<%= element.salePrice %></strike>
-                                               </span>
-                                               <span style="color: red;">(<%= discountPercentage %>% off)</span>
-                                           </p>
-                                           <% } else { %>
-                                             <p>Price: ₹<%= element.salePrice %>
-                                             </p>
-                                             <% } %>
+                                    <% if (element.offerPrice && element.offerPrice < element.salePrice) { %>
+                                      <p id="priceheadding">
+                                        Price: ₹<%= element.offerPrice %>
+                                        <span class="text-white">
+                                          <strike>₹<%= element.salePrice %></strike>
+                                        </span>
+                                        <span style="color: red;">(<%= discountPercentage %>% off)</span>
+                                      </p>
+                                    <% } else { %>
+                                      <p>Price: ₹<%= element.salePrice %></p>
+                                    <% } %>
                                                      <!-- <h5>₹&nbsp;<%=element.salePrice  %> </h5> -->
                                                  </div>
 
@@ -179,7 +179,10 @@
                         </div>
                     </div>
                 <% }); %>
+
             </div>
+            
+            
         </div>
     </section>
     <!-- Product Section End -->
@@ -346,7 +349,7 @@ document.querySelectorAll('.add-to-wishlist-btn').forEach(btn => {
                 Swal.fire({
                     icon: 'warning',
                     text: data.error,
-                    showConfirmButton: false,
+                    showConfirmButton: true,
                     timer: 2000
                 });
             } else {

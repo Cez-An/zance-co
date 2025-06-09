@@ -1,6 +1,7 @@
 import { render } from "ejs";
 import STATUS_CODE from "../../helpers/statusCode.js";
 import Category from "../../models/categorySchema.js";
+import Product from "../../models/productsShema.js"
 import Order from "../../models/orderSchema.js";
 
 const renderCategoryInfo = async (req, res) => {
@@ -31,7 +32,7 @@ const renderCategoryInfo = async (req, res) => {
     });
   } catch (error) {
     console.error("Error loading category information:", error);
-    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).redirect("/error-admin"); // Internal Server Error
+    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).redirect("/pagenotfound"); // Internal Server Error
   }
 };
 
@@ -75,7 +76,7 @@ const renderCategoryAdd = async (req, res) => {
   try {
     res.render("admin/categoryAdd",{message:''});
   } catch (error) {
-    res.redirect("/error-admin");
+    res.redirect("/pagenotfound");
   }
 };
 
@@ -86,7 +87,7 @@ const renderCategoryEdit = async (req, res) => {
 
     res.render("admin/categoryEdit", { category });
   } catch (error) {
-    res.redirect("/error-admin");
+    res.redirect("/pagenotfound");
   }
 };
 
@@ -113,6 +114,17 @@ const updateCategory = async (req, res) => {
     category.discount = categoryDiscount;
     await category.save();
 
+     const products = await Product.find({ category: categoryId });
+
+      for (const product of products) {
+      const productOffer = product.productOffer || 0;
+      const offerPercentage = Math.max(productOffer, categoryDiscount);
+      const offerPrice = Math.floor(product.salePrice - (product.salePrice * offerPercentage) / 100);
+
+      product.offerPrice = offerPrice;
+      await product.save();
+    }
+
     res.status(STATUS_CODE.SUCCESS).json({ message: "Category updated successfully" });
 
   } catch (error) {
@@ -120,7 +132,6 @@ const updateCategory = async (req, res) => {
     res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
   }
 };
-
 
 
 export default {

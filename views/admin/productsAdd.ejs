@@ -532,46 +532,63 @@
         let cropper;
         let currentSlot;
 
+        document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.image-upload-slot').forEach(slot => {
             const dropzone = slot.querySelector('.image-upload-dropzone');
             const input = slot.querySelector('input[type="file"]');
             const preview = slot.querySelector('.image-preview');
 
+            // Click on dropzone opens file selector
             dropzone.addEventListener('click', () => input.click());
 
+            // Handle file input change
             input.addEventListener('change', (e) => {
-                if (e.target.files && e.target.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        const modal = new bootstrap.Modal(document.getElementById('cropper-modal'));
-                        const image = document.getElementById('cropper-image');
-                        image.src = event.target.result;
-                        modal.show();
+                const file = e.target.files[0];
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
 
-                        image.onload = () => {
-                            if (cropper) {
-                                cropper.destroy();
-                            }
-                            cropper = new Cropper(image, {
-                                aspectRatio: 1,
-                                viewMode: 1,
-                                autoCropArea: 1,
-                                responsive: true,
-                                restore: true,
-                                dragMode: 'move',
-                                cropBoxResizable: true,
-                                minContainerWidth: 1000,
-                                minContainerHeight: 600,
-                            });
-                        };
+                if (!file) return;
 
-                        currentSlot = slot;
-                        input.value = '';
-                    };
-                    reader.readAsDataURL(e.target.files[0]);
+                // Validate file type
+                if (!allowedTypes.includes(file.type)) {
+                    Swal.fire('Invalid File', 'Only JPEG, JPG, or PNG images are allowed.', 'warning');
+                    e.target.value = ''; // Clear the input
+                    return;
                 }
+
+                // Read and show in Cropper
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const modal = new bootstrap.Modal(document.getElementById('cropper-modal'));
+                    const image = document.getElementById('cropper-image');
+                    image.src = event.target.result;
+                    modal.show();
+
+                    image.onload = () => {
+                        if (cropper) {
+                            cropper.destroy();
+                        }
+
+                        cropper = new Cropper(image, {
+                            aspectRatio: 1,
+                            viewMode: 1,
+                            autoCropArea: 1,
+                            responsive: true,
+                            restore: true,
+                            dragMode: 'move',
+                            cropBoxResizable: true,
+                            minContainerWidth: 1000,
+                            minContainerHeight: 600,
+                        });
+                    };
+
+                    currentSlot = slot;
+                    input.value = ''; // Reset for same file re-selection
+                };
+
+                reader.readAsDataURL(file);
             });
 
+            // Remove preview on close button click
             preview.addEventListener('click', (e) => {
                 if (e.target.classList.contains('close-btn')) {
                     preview.style.display = 'none';
@@ -581,6 +598,7 @@
                 }
             });
         });
+    });
 
         document.getElementById('crop-button').addEventListener('click', () => {
             if (cropper && currentSlot) {

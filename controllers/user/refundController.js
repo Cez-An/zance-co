@@ -65,8 +65,9 @@ const cancelOrder = async (req, res) => {
         if (!orderId || !productId) {
             return res.status(STATUS_CODE.BAD_REQUEST).json({ message: 'Order ID and Product ID are required' });
         }
-
+        
         const order = await Order.findById(orderId);
+        const user = await User.findById(order.userId);
 
         if (!order) {
             return res.status(STATUS_CODE.NOT_FOUND).json({ message: 'Order not found' });
@@ -100,11 +101,17 @@ const cancelOrder = async (req, res) => {
             console.log(user)
         }
 
+        if (order.paymentMethod === 'razorpay' && order.paymentStatus === 'Paid' && order.paymentId) {
+        const refundAmount = item.finalPrice || item.basePrice * item.quantity;
+        user.wallet += refundAmount;
+        await user.save();
+        }
+        
         await Product.findOneAndUpdate({_id:productId},{ $inc:{quantity:item.quantity} });
 
         order.updatedAt = new Date();
 
-        // await order.save();
+        await order.save();
 
         return res.status(STATUS_CODE.SUCCESS).json({ message: 'Order item cancelled successfully' });
 

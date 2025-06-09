@@ -115,20 +115,20 @@
                     <form id="addAddressForm">
                         <div class="form-group-pair">
                             <div class="mb-3">
-                                <label for="fullName" class="form-label required">Full Name</label>
+                                <label for="fullName" class="form-label ">Full Name</label>
                                 <input type="text" id="fullName" name="fullName" class="form-control form-control-sm" placeholder="Enter your full name">
                                 <div id="fullNameError" style="font-size: 0.8em; color: #ff0101;"></div>
                             </div>
                             <div class="mb-3">
-                                <label for="phone" class="form-label required">Phone Number</label>
-                                <input type="tel" id="phone" name="phone" class="form-control form-control-sm" placeholder="e.g. 9876543210" pattern="[0-9]{10}">
+                                <label for="phone" class="form-label ">Phone Number</label>
+                                <input type="tel" id="phone" name="phone" class="form-control form-control-sm" placeholder="e.g. 9876543210" >
                                 <div id="phoneError" style="font-size: 0.8em; color: #ff0101;"></div>
                             </div>
                         </div>
 
                         <div class="form-group-pair">
                             <div class="mb-3">
-                                <label for="addressLine1" class="form-label required">Address Line 1</label>
+                                <label for="addressLine1" class="form-label ">Address Line 1</label>
                                 <input type="text" id="addressLine1" name="addressLine1" class="form-control form-control-sm" placeholder="House No., Street Name">
                                 <div id="addressLine1Error" style="font-size: 0.8em; color: #ff0101;"></div>
                             </div>
@@ -144,7 +144,7 @@
                                 <input type="text" id="landmark" name="landmark" class="form-control form-control-sm" placeholder="e.g., Near XYZ School">
                             </div>
                             <div class="mb-3">
-                                <label for="city" class="form-label required">City</label>
+                                <label for="city" class="form-label ">City</label>
                                 <input type="text" id="city" name="city" class="form-control form-control-sm" placeholder="Enter your city">
                                 <div id="cityError" style="font-size: 0.8em; color: #ff0101;"></div>
                             </div>
@@ -152,9 +152,9 @@
 
                         <div class="form-group-pair">
                             <div class="mb-5">
-                                <label for="state" class="form-label required">State</label>
+                                <label for="state" class="form-label ">State</label>
                                 <select id="state" name="state" class="form-select form-control form-control-sm">
-                                    <option value="" disabled selected>Select your state</option>
+                                    
                                     <option value="Andhra Pradesh">Andhra Pradesh</option>
                                     <option value="Arunachal Pradesh">Arunachal Pradesh</option>
                                     <option value="Assam">Assam</option>
@@ -166,7 +166,7 @@
                                     <option value="Himachal Pradesh">Himachal Pradesh</option>
                                     <option value="Jharkhand">Jharkhand</option>
                                     <option value="Karnataka">Karnataka</option>
-                                    <option value="Kerala">Kerala</option>
+                                    <option value="Kerala" selected>Kerala</option>
                                     <option value="Madhya Pradesh">Madhya Pradesh</option>
                                     <option value="Maharashtra">Maharashtra</option>
                                     <option value="Manipur">Manipur</option>
@@ -187,7 +187,7 @@
                                 <div id="stateError" style="font-size: 0.8em; color: #ff0101;"></div>
                             </div>
                             <div class="mb-3">
-                                <label for="zipCode" class="form-label required">Zip Code</label>
+                                <label for="zipCode" class="form-label ">Zip Code</label>
                                 <input type="text" id="zipCode" name="zipCode" class="form-control form-control-sm" placeholder="e.g. 123456">
                                 <div id="zipCodeError" style="font-size: 0.8em; color: #ff0101;"></div>
                             </div>
@@ -195,7 +195,7 @@
 
                         <div class="form-group-pair">
                             <div class="mb-5">
-                                <label for="country" class="form-label required">Country</label>
+                                <label for="country" class="form-label ">Country</label>
                                 <select id="country" name="country" class="form-select form-control form-control-sm">
                                     <option value="India" selected>India</option>
                                     <!-- Add more countries if needed -->
@@ -223,135 +223,178 @@
                             <div class="d-flex gap-2">
                                 <button type="submit" class="btn" style="background-color: #6510DC; color: #ffffff;">Save Address</button>
                                 <button type="button" class="btn btn-secondary" onclick="window.history.back();">Cancel</button>
-                            </div>
-                            <!-- <div class="d-flex align-items-center gap-2">
-                                <input type="radio" name="addressType" id="addressHome" value="home">
-                                <label for="addressType">Home</label>
-                                <input type="radio" name="addressType" id="addressWork" value="work">
-                                <label for="addressType">Work</label>
-                                <div id="addressTypeError" style="font-size: 0.8em; color: #ff0101;"></div>
-                            </div> -->                      
-                                                   
+                            </div>                                               
+                                                 
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </main>
-    <script>
-        document.getElementById("addAddressForm").addEventListener('submit', async (event) => {
-            event.preventDefault();
+<script>
+document.getElementById("addAddressForm").addEventListener('submit', async (event) => {
+    event.preventDefault();
 
-            const fullName = document.getElementById('fullName').value;
-            const addressLine1 = document.getElementById('addressLine1').value;
-            const addressLine2 = document.getElementById('addressLine2').value;
-            const phone = document.getElementById('phone').value;
-            const landmark = document.getElementById('landmark').value;
-            const city = document.getElementById('city').value;
-            const state = document.getElementById('state').value;
-            const country = document.getElementById('country').value;
-            const altNumber = document.getElementById('altNumber').value;
-            const zipCode = document.getElementById('zipCode').value;
-            const addressType = document.querySelector('input[name="addressType"]:checked')?.value;
+    // Collect input elements
+    const fields = {
+        fullName: document.getElementById('fullName'),
+        phone: document.getElementById('phone'),
+        altNumber: document.getElementById('altNumber'),
+        addressLine1: document.getElementById('addressLine1'),
+        addressLine2: document.getElementById('addressLine2'),
+        landmark: document.getElementById('landmark'),
+        city: document.getElementById('city'),
+        state: document.getElementById('state'),
+        country: document.getElementById('country'),
+        zipCode: document.getElementById('zipCode'),
+        addressType: document.querySelector('input[name="addressType"]:checked')
+    };
 
-            const errors = {
-                fullName: document.getElementById("fullNameError"),
-                addressLine1: document.getElementById("addressLine1Error"),
-                phone: document.getElementById("phoneError"),
-                city: document.getElementById("cityError"),
-                state: document.getElementById("stateError"),
-                zipCode: document.getElementById("zipCodeError"),
-                addressType: document.getElementById("addressTypeError"),
-            };
+    const errorFields = {
+        fullName: document.getElementById("fullNameError"),
+        phone: document.getElementById("phoneError"),
+        addressLine1: document.getElementById("addressLine1Error"),
+        city: document.getElementById("cityError"),
+        state: document.getElementById("stateError"),
+        zipCode: document.getElementById("zipCodeError"),
+        addressType: document.getElementById("addressTypeError"),
+    };
 
-            Object.values(errors).forEach((el) => el.innerText = "");
+    // Clear old errors
+    Object.values(errorFields).forEach(el => el.innerText = "");
 
-            let hasError = false;
+    // Validation rules
 
-            if (!fullName) {
-                errors.fullName.innerText = "Full name is required";
-                hasError = true;
-            } else if (fullName.length < 3) {
-                errors.fullName.innerText = "Full name must be at least 3 characters";
-                hasError = true;
-            }
+    const phonePattern = /^[6-9]\d{9}$/;
+    const zipPattern = /^\d{5,6}$/;
 
-            if (!addressLine1) {
-                errors.addressLine1.innerText = "Address Line 1 is required";
-                hasError = true;
-            }
+    let hasError = false;
 
-            if (!phone) {
-                errors.phone.innerText = "Phone number is required";
-                hasError = true;
-            } else if (!/^\d{10}$/.test(phone)) {
-                errors.phone.innerText = "Phone number must be 10 digits";
-                hasError = true;
-            }
+    const fullName = fields.fullName.value.trim();
+    const namePattern = /^[A-Za-z]{2,}(?: [A-Za-z]{1,})*$/;
+    
+    if (!fullName) {
+        errorFields.fullName.innerText = "Full name is required";
+        hasError = true;
+    } else if (!namePattern.test(fullName)) {
+        errorFields.fullName.innerText = "Name must contain only letters and spaces, no symbols or numbers";
+        hasError = true;
+    }
 
-            if (altNumber && !/^\d{10}$/.test(altNumber)) {
-                errors.phone.innerText = "Alternate number must be 10 digits";
-                hasError = true;
-            }
 
-            if (!city) {
-                errors.city.innerText = "City is required";
-                hasError = true;
-            }
+    // Phone
+    const phone = fields.phone.value.trim();
+    if (!phonePattern.test(phone) || /^(\d)\1{9}$/.test(phone)) {
+        errorFields.phone.innerText = "Enter a valid 10-digit phone number (not all same digits)";
+        hasError = true;
+    }
 
-            if (!state) {
-                errors.state.innerText = "State is required";
-                hasError = true;
-            }
+    // Alt number (if provided)
+    const altNumber = fields.altNumber.value.trim();
+    if (altNumber) {
+        if (!phonePattern.test(altNumber) || /^(\d)\1{9}$/.test(altNumber)) {
+            errorFields.phone.innerText = "Alternate number must be valid and not all same digits";
+            hasError = true;
+        } else if (altNumber === phone) {
+            errorFields.phone.innerText = "Primary and alternate numbers must be different";
+            hasError = true;
+        }
+    }
 
-            if (!zipCode) {
-                errors.zipCode.innerText = "Zip Code is required";
-                hasError = true;
-            } else if (!/^\d{5,6}$/.test(zipCode)) {
-                errors.zipCode.innerText = "Zip Code must be 5-6 digits";
-                hasError = true;
-            }
+    // Address Line 1
+    const addressLine1Pattern = /^[a-zA-Z0-9\s,.-]+$/;
+    
+    const addressLine1 = fields.addressLine1.value.trim();
+    
+    if (!addressLine1) {
+        errorFields.addressLine1.innerText = "Address Line 1 is required";
+        hasError = true;
+    } else if (!/[a-zA-Z]/.test(addressLine1) || !addressLine1Pattern.test(addressLine1)) {
+        errorFields.addressLine1.innerText = "Enter a valid address with letters, numbers, and basic symbols like , . -";
+        hasError = true;
+    }
 
-            if (!addressType) {
-                errors.addressType.innerText = "Address type is required";
-                hasError = true;
-            }
+    // City
+    const city = fields.city.value.trim();
+    const cityPattern = /^[A-Za-z]+(?: [A-Za-z]+)*$/;
 
-            // Stop if validation fails
-            if (hasError) return;
+    if (!city) {
+        errorFields.city.innerText = "City is required";
+        hasError = true;
+    } else if (!cityPattern.test(city)) {
+        errorFields.city.innerText = "City must contain only letters and spaces (no numbers or symbols)";
+        hasError = true;
+    }
 
-            const formData = { fullName, phone, addressLine1, addressLine2, landmark, city, state, country, altNumber, zipCode, addressType }
+    // State
+    const state = fields.state.value;
+    if (!state || state === "Select your state") {
+        errorFields.state.innerText = "Please select a state";
+        hasError = true;
+    }
 
-            try {
-                const response = await fetch('/user/address', {
-                    method : 'POST',
-                    headers : { 'Content-Type' : 'application/json'},
-                    body : JSON.stringify(formData)
-                });
+    // Zip Code
+    const zipCode = fields.zipCode.value.trim();
+    if (!zipPattern.test(zipCode)) {
+        errorFields.zipCode.innerText = "Zip Code must be 5 or 6 digits";
+        hasError = true;
+    }
 
-                const data = await response.json();
+    // Address Type
+    const addressType = fields.addressType?.value;
+    if (!addressType) {
+        errorFields.addressType.innerText = "Please select address type";
+        hasError = true;
+    }
 
-                if (!response.ok) {
-                    throw new Error(data.error || "Something went wrong");
-                }
+    // Final check
+    if (hasError) return;
 
-                Swal.fire({
-                    icon: "success",
-                    text: data.message,
-                    timer: 2000,
-                    showConfirmButton: false
-                }).then(()=>{
-                    window.location.href = "/user/address";
-                });
-            } catch (error) {
-                console.log(error);
-                    Swal.fire({
-                    icon: "error",
-                    text: "An error occurred. Please try again.",
-                });
-            };
+    const formData = {
+        fullName,
+        phone,
+        altNumber,
+        addressLine1,
+        addressLine2: fields.addressLine2.value.trim(),
+        landmark: fields.landmark.value.trim(),
+        city,
+        state,
+        country: fields.country.value,
+        zipCode,
+        addressType
+    };
+
+    try {
+        const response = await fetch('/user/address', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
         });
-    </script>
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Something went wrong");
+        }
+
+        Swal.fire({
+            icon: "success",
+            text: data.message,
+            timer: 2000,
+            showConfirmButton: false
+        }).then(() => {
+            window.location.href = "/user/address";
+        });
+
+    } catch (err) {
+        Swal.fire({
+            icon: "error",
+            text: err.message || "An error occurred. Please try again.",
+        });
+    }
+});
+</script>
+
 
 
 

@@ -120,7 +120,7 @@
                                         <%= item.quantity %>x <%= item.productId.name %>
                                     </span>
                                     <span class="text-white fw-medium flex-shrink-0">
-                                        ₹ <%= (item.quantity * item.basePrice).toLocaleString('en-IN') %>
+                                        ₹ <%= (item.quantity * item.productId.salePrice).toLocaleString('en-IN') %>
                                     </span>
                                 </div>
                             <% }) %>

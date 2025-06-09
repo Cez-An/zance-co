@@ -32,7 +32,12 @@ const loadPayments = async (req, res) => {
         let grandTotal = 0;
 
         if (cart && cart.items.length > 0) {
-            cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.basePrice, 0);
+            cartTotal = cart.items.reduce((acc, item) => {
+                const product = item.productId;
+                const price = product?.salePrice || 0; 
+                return acc + item.quantity * price;
+            }, 0);
+        
             deliveryCharge = cartTotal < 499 ? 40 : 0;
             grandTotal = cartTotal + deliveryCharge;
         }
@@ -80,7 +85,7 @@ const createRazorpayOrder = async (req, res) => {
             return res.status(STATUS_CODE.BAD_REQUEST).json({ error: 'Cart is empty' });
         }
 
-        let cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.basePrice, 0);
+        let cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.productId.salePrice, 0);
         const deliveryCharge = cartTotal < 499 ? 40 : 0;
         const couponDiscount = req.session.couponDiscount || 0;
         const grandTotal = cartTotal + deliveryCharge - couponDiscount;
@@ -119,13 +124,19 @@ const paymentSuccess = async (req, res) => {
 
         const userId = req.session.user?.id ?? req.session.user?._id ?? null;
         const { paymentMethod } = req.body;
+
         const addressId = req.session.selectedAddress;
 
         if (!addressId) {
             return res.status(STATUS_CODE.BAD_REQUEST).json({ error: 'No address selected' });
         }
+        const addressDoc = await Address.findOne({ userId: userId });
+        const address = addressDoc.details.find((item) => item._id.toString() === addressId);
 
-        const objectId = new mongoose.Types.ObjectId(addressId);
+        if (!address) {
+                return res.status(STATUS_CODE.NOT_FOUND).json({ error: 'Address not found' });
+            }
+
         const cart = await Cart.findOne({ userId }).populate('items.productId');
 
         if (!cart || cart.items.length === 0) {
@@ -135,23 +146,16 @@ const paymentSuccess = async (req, res) => {
         const orderID = await generateOrderId();
 
         if (paymentMethod === 'cod') {
-            const address = await Address.findOne(
-                { 'details._id': objectId },
-                { 'details.$': 1 }
-            );
 
-            if (!address) {
-                return res.status(STATUS_CODE.NOT_FOUND).json({ error: 'Address not found' });
-            }
 
-            let cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.basePrice, 0);
+            let cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.productId.salePrice, 0);
             const deliveryCharge = cartTotal < 499 ? 40 : 0;
             const couponDiscount = discount || 0;
             console.log("coupon discount",couponDiscount);
             
             const grandTotal = cartTotal + deliveryCharge - couponDiscount;
 
-            if (grandTotal > 1000) {
+            if (grandTotal > 1001) {
                 return res.status(STATUS_CODE.BAD_REQUEST).json({ error: 'Cash on Delivery is not allowed for orders above Rs 1000' });
             }
 
@@ -164,7 +168,7 @@ const paymentSuccess = async (req, res) => {
                     quantity: item.quantity,
                     basePrice: item.productId.salePrice,
                     brand: item.productId.brand,
-                    productImage: item.productId.images[0],
+                    productImage: item.productId.productImage[0],
                     individualStatus: 'Placed',
                     statusHistory: [{ status: 'Placed', timestamp: new Date() }]
                 })),
@@ -172,7 +176,7 @@ const paymentSuccess = async (req, res) => {
                 paymentMethod,
                 coupon: couponDiscount,
                 paymentStatus: 'Pending',
-                address: addressId,
+                address: address,
                 status: 'Placed',
             });
 
@@ -184,13 +188,13 @@ const paymentSuccess = async (req, res) => {
             }
 
             await order.save();
+
             if (req.session.couponDiscount) {
             req.session.couponDiscount = 0;
             req.session.couponId = "";
             await req.session.save();
         }
             await Cart.findByIdAndDelete(cart._id);
-
             return res.status(STATUS_CODE.SUCCESS).json({ message: 'Order placed successfully' });
 
         } else if (paymentMethod === 'razorpay') {
@@ -205,16 +209,8 @@ const paymentSuccess = async (req, res) => {
                 return res.status(STATUS_CODE.BAD_REQUEST).json({ error: 'Payment verification failed: Order ID mismatch' });
             }
 
-            const address = await Address.findOne(
-                { 'details._id': objectId },
-                { 'details.$': 1 }
-            );
 
-            if (!address) {
-                return res.status(STATUS_CODE.NOT_FOUND).json({ error: 'Address not found' });
-            }
-
-            let cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.basePrice, 0);
+            let cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.productId.salePrice, 0);
             const deliveryCharge = cartTotal < 499 ? 40 : 0;
             const couponDiscount = discount || 0;
             const grandTotal = cartTotal + deliveryCharge - couponDiscount;
@@ -236,7 +232,7 @@ const paymentSuccess = async (req, res) => {
                 paymentMethod: 'razorpay',
                 paymentStatus: 'Paid',
                 paymentId: razorpay_payment_id,
-                address: addressId,
+                address: address,
                 coupon: couponDiscount,
                 status: 'Placed',
             });
@@ -249,14 +245,15 @@ const paymentSuccess = async (req, res) => {
             }
 
             await order.save();
+
             if (req.session.couponDiscount) {
             req.session.couponDiscount = 0;
             req.session.couponId = "";
             await req.session.save();
         }
             await Cart.findByIdAndDelete(cart._id);
-
             return res.status(STATUS_CODE.SUCCESS).json({ message: 'Payment successful and order placed' });
+
         } else {
             return res.status(STATUS_CODE.BAD_REQUEST).json({ error: "Payment method not implemented" });
         }
@@ -297,19 +294,16 @@ const confirmOrder = async (req, res) => {
             return res.status(STATUS_CODE.NOT_FOUND).render('error', { message: 'Order not found' });
         }
 
-        const addressId = order.address;
+        
         const orderItems = order.orderItems;
         
-        const address = await Address.findOne(
-            { 'details._id': addressId },
-            { 'details.$': 1 }
-        );
+        const address = order.address;
 
-        if (!address || !address.details || address.details.length === 0) {
+        if (!address || address.length === 0) {
             return res.status(STATUS_CODE.NOT_FOUND).render('error', { message: 'Address not found' });
         }
 
-        const shippingAddress = address.details[0];
+        const shippingAddress = address;
 
         return res.render('user/orderConfirmation', {
             title: "Checkout", 

@@ -1,100 +1,131 @@
 import mongoose from "mongoose";
 const { Schema } = mongoose;
 
-const orderSchema = new Schema({
+const orderSchema = new Schema(
+  {
     orderId: {
-        type: String,
+      type: String,
     },
     userId: {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-        required: true
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-    orderItems: [{
+    orderItems: [
+      {
         product: {
-            type: Schema.Types.ObjectId,
-            ref: "Product",
-            required: true
+          type: Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
         },
-        name : {
-            type : String,
-            required : true
+        name: {
+          type: String,
+          required: true,
         },
-        productImage : {
-            type : String
+        productImage: {
+          type: String,
         },
         basePrice: {
-            type: Number
+          type: Number,
         },
         quantity: {
-            type: Number,
-            required: true
+          type: Number,
+          required: true,
         },
-        brand : {
-            type : String,
+        brand: {
+          type: String,
         },
         discountPrice: {
-            type: Number,
-            required: false
+          type: Number,
+          required: false,
         },
-        finalPrice : {
-            type: Number,
-            required: false
+        finalPrice: {
+          type: Number,
+          required: false,
         },
         cancelReason: {
-            type: String
+          type: String,
         },
-        statusHistory: [{
+        statusHistory: [
+          {
             status: {
-                type: String,
-                required: true,
-                enum: ['Placed', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled', 'Payment Failed','Returned']
+              type: String,
+              required: true,
+              enum: [
+                "Placed",
+                "Shipped",
+                "Out for Delivery",
+                "Delivered",
+                "Cancelled",
+                "Payment Failed",
+                "Returned",
+              ],
             },
             timestamp: {
-                type: Date,
-                default: Date.now
-            }
-        }],
-        individualStatus : {
-            type : String
+              type: Date,
+              default: Date.now,
+            },
+          },
+        ],
+        individualStatus: {
+          type: String,
         },
-    }],
+      },
+    ],
     address: {
-        type: Schema.Types.ObjectId,
-        ref: 'Address',
-        required: true
+      addressType: { type: String, required: true },
+      name: { type: String, required: true },
+      addressLine1: { type: String, required: true },
+      addressLine2: { type: String },
+      city: { type: String, required: true },
+      landmark: { type: String },
+      state: { type: String, required: true },
+      pincode: { type: String, required: true },
+      phone: { type: String, required: true },
+      altPhone: { type: String },
     },
     paymentStatus: {
-        type: String,
-        required: false,
-        default:'Pending',
-        enum: ['Pending', 'Paid', 'Failed']
+      type: String,
+      required: false,
+      default: "Pending",
+      enum: ["Pending", "Paid", "Failed"],
     },
     paymentId: {
-        type: String
+      type: String,
     },
     coupon: {
-        type: Number
+      type: Number,
     },
     deliveryCharge: {
-        type: Number
+      type: Number,
     },
     paymentMethod: {
-        type: String,
-        enum: ['cod', 'card', 'wallet', 'razorpay']
+      type: String,
+      enum: ["cod", "card", "wallet", "razorpay"],
     },
-    failureReason : {
-        type: String,
+    failureReason: {
+      type: String,
     },
-    totalPrice : {
-        type : Number,
-        required : true,
+    totalPrice: {
+      type: Number,
+      required: true,
     },
-    status : {
-        type: String,
-        enum: ['Placed', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled', 'Requested', 'Approved', 'Rejected']
+    status: {
+      type: String,
+      enum: [
+        "Placed",
+        "Shipped",
+        "Out for Delivery",
+        "Delivered",
+        "Cancelled",
+        "Requested",
+        "Approved",
+        "Rejected",
+      ],
     },
-}, { timestamps: true });
+  },
+  { timestamps: true }
+);
 
 const Order = mongoose.model("Order", orderSchema);
 

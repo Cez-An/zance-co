@@ -233,7 +233,7 @@ color: #6c757d!important;
                 <% if (cart && cart.items && cart.items.length > 0) { %>
                     <% cart.items.forEach(item => { %>
                         <div class="card mb-4 shadow-sm border-0 cart-item"
-                            style="background-color: #eae2fc;" data-product-id="<%= item.productId._id %>" data-base-price="<%= item.basePrice %>">
+                            style="background-color: #eae2fc;" data-product-id="<%= item.productId._id %>" data-base-price="<%= item.productId.salePrice %>">
                             <div class="row g-0 align-items-center px-4 py-2">
                                 <div class="col-3 col-md-2">
                                     <img src="<%= item.productImage %>" alt="<%= item.productId.name %>"
@@ -248,7 +248,7 @@ color: #6c757d!important;
                                                 <%= item.productId.name %>
                                             </h6>
                                             <p class="mb-0 text-dark fw-semibold">
-                                                <span style="font-size: 1.2rem;">₹ <%= item.basePrice.toLocaleString('en-IN') %></span> | 
+                                                <span style="font-size: 1.2rem;">₹ <%= item.productId.salePrice.toLocaleString('en-IN') %></span> | 
                                                 <del style="font-size: 0.9rem; color: #888;">₹ <%= item.basePrice.toLocaleString('en-IN') %></del>
                                             </p>
                                             <input type="hidden" id="userId" value="<%= user._id %>">
@@ -267,7 +267,7 @@ color: #6c757d!important;
                                             </div>
                                             <p class="mb-0 fw-bold text-dark total-price"
                                                 style="font-size: 15px; width: 70px; flex-shrink: 0;">
-                                                ₹ <%= (item.quantity * item.basePrice).toLocaleString('en-IN') %>
+                                                ₹ <%= (item.quantity * item.productId.salePrice).toLocaleString('en-IN') %>
                                             </p>
                                             <button class="btn btn-outline-danger btn-sm rounded-circle remove-btn"
                                                 onclick="removeFromCart('<%= item.productId._id %>')"
@@ -302,7 +302,7 @@ color: #6c757d!important;
                         <% 
                                 let total = 0;
                                 cart.items.forEach(item => { 
-                                    total += item.quantity * item.basePrice;
+                                    total += item.quantity * item.productId.salePrice;
                                 });
                                 let deliveryCharge = total < 499 ? 39 : 0;
                                 let grandTotal = total + deliveryCharge;
@@ -314,7 +314,7 @@ color: #6c757d!important;
                                         <%= item.quantity %> x <%= item.productId.name %>
                                     </span>
                                     <span class="text-white fw-medium flex-shrink-0">
-                                        ₹ <%= (item.quantity * item.basePrice).toLocaleString('en-IN') %>
+                                        ₹ <%= (item.quantity * item.productId.salePrice).toLocaleString('en-IN') %>
                                     </span>
                                 </div>
                             <% }) %>

@@ -15,9 +15,21 @@ env.config();
 
 const renderHomepage = async (req, res) => {
   try {
-    const product = await Product.find({ isBlocked: false }).limit(12).populate("category");
+    const product = await Product.aggregate([
+      {$lookup:{
+        from:'categories',
+        localField:'category',
+        foreignField:'_id',
+        as:'category'
+      }},
+      {$unwind:"$category"},
+      {$match:{"category.isListed":true}},
+      {$limit:12},
+    ]);
+
     const userId = req.session.user?.id ?? req.session.user?._id ?? null;
     const user = await User.findOne({ _id: userId, isBlocked: false });
+    
     if(!user){
       req.session.user = false; 
       return res.render("user/home", {user,product})
@@ -27,11 +39,14 @@ const renderHomepage = async (req, res) => {
     const wishlistItems = await Wishlist.findOne({ userId }).populate("product");
 
     let wishlistProductIds = false;
-    if (wishlistItems?.product?.length) {
+    
+    if (wishlistItems?.product?.length) 
+      {
       wishlistProductIds = wishlistItems.product.map((p) => p._id.toString());
-    }
+      }
 
     return res.render("user/home", { user, product, wishlistProductIds });
+
   } catch (error) {
     console.log("HOME PAGE NOT LOADING", error);
     res.status(500).send("Server Error");
@@ -90,7 +105,7 @@ const loadForgotPassword = async (req, res) => {
     console.log(error);
     return res
       .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
-      .redirect("/error-admin");
+      .redirect("/pagenotfound");
   }
 };
 
@@ -105,7 +120,7 @@ const loadForgotPasswordOtp = async (req, res) => {
     console.log(error);
     return res
       .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
-      .redirect("/error-admin");
+      .redirect("/pagenotfound");
   }
 };
 

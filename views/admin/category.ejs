@@ -291,18 +291,10 @@
                     <% i=1 %>
                     <% categoryData.forEach(element=> { %>
                         <tr class="text-center">
-                            <td>
-                                <%= i++ %>
-                            </td>
-                            <td>
-                                <%=element.name %>
-                            </td>
-                            <td>
-                                <%=element.count %>
-                            </td>
-                            <td>
-                                <%=element.discount %>
-                            </td>
+                            <td><%= i++ %></td>
+                            <td><%=element.name %></td>
+                            <td><%=element.count %></td>
+                            <td><%=element.discount %>&nbsp;%</td>
                             <td>
                                 <% if (element.isListed===true) { %>
                                     <button class="btn btn-success">Ative</button>
@@ -312,12 +304,10 @@
                             </td>
                             <td><a href="/admin/category/<%=element._id %>"><button
                                         class="btn btn-dark">Edit</button></a>
-
                                 
                             </td>
                         </tr>
                         <% }); %>
-
 
                 </tbody>
             </table>

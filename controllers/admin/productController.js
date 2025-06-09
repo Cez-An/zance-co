@@ -16,7 +16,7 @@ const renderProductAddPage = async (req, res) => {
   } catch (error) {
     console.log("error occured while loading Product page");
 
-    return res.redirect("/error-admin");
+    return res.redirect("/pagenotfound");
   }
 };
 
@@ -207,7 +207,6 @@ const updateProduct = async (req, res) => {
     
     let imageSlots = existingProduct.productImage || ['', '', '', ''];
 
-    // Handle file uploads (expecting variantImages like in addProduct)
     if (req.files && req.files.variantImages) {
       const files = Array.isArray(req.files.variantImages)
         ? req.files.variantImages
@@ -223,7 +222,6 @@ const updateProduct = async (req, res) => {
       }
     }
 
-    
     if (imageSlots.length !== 4 || imageSlots.some(url => !url)) {
       return res.status(STATUS_CODE.BAD_REQUEST).json({
         success: false,
@@ -231,7 +229,6 @@ const updateProduct = async (req, res) => {
       });
     }
 
-    
     const categoryFind = await Category.findById(category);
     if (!categoryFind) {
       return res.status(STATUS_CODE.BAD_REQUEST).json({ success: false, message: 'Invalid category' });
@@ -243,6 +240,10 @@ const updateProduct = async (req, res) => {
       await Category.findByIdAndUpdate(category, { $inc: { count: 1 } });
     }
 
+    const categoryOffer = categoryFind.discount || 0;
+    const offerPercentage = Math.max(discount, categoryOffer);
+    const offerPrice = Math.floor(basePrice - (basePrice * offerPercentage) / 100);
+    console.log("offer price is",offerPrice)
     const updatedProduct = await Product.findByIdAndUpdate(
       id,
       {
@@ -254,6 +255,7 @@ const updateProduct = async (req, res) => {
         productOffer: discount,
         quantity: stock,
         productImage: imageSlots,
+        offerPrice: offerPrice,
       },
       { new: true, runValidators: true }
     );
@@ -263,6 +265,7 @@ const updateProduct = async (req, res) => {
       message: 'Product updated successfully',
       redirect: '/admin/products',
     });
+
   } catch (error) {
     console.error('Error updating product:', error);
     res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({

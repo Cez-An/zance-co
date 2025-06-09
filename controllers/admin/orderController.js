@@ -69,13 +69,6 @@ const viewOrders = async (req, res) => {
   
     const allShipped = activeItems.length > 0 && activeItems.every(item => item.individualStatus === 'Shipped');
     const allOutForDelivery = activeItems.length > 0 && activeItems.every(item => item.individualStatus === 'Out for Delivery');
-    
-    const addressId = order.address
-  
-    const addresses = await Address.findOne(
-        { 'details._id': addressId },
-        { details: { $elemMatch: { _id: addressId } } }
-    );
   
     const refunds = await Refund.find({ order: orderId });
     const refundMap = {};
@@ -84,8 +77,7 @@ const viewOrders = async (req, res) => {
         refundMap[refund.product] = refund;
     });
   
-  
-    const address = addresses?.details?.[0] || null; 
+    const address = order.address;
   
     res.render('admin/viewOrders', { title: 'Orders', order, address, allShipped, allOutForDelivery, refundMap });
   }
@@ -124,47 +116,159 @@ const updateAllOrderItemsStatus = async (req, res) => {
     }
   };
 
-async function updateStatus(req, res) {
+// async function updateStatus(req, res) {
     
-    const { id } = req.query;   
-    const { productId, status, cancelReason } = req.body;  
-    try {
-        const order = await Order.findOne({ _id: id });
-        if (!order) {
-            return res.status(STATUS_CODE.NOT_FOUND).json({ message: 'Order not found' });
-        }
-        const item = order.orderItems.find(item => item.product?.toString() === productId);
+//     const { id } = req.query;   
+//     const { productId, status, cancelReason } = req.body;  
+//     try {
+//         const order = await Order.findOne({ _id: id });
+//         if (!order) {
+//             return res.status(STATUS_CODE.NOT_FOUND).json({ message: 'Order not found' });
+//         }
+//         const item = order.orderItems.find(item => item.product?.toString() === productId);
   
-        if (!item) {
-            return res.status(STATUS_CODE.NOT_FOUND).json({ message: 'Product not found in order' });
-        }
+//         if (!item) {
+//             return res.status(STATUS_CODE.NOT_FOUND).json({ message: 'Product not found in order' });
+//         }
   
-        item.statusHistory.push({ status, timestamp: new Date() });
+//         item.statusHistory.push({ status, timestamp: new Date() });
   
-        item.individualStatus = status;
+//         item.individualStatus = status;
   
-        if (status === 'Cancelled') {
-            item.cancelReason = cancelReason;
-        }
+//         if (status === 'Cancelled') {
+//             item.cancelReason = cancelReason;
+//         }
   
-        const nonCancelledStatuses = order.orderItems
-            .filter(item => item.individualStatus !== 'Cancelled')
-            .map(item => item.individualStatus);
+//         const nonCancelledStatuses = order.orderItems
+//             .filter(item => item.individualStatus !== 'Cancelled')
+//             .map(item => item.individualStatus);
   
-        const allSame = nonCancelledStatuses.every(s => s === status);
+//         const allSame = nonCancelledStatuses.every(s => s === status);
   
-        if (allSame) {
-            order.status = status;
-        }
+//         if (allSame) {
+//             order.status = status;
+//         }
   
-        order.updatedAt = new Date();
-        await order.save();  
-        return res.status(STATUS_CODE.SUCCESS).json({ message: 'Status updated successfully', order });
+//         order.updatedAt = new Date();
+//         await order.save();  
+//         return res.status(STATUS_CODE.SUCCESS).json({ message: 'Status updated successfully', order });
 
-    } catch (error){
-        console.error(error);
-        return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ message: 'Error updating status', error });
+//     } catch (error){
+//         console.error(error);
+//         return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ message: 'Error updating status', error });
+//     }
+//   }
+
+// async function updateStatus(req, res) {
+//   const { id } = req.query;
+//   const { productId, status, cancelReason } = req.body;
+
+//   try {
+//     const order = await Order.findOne({ _id: id });
+//     if (!order) {
+//       return res.status(STATUS_CODE.NOT_FOUND).json({ message: "Order not found" });
+//     }
+
+//     const item = order.orderItems.find(item => item.product?.toString() === productId);
+//     if (!item) {
+//       return res.status(STATUS_CODE.NOT_FOUND).json({ message: "Product not found in order" });
+//     }
+
+//     item.statusHistory.push({ status, timestamp: new Date() });
+//     item.individualStatus = status;
+
+//     if (status === "Cancelled") {
+//       item.cancelReason = cancelReason;
+
+//       const product = await Product.findById(productId);
+//       if (product) {
+//         product.quantity += item.quantity;
+//         await product.save();
+//       }
+//     }
+
+//     // Update order status if all non-cancelled items match this status
+//     const nonCancelledStatuses = order.orderItems
+//       .filter(item => item.individualStatus !== "Cancelled")
+//       .map(item => item.individualStatus);
+
+//     const allSame = nonCancelledStatuses.every(s => s === status);
+//     if (allSame && nonCancelledStatuses.length > 0) {
+//       order.status = status;
+//     }
+
+//     order.updatedAt = new Date();
+//     await order.save();
+
+//     return res.status(STATUS_CODE.SUCCESS).json({ message: "Status updated successfully", order });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ message: "Error updating status", error });
+//   }
+// }
+
+
+async function updateStatus(req, res) {
+  const { id } = req.query;
+  const { productId, status, cancelReason } = req.body;
+
+  try {
+    const order = await Order.findById(id);
+    if (!order) {
+      return res.status(STATUS_CODE.NOT_FOUND).json({ message: "Order not found" });
     }
+
+    const item = order.orderItems.find(item => item.product?.toString() === productId);
+    if (!item) {
+      return res.status(STATUS_CODE.NOT_FOUND).json({ message: "Product not found in order" });
+    }
+
+    item.statusHistory.push({ status, timestamp: new Date() });
+    item.individualStatus = status;
+
+    if (status === "Cancelled") {
+      item.cancelReason = cancelReason;
+
+      const product = await Product.findById(productId);
+      if (product) {
+        product.quantity += item.quantity;
+        await product.save();
+      }
+
+      if (order.paymentMethod === "razorpay" && order.paymentStatus === "Paid") {
+        const user = await User.findById(order.userId);
+        if (user) {
+          const refundAmount = item.basePrice * item.quantity; 
+          user.wallet += refundAmount;
+          await user.save();
+        }
+      }
+    }
+
+    const nonCancelledStatuses = order.orderItems
+      .filter(i => i.individualStatus !== "Cancelled")
+      .map(i => i.individualStatus);
+
+    const allSame = nonCancelledStatuses.every(s => s === status);
+    if (allSame && nonCancelledStatuses.length > 0) {
+      order.status = status;
+    }
+
+    order.updatedAt = new Date();
+    await order.save();
+
+    return res.status(STATUS_CODE.SUCCESS).json({
+      message: "Status updated successfully",
+      order,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({
+      message: "Error updating status",
+      error,
+    });
   }
+}
+
 
 export default {  updateStatus, updateAllOrderItemsStatus, loadOrders, viewOrders, }

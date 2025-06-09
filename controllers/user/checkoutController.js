@@ -23,11 +23,18 @@ const loadCheckout = async (req, res) => {
         let deliveryCharge = 0;
         let grandTotal = 0;
 
+
         if (cart && cart.items.length > 0) {
-            cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.basePrice, 0);
+            cartTotal = cart.items.reduce((acc, item) => {
+                const product = item.productId;
+                const price = product?.salePrice || 0; 
+                return acc + item.quantity * price;
+            }, 0);
+        
             deliveryCharge = cartTotal < 499 ? 40 : 0;
             grandTotal = cartTotal + deliveryCharge;
         }
+
                 
         const currentDate = new Date();
 
@@ -137,6 +144,7 @@ const  saveSelectedAddress = (req, res)=> {
         return res.status(STATUS_CODE.BAD_REQUEST).send('No address provided');
     }
     req.session.selectedAddress = selectedAddress;
+    console.log("selectedAddress is:   ",selectedAddress)
     res.sendStatus(200);
 }
 

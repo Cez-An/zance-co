@@ -220,7 +220,6 @@ const loadOrderDetails = async (req,res)=> {
       const firstName = user.name;
 
       const order = await Order.findOne({ _id : orderId }).populate('orderItems.product');
-      const addressId = order.address;
 
       const refundStatusArray = await Refund.find({ order: orderId }).populate('product');
 
@@ -232,13 +231,11 @@ const loadOrderDetails = async (req,res)=> {
         }
     });
     
+        const address = order.address;
 
-      const addresses = await Address.findOne(
-          { 'details._id': addressId },
-          { details: { $elemMatch: { _id: addressId } } }
-      );
-      
-      const address = addresses?.details?.[0] || null;
+        if (!address || address.length === 0) {
+            return res.status(STATUS_CODE.NOT_FOUND).render('error', { message: 'Address not found' });
+        }
 
       res.render('user/orderDetails2',{order, address, user, firstName, refundMap});
 
@@ -266,14 +263,8 @@ const downloadOrderInvoice = async (req, res) => {
     if (!order) {
       return res.status(STATUS_CODE.NOT_FOUND).send('Order not found');
     }
-
-    const addressId = order.address;
-    const addresses = await Address.findOne(
-      { 'details._id': addressId },
-      { details: { $elemMatch: { _id: addressId } } }
-    );
-    const address = addresses?.details?.[0] || null;
-
+    
+    const address = order.address;
     
     const pdfBuffer = await generateInvoicePDF(order, address, user);
 

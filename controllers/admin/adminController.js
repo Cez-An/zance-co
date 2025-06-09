@@ -58,7 +58,7 @@ const adminLogin = async (req, res) => {
     console.error("Admin login error:", error);
     return res
       .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
-      .render("admin/error-admin");
+      .render("/pagenotfound");
   }
 };
 
@@ -69,7 +69,7 @@ const renderDashboard = (req, res) => {
     res.status(STATUS_CODE.SUCCESS).render("admin/dashboard.ejs");
   } catch (error) {
     console.error("Error occurred while loading the dashboard:", error);
-    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).render("admin/error-admin");
+    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).render("/pagenotfound");
   }
 };
 
@@ -81,7 +81,7 @@ const logout = (req, res) => {
 
   } catch (error) {
     console.error("Unexpected error during logout:", error);
-    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).render("admin/error-admin");
+    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).render("/pagenotfound");
   }
 };
 

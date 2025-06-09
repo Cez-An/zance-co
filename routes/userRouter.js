@@ -19,12 +19,12 @@ router.route("/signup")
   .get(authController.renderSignUp)
   .post(authController.signup);
 
-//login route
+// login route
 router.route("/login")
 .get(authController.renderLogin)
 .post(authController.login);
 
-//otp varification route
+// otp varification route
 router.route("/verifyOtp")
   .get(authController.renderOtpVerification)
   .post(authController.otpVerification);
@@ -32,16 +32,16 @@ router.route("/verifyOtp")
 // resend otp route
 router.post("/resendOtp", authController.resendOtp);
 
-//log out route
+// log out route
 router.get("/logout", userController.logout);
 
-//home page
+// home page
 router.get("/",userController.renderHomepage);
 
-//shop page
+// shop page
 router.get('/renderShopPage',shopController.renderShopPage)
 
-//products details page
+// products details page
 router.get("/loadProductsDetailsPage/:id", userController.loadProductsDetails);
 
 // forgot password
@@ -56,7 +56,7 @@ router.route('/forgotPasswordOtp')
 router.get('/newPassword',userController.renderNewPassPage)
 router.post('/changePassword',userController.newPassword)
 
-//user profile
+// user profile
 router.route('/userProfile')
   .get(userAuth.checkStatus, profileController.renderProfileInfo)
   .put(userAuth.checkStatus, profileController.updateProfile);
@@ -65,7 +65,7 @@ router.get('/userProfile/:id',userAuth.checkStatus,profileController.renderProfi
 router.post('/sendotp', userAuth.checkStatus,profileController.sendOTP);
 router.post('/verifymail', userAuth.checkStatus,profileController.verifyOTP);
 
-//address management
+// address management
 router.route('/address')
   .get(userAuth.checkStatus, profileController.loadAddress)
   .post(userAuth.checkStatus, profileController.addAddress)
@@ -77,13 +77,13 @@ router.get('/editaddress', userAuth.checkStatus,productControllerTwo.loadEditAdd
 
 
 
-//privacy settings
+// privacy settings
 router.route('/privacy')
   .get(userAuth.checkStatus, productControllerTwo.loadPrivacy)
   .post(userAuth.checkStatus, productControllerTwo.updatePassword);
 
 
-//cart routes
+// cart routes
 router.route('/cart')
   .post(userAuth.checkStatus, cartControlller.addItemToCart)
   .get(userAuth.checkStatus, cartControlller.loadCart)
@@ -110,17 +110,17 @@ router.route('/wishlist')
 
 router.post('/wishlist-to-cart',userAuth.checkStatus,wishlistController.wishlistToCart)
 
-//order Routes
+// order Routes
 router.get('/order', userAuth.checkStatus,productControllerTwo.loadOrders);
 router.get('/orderDetails', userAuth.checkStatus,productControllerTwo.loadOrderDetails);
 router.post('/order/return', userAuth.checkStatus,refundController.requestRefund);
 router.patch('/order/cancel', userAuth.checkStatus,refundController.cancelOrder);
 router.get('/order/invoice',userAuth.checkStatus,productControllerTwo.downloadOrderInvoice);
 
-//wallet
+// wallet
 router.get('/wallet', userAuth.checkStatus,walletController.loadWallet);
 
-//coupon
+// coupon
 router.post('/couponValidate', userAuth.checkStatus,couponController.validateCoupon);
 
 router.get("/pagenotfound", userController.pageNotFound);

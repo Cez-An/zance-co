@@ -230,129 +230,166 @@
                 </div>
             </div>
         </main>
-        <script>
-            document.getElementById("editAddressForm").addEventListener('submit', async (event) => {
-                event.preventDefault();
-    
-                const fullName = document.getElementById('fullName').value;
-                const addressLine1 = document.getElementById('addressLine1').value;
-                const addressLine2 = document.getElementById('addressLine2').value;
-                const phone = document.getElementById('phone').value;
-                const landmark = document.getElementById('landmark').value;
-                const city = document.getElementById('city').value;
-                const state = document.getElementById('state').value;
-                const country = document.getElementById('country').value;
-                const altNumber = document.getElementById('altNumber').value;
-                const zipCode = document.getElementById('zipCode').value;
-                const addressType = document.querySelector('input[name="addressType"]:checked')?.value;
-                const index = document.getElementById('index').value;
-                const from = document.getElementById('pageFrom').value;
-    
-    
-                const errors = {
-                    fullName: document.getElementById("fullNameError"),
-                    addressLine1: document.getElementById("addressLine1Error"),
-                    phone: document.getElementById("phoneError"),
-                    city: document.getElementById("cityError"),
-                    state: document.getElementById("stateError"),
-                    zipCode: document.getElementById("zipCodeError"),
-                    addressType: document.getElementById("addressTypeError"),
-                };
-    
-                Object.values(errors).forEach((el) => el.innerText = "");
-    
-                let hasError = false;
-    
-                if (!fullName) {
-                    errors.fullName.innerText = "Full name is required";
-                    hasError = true;
-                } else if (fullName.length < 3) {
-                    errors.fullName.innerText = "Full name must be at least 3 characters";
-                    hasError = true;
-                }
-    
-                if (!addressLine1) {
-                    errors.addressLine1.innerText = "Address Line 1 is required";
-                    hasError = true;
-                }
-    
-                if (!phone) {
-                    errors.phone.innerText = "Phone number is required";
-                    hasError = true;
-                } else if (!/^\d{10}$/.test(phone)) {
-                    errors.phone.innerText = "Phone number must be 10 digits";
-                    hasError = true;
-                }
-    
-                if (altNumber && !/^\d{10}$/.test(altNumber)) {
-                    errors.phone.innerText = "Alternate number must be 10 digits";
-                    hasError = true;
-                }
-    
-                if (!city) {
-                    errors.city.innerText = "City is required";
-                    hasError = true;
-                }
-    
-                if (!state) {
-                    errors.state.innerText = "State is required";
-                    hasError = true;
-                }
-    
-                if (!zipCode) {
-                    errors.zipCode.innerText = "Zip Code is required";
-                    hasError = true;
-                } else if (!/^\d{5,6}$/.test(zipCode)) {
-                    errors.zipCode.innerText = "Zip Code must be 5-6 digits";
-                    hasError = true;
-                }
-    
-                if (!addressType) {
-                    errors.addressType.innerText = "Address type is required";
-                    hasError = true;
-                }
-    
-                if (hasError) return;
-    
-    
-                const formData = { fullName, phone, addressLine1, addressLine2, landmark, city, state, country, altNumber, zipCode, addressType, index, from }
-    
-                console.log(from)
-    
-                try {
-                    const response = await fetch('/user/address', {
-                        method : 'PUT',
-                        headers : { 'Content-Type' : 'application/json' },
-                        body : JSON.stringify(formData)
-                    });
-    
-                    const data = await response.json();
-    
-                    if (!response.ok) {
-                        throw new Error(data.error || "Something went wrong");
-                    }
-    
-                    Swal.fire({
-                        icon: "success",
-                        text: data.message,
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-    
-                    setTimeout(() => {
-                        window.location.href = data.redirectUrl;
-                    }, 2000);
-    
-    
-                } catch (error) {
-                    console.log(error);
-                        Swal.fire({
-                        icon: "error",
-                        text: "A Frontend error occurred. Please try again.",
-                    });
-                };
+
+<script>
+    document.getElementById("editAddressForm").addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const fields = {
+            fullName: document.getElementById('fullName'),
+            phone: document.getElementById('phone'),
+            addressLine1: document.getElementById('addressLine1'),
+            addressLine2: document.getElementById('addressLine2'),
+            landmark: document.getElementById('landmark'),
+            city: document.getElementById('city'),
+            state: document.getElementById('state'),
+            country: document.getElementById('country'),
+            altNumber: document.getElementById('altNumber'),
+            zipCode: document.getElementById('zipCode'),
+            addressType: document.querySelector('input[name="addressType"]:checked'),
+            index: document.getElementById('index'),
+            from: document.getElementById('pageFrom')
+        };
+
+        const errorFields = {
+            fullName: document.getElementById("fullNameError"),
+            addressLine1: document.getElementById("addressLine1Error"),
+            phone: document.getElementById("phoneError"),
+            city: document.getElementById("cityError"),
+            state: document.getElementById("stateError"),
+            zipCode: document.getElementById("zipCodeError"),
+            addressType: document.getElementById("addressTypeError"),
+        };
+
+        // Clear previous errors
+        Object.values(errorFields).forEach(el => el.innerText = "");
+
+        let hasError = false;
+        const phonePattern = /^[6-9]\d{9}$/;
+
+        const fullName = fields.fullName.value.trim();
+        const namePattern = /^[A-Za-z]{2,}(?: [A-Za-z]{1,})*$/;
+        
+        if (!fullName) {
+            errorFields.fullName.innerText = "Full name is required";
+            hasError = true;
+        } else if (!namePattern.test(fullName)) {
+            errorFields.fullName.innerText = "Name must contain only letters and spaces, no symbols or numbers";
+            hasError = true;
+        }
+
+        const addressLine1 = fields.addressLine1.value.trim();
+        const addressLine1Pattern = /^(?!.*[^a-zA-Z0-9\s]).*[a-zA-Z]/;
+
+        if (!addressLine1) {
+            errorFields.addressLine1.innerText = "Address Line 1 is required";
+            hasError = true;
+        } else if (!addressLine1Pattern.test(addressLine1)) {
+            errorFields.addressLine1.innerText = "Enter a valid address without only numbers, symbols, or blank spaces";
+            hasError = true;
+        }
+
+
+        const phone = fields.phone.value.trim();
+        if (!phone) {
+            errorFields.phone.innerText = "Phone number is required";
+            hasError = true;
+        } else if (!phonePattern.test(phone) || /^(\d)\1{9}$/.test(phone)) {
+            errorFields.phone.innerText = "Enter a valid 10-digit phone number (not all same digits)";
+            hasError = true;
+        }
+
+        const altNumber = fields.altNumber.value.trim();
+        if (altNumber && (!/^\d{10}$/.test(altNumber) || /^(\d)\1{9}$/.test(altNumber))) {
+            errorFields.phone.innerText = "Alternate number must be a valid 10-digit number (not all same digits)";
+            hasError = true;
+        }
+
+        const city = fields.city.value.trim();
+        const cityPattern = /^[A-Za-z]+(?: [A-Za-z]+)*$/;
+            
+        if (!city) {
+            errorFields.city.innerText = "City is required";
+            hasError = true;
+        } else if (!cityPattern.test(city)) {
+            errorFields.city.innerText = "City must contain only letters and spaces (no numbers or symbols)";
+            hasError = true;
+        }
+        
+
+        const state = fields.state.value;
+        if (!state || state === "Select your state") {
+            errorFields.state.innerText = "Please select a state";
+            hasError = true;
+        }
+
+        const zipCode = fields.zipCode.value.trim();
+        if (!zipCode) {
+            errorFields.zipCode.innerText = "Zip Code is required";
+            hasError = true;
+        } else if (!/^\d{5,6}$/.test(zipCode)) {
+            errorFields.zipCode.innerText = "Zip Code must be 5 or 6 digits";
+            hasError = true;
+        }
+
+        const addressType = fields.addressType?.value;
+        if (!addressType) {
+            errorFields.addressType.innerText = "Address type is required";
+            hasError = true;
+        }
+
+        if (hasError) return;
+
+        const formData = {
+            fullName,
+            phone,
+            addressLine1,
+            addressLine2: fields.addressLine2.value.trim(),
+            landmark: fields.landmark.value.trim(),
+            city,
+            state,
+            country: fields.country.value,
+            altNumber,
+            zipCode,
+            addressType,
+            index: fields.index.value,
+            from: fields.from.value
+        };
+
+        try {
+            const response = await fetch('/user/address', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
             });
-        </script>
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Something went wrong");
+            }
+
+            Swal.fire({
+                icon: "success",
+                text: data.message,
+                timer: 2000,
+                showConfirmButton: false
+            });
+
+            setTimeout(() => {
+                window.location.href = data.redirectUrl;
+            }, 2000);
+
+        } catch (error) {
+            console.error(error);
+            Swal.fire({
+                icon: "error",
+                text: "A frontend error occurred. Please try again.",
+            });
+        }
+    });
+</script>
+
 
 
 

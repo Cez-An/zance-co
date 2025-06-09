@@ -266,7 +266,6 @@
             </form>
         </div>
 
-
         <br>
 
         <div class="table-responsive">
@@ -275,9 +274,11 @@
                     <tr class="text-center">
                         <th>No.</th>
                         <th>Name</th>
-                        <th>Category</th>
                         <th>Price</th>
+                        <th>Category</th>                        
                         <th>Product ID</th>
+                        <th>Stock</th>
+                        <th>Discount %</th>                                             
                         <th>Status</th>
                         <th>Actions</th>
                         <th>Edit</th>
@@ -289,21 +290,14 @@
                         <% product.forEach(element=> {%>
 
                             <tr class="text-center">
-                                <td>
-                                    <%=i++ %>
-                                </td>
-                                <td>
-                                    <%=element.name %>
-                                </td>
-                                <td>
-                                    <%=element.category?.name%>
-                                </td>
-                                <td>₹&nbsp;<%=element.salePrice %>
-                                </td>
-                                <td>
-                                    <%=element.productId %>
-                                </td>
 
+                                <td><%=i++ %></td>
+                                <td><%=element.name %></td>
+                                <td>₹&nbsp;<%=element.salePrice %></td>
+                                <td><%=element.category?.name%></td>
+                                <td><%=element.productId %></td>
+                                <td><%=element.quantity  %> </td>
+                                <td><%=element.productOffer %>&nbsp;%</td>
 
                                 <td>
                                     <button
@@ -321,15 +315,11 @@
                                     </button>
                                 </td>
 
-
-
                                 <td><a href="/admin/products/<%=element._id %>"><button
                                             class="btn btn-dark">Edit</button></a></td>
-
                             </tr>
 
                             <% }); %>
-
 
                 </tbody>
             </table>

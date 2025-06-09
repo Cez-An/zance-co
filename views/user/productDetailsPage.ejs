@@ -206,23 +206,18 @@
                 <p class="text-muted">104 Keys, Anti-Ghosting, Customizable Lighting</p>
                 <div class="pricing mb-3"> <br><br>
                     
-                    
-                    <% const discountPercentage=Math.max(product.productOffer,product.category.discount) 
-                                   const discount=(product.salePrice * discountPercentage) / 100;
-                                          const discountedPrice=product.salePrice - discount; %>
-
-                                         <% if (discountPercentage && discountPercentage !==0) { %>
-                                           <p id="priceheadding">
-                                             Price: ₹<%= discountedPrice.toFixed(0) %>
-                                               <span class="text-white">
-                                                 <strike>₹<%= product.salePrice %></strike>
-                                               </span>
-                                               <span style="color: red;">(<%= discountPercentage %>% off)</span>
-                                           </p>
-                                           <% } else { %>
-                                             <p>Price: ₹<%= product.salePrice %>
-                                             </p>
-                                             <% } %>
+                    <% const discountPercentage=Math.max(product.productOffer,product.category.discount) %>
+                                <% if (product.offerPrice && product.offerPrice < product.salePrice) { %>
+                                      <p id="priceheadding">
+                                        Price: ₹<%= product.offerPrice %>
+                                        <span class="text-white">
+                                          <strike>₹<%= product.salePrice %></strike>
+                                        </span>
+                                        <span style="color: red;">(<%= discountPercentage %>% off)</span>
+                                      </p>
+                                    <% } else { %>
+                                      <p>Price: ₹<%= product.salePrice %></p>
+                                    <% } %>
 
 
                 </div>

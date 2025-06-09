@@ -41,7 +41,7 @@ const renderCustomerInfo = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.redirect("/error-admin");
+    res.redirect("/pagenotfound");
   }
 };
 

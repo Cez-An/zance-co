@@ -161,8 +161,6 @@ env.config();
           password: passwordHash,
         });
   
-        await saveUserData.save();
-  
         req.session.user = saveUserData;
         const referalcode = req.session.referalcode;
 
@@ -170,11 +168,12 @@ env.config();
         console.log(referedUser);
         
         if (referedUser) {
+            saveUserData.wallet += 50; 
             referedUser.wallet = (referedUser.wallet || 0) + 50;
             referedUser.redeemedUsers.push(saveUserData._id);
             await referedUser.save();
         }
-
+        await saveUserData.save();
         res
           .status(STATUS_CODE.SUCCESS)
           .json({ success: true, redirectUrl: "/user/login" });

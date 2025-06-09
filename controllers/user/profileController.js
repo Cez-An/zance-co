@@ -13,7 +13,6 @@ import Refund from "../../models/refundSchema.js";
 
 env.config();
 
-
 const renderProfileInfo = async (req, res) => {
   try {
     if (!req.session.user) {
@@ -213,87 +212,72 @@ const verifyOTP = (req, res) => {
 
   res.status(STATUS_CODE.BAD_REQUEST).json({ success: false, error: 'Invalid OTP' });
 }
-
-const loadAddress = async (req, res) => {
-
-  const userId = req.session.user?.id ?? req.session.user?._id ?? null;
-
-  if (!userId) return res.redirect('/user/login');
-
-  const user = await User.findOne({_id : userId})
-  const name = user.name;
-
+const loadPrivacy = async (req, res) => {
   try {
-      const addresses = await Address.find({ userId : userId });
+    const userId = req.session.user?.id ?? req.session.user?._id ?? null;
 
-      res.render('user/addrress', {          
-          addresses,
-          user,
-          name, 
+    if (!userId) {
+      return res.status(STATUS_CODE.BAD_REQUEST).send("User ID not found in session.");
+    }
+
+    const user = await User.findOne({ _id: userId });
+
+    if (!user) {
+      return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).render('partials/404');
+    }
+
+    const firstName = user.name;
+
+    if (user.password != null) {
+      res.render('user/privacySettings', {
+        title: "Privacy settings",
+        user,
+        firstName
       });
-
+    } else {
+      res.render('user/privacySettingsGoogle', {
+        title: "Privacy settings",
+        user,
+        firstName
+      });
+    }
   } catch (error) {
-      console.error('Error loading addresses:', error);
-      res.render('user/addrress', { title : "address", addresses: [], user: req.session.user });
+    console.error("Error loading privacy settings:", error);
+    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).render('partials/404');
   }
 };
 
-const loadAddAddress = async (req,res)=>{
-
-  const userId = req.session.user?.id ?? req.session.user?._id ?? null;
-
-  const user = await User.findOne({_id : userId})
-
-  res.render('user/addAddress ', {title : "Address", user});
-}
-
-const addAddress = async (req, res) => {
+const updatePassword = async (req, res) => {
   try {
-      const {fullName, phone, addressLine1, addressLine2, landmark, city, state, country, altNumber, addressType, zipCode} = req.body;
-
+      const { oldPassword, newPassword } = req.body;
       const userId = req.session.user?.id ?? req.session.user?._id ?? null;
 
-      if (!fullName || !phone || !addressLine1 || !city || !state || !country) {
-          return res.status(STATUS_CODE.BAD_REQUEST).json({ error: "All required fields must be filled." });
+      if (!userId) {
+          return res.status(STATUS_CODE.UNAUTHORIZED).json({ error: "User not authenticated" });
       }
 
-      let userAddress = await Address.findOne({ userId });
-
-      if (!userAddress) {
-          userAddress = new Address({
-              userId,
-              details: []
-          });
+      const user = await User.findOne({ _id: userId });
+      if (!user) {
+          return res.status(STATUS_CODE.NOT_FOUND).json({ error: "User not found" });
       }
 
-      const newIndex = userAddress.details.length;
+      const isMatch = await bcrypt.compare(oldPassword, user.password);
+      if (!isMatch) {
+          return res.status(STATUS_CODE.UNAUTHORIZED).json({ error: "Old password is incorrect" });
+      }
 
-      userAddress.details.push({
-          index: newIndex,
-          addressType,
-          name: fullName,
-          addressLine1,
-          addressLine2,
-          city,
-          landmark,
-          state,
-          pincode: zipCode,
-          phone,
-          altPhone: altNumber
-      });
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+      await user.save();
 
-      await userAddress.save();
-
-      return res.status(STATUS_CODE.SUCCESS).json({ message: "Address added successfully" });
-
+      return res.status(STATUS_CODE.SUCCESS).json({ message: "Password changed successfully" });
   } catch (error) {
-      console.error("Error adding address:", error);
-      return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: error.message || "Address creation error" });
+      console.error("Error updating password:", error);
+      return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json({ error: "An error occurred while updating the password" });
   }
 };
-
 
 export default {
     renderProfileInfo, renderProfileEdit, updateProfile, generateOtp, sendVerificationEmail, otpVerification, 
-    sendOTP, verifyOTP, loadAddress, loadAddAddress, addAddress,
+    sendOTP, verifyOTP,updatePassword,loadPrivacy,
 }

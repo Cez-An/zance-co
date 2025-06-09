@@ -2,7 +2,7 @@ import express from "express";
 import userController from "../controllers/user/userController.js";
 import userAuth from "../middlewares/userAuth.js";
 import profileController from '../controllers/user/profileController.js'
-import productControllerTwo from "../controllers/user/profileControllerTwo.js";
+import orderController from "../controllers/user/orderController.js";
 import cartControlller from '../controllers/user/cartControlller.js'
 import checkoutController from "../controllers/user/checkoutController.js";
 import wishlistController from "../controllers/user/wishlistController.js"
@@ -11,6 +11,7 @@ import walletController from "../controllers/user/walletController.js"
 import authController from "../controllers/user/authController.js";
 import shopController from "../controllers/user/shopController.js";
 import couponController from "../controllers/user/couponControler.js"
+import addressController from "../controllers/user/addressController.js"
 
 const router = express.Router();
 
@@ -67,20 +68,20 @@ router.post('/verifymail', userAuth.checkStatus,profileController.verifyOTP);
 
 // address management
 router.route('/address')
-  .get(userAuth.checkStatus, profileController.loadAddress)
-  .post(userAuth.checkStatus, profileController.addAddress)
-  .put(userAuth.checkStatus, productControllerTwo.editAddress)
-  .delete(userAuth.checkStatus, productControllerTwo.deleteAddress);
+  .get(userAuth.checkStatus, addressController.loadAddress)
+  .post(userAuth.checkStatus, addressController.addAddress)
+  .put(userAuth.checkStatus, addressController.editAddress)
+  .delete(userAuth.checkStatus, addressController.deleteAddress);
 
-router.get('/addAddress',userAuth.checkStatus,profileController.loadAddAddress);
-router.get('/editaddress', userAuth.checkStatus,productControllerTwo.loadEditAddress);
+router.get('/addAddress',userAuth.checkStatus,addressController.loadAddAddress);
+router.get('/editaddress', userAuth.checkStatus,addressController.loadEditAddress);
 
 
 
 // privacy settings
 router.route('/privacy')
-  .get(userAuth.checkStatus, productControllerTwo.loadPrivacy)
-  .post(userAuth.checkStatus, productControllerTwo.updatePassword);
+  .get(userAuth.checkStatus, profileController.loadPrivacy)
+  .post(userAuth.checkStatus, profileController.updatePassword);
 
 
 // cart routes
@@ -111,11 +112,11 @@ router.route('/wishlist')
 router.post('/wishlist-to-cart',userAuth.checkStatus,wishlistController.wishlistToCart)
 
 // order Routes
-router.get('/order', userAuth.checkStatus,productControllerTwo.loadOrders);
-router.get('/orderDetails', userAuth.checkStatus,productControllerTwo.loadOrderDetails);
+router.get('/order', userAuth.checkStatus,orderController.loadOrders);
+router.get('/orderDetails', userAuth.checkStatus,orderController.loadOrderDetails);
 router.post('/order/return', userAuth.checkStatus,refundController.requestRefund);
 router.patch('/order/cancel', userAuth.checkStatus,refundController.cancelOrder);
-router.get('/order/invoice',userAuth.checkStatus,productControllerTwo.downloadOrderInvoice);
+router.get('/order/invoice',userAuth.checkStatus,orderController.downloadOrderInvoice);
 
 // wallet
 router.get('/wallet', userAuth.checkStatus,walletController.loadWallet);

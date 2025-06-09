@@ -75,7 +75,7 @@ const loadProductsDetails = async (req, res) => {
 
     const product = await Product.findOne({ _id: id }).populate("category");
 
-    const relatedProducts = await Product.find({category: product.category,}).limit(4);
+    const relatedProducts = await Product.find({category: product.category,_id: { $ne: product._id }}).limit(4);
 
     const category = await Category.findOne({});
 

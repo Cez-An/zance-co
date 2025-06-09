@@ -28,33 +28,6 @@ const getWishlist = async (req, res) => {
     }
 };
 
-const addToWishlist = async (req, res) => {
-    try {
-        const { userId, productId } = req.body;
-
-        if (!userId) {
-            return res.status(401).json({ error: 'Please login to continue' });
-        }
-
-        const product = await Product.findById(productId);
-        if (!product) {
-            return res.status(400).json({ error: 'Product not found' });
-        }
-
-        const updatedWishlist = await Wishlist.findOneAndUpdate(
-            { userId },
-            { $addToSet: { product: productId } }, 
-            { new: true, upsert: true } 
-        );
-
-        res.json({ message: 'Added to wishlist successfully' });
-
-    } catch (error) {
-        console.error('Add to wishlist error:', error);
-        res.status(500).json({ error: 'Server error' });
-    }
-};
-
 const toggleWishlist = async (req, res) => {
     try {
         const { userId, productId } = req.body;
@@ -67,7 +40,10 @@ const toggleWishlist = async (req, res) => {
         if (!product) {
             return res.status(400).json({ error: 'Product not found' });
         }
-
+        const cart = await Cart.findOne({ userId, 'items.productId': productId });
+        if (cart) {
+            return res.status(400).json({ error: 'Product already in cart' });
+        }
         const wishlist = await Wishlist.findOne({ userId });
 
         if (wishlist && wishlist.product.includes(productId)) {
@@ -203,4 +179,4 @@ const wishlistToCart = async (req, res) => {
 
 
 
-export default { getWishlist, addToWishlist,toggleWishlist ,removeFromWishlist, wishlistToCart}
+export default { getWishlist,toggleWishlist ,removeFromWishlist, wishlistToCart}

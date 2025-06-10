@@ -5,108 +5,66 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #000000;
-            color: #ffffff;
-        }
-        a {
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #000000;
+        color: #ffffff;
+    }
+	a {
         text-decoration: none;
         }
-        .form-control {
-         background-color: #b4b0d8; /* Change the background color */
-         color: #000000; /* Change the text color */
-         padding: 10px;
-         border-radius: 5px;
-        }
+    .bottom-nav {
+        width: 100%;
+        height: 60px;
+        background-color: #000000;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 0 10px;
+        box-shadow: 0 -2px 5px rgba(0,0,0,0.5);
+        z-index: 1000;
+    }
 
-        .sidebar {
-            width: 250px;
-            height: 100vh;
-            background-color: #000000;
-            position: fixed;
-            top: 0;
-            left: 0;
-            padding-top: 20px;
-            transition: width 0.3s;
-        }
+    .bottom-nav a {
+        flex-grow: 1;
+        text-align: center;
+        text-decoration: none;
+        color: #ffffff;
+        font-size: 14px;
+        padding: 8px 0;
+    }
 
-        .sidebar a {
-            display: flex;
-            align-items: center;
-            padding: 15px 20px;
-            text-decoration: none;
-            color: #ffffff;
-            font-size: 16px;
-        }
+    .bottom-nav a:hover,
+    .bottom-nav a.active {
+        background-color: #6510DC;
+        border-radius: 8px;
+    }
 
-        .sidebar a:hover {
-            background-color: #6510DC;
-        }
+    .bottom-nav i {
+        display: block;
+        font-size: 18px;
+        margin-bottom: 2px;
+    }
 
-        /* Active tab styling */
-        .sidebar a.active {
-            background-color: #6510DC; /* Highlight color for active tab */
-            color: #ffffff;
-        }
-
-        .sidebar i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
-            color: #ffffff;
-        }
-
-        /* Mobile view */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 60px;
-            }
-
-            .sidebar a {
-                justify-content: center;
-                padding: 15px 0;
-            }
-
-            .sidebar a span {
-                display: none;
-            }
-
-            .sidebar i {
-                margin-right: 0;
-            }
-        }
-
-        .content {
-            margin-left: 250px;
-            padding: 20px;
-            color: #ffffff;
-        }
-
-        @media (max-width: 768px) {
-            .content {
-                margin-left: 60px;
-            }
-        }
+    .content {
+        padding: 20px;
+        padding-bottom: 80px; /* Space for bottom nav */
+        color: #ffffff;
+    }
     </style>
+
 </head>
 <body>
-    <div class="sidebar">
-        <!-- Add 'active' class to My Orders --> 
-         <br><br><br>
-        <a href="/user/order"><i class="fas fa-shopping-cart"></i><span>My Orders</span></a>
-        <a href="/user/userProfile"><i class="fas fa-user"></i><span>Profile Information</span></a>
-        <a href="/user/address" class="active"><i class="fas fa-map-marker-alt"></i><span>Manage Addresses</span></a>
-        <a href="/user/privacy"><i class="fas fa-lock"></i><span>Privacy Settings</span></a>
-        
-        <a href="/user/wallet"><i class="fas fa-wallet"></i><span>My Wallet</span></a>
-    </div>
+    
 
 
     <main class="container mt-4">
-        <div class="row g-5">
+        <div class="row g-5 d-flex justify-content-center"">
 
             <!-- Add New Address Form -->
             <div class="col-md-9">
@@ -231,6 +189,31 @@
             </div>
         </div>
     </main>
+
+        <div class="bottom-nav">
+          <a href="/user/order" >
+            <i class="fas fa-shopping-cart"></i>
+            <span>Orders</span>
+          </a>
+          <a href="/user/userProfile" >
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+          </a>
+          <a href="/user/address" class="active">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Addresses</span>
+          </a>
+          <a href="/user/privacy">
+            <i class="fas fa-lock"></i>
+            <span>Privacy</span>
+          </a>
+          <a href="/user/wallet">
+            <i class="fas fa-wallet"></i>
+            <span>Wallet</span>
+          </a>
+        </div>
+
+
 <script>
 document.getElementById("addAddressForm").addEventListener('submit', async (event) => {
     event.preventDefault();

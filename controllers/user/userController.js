@@ -24,7 +24,8 @@ const renderHomepage = async (req, res) => {
       }},
       {$unwind:"$category"},
       {$match:{"category.isListed":true}},
-      {$limit:12},
+      { $sort: { createdAt: -1 } },
+      {$limit:12},      
     ]);
 
     const userId = req.session.user?.id ?? req.session.user?._id ?? null;

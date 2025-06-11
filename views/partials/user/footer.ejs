@@ -1,22 +1,48 @@
 <!-- Footer Section Begin -->
+<script>
+    const offcanvasWrapper = document.querySelector('.offcanvas-menu-wrapper');
+    const offcanvasOverlay = document.querySelector('.offcanvas-menu-overlay');
+    const openBtn = document.querySelector('.canvas__open');
+    const closeBtn = document.getElementById('close-offcanvas');
+
+    // Open menu
+    openBtn.addEventListener('click', () => {
+        offcanvasWrapper.classList.add('active');
+        offcanvasOverlay.classList.add('active');
+    });
+
+    // Close menu
+    closeBtn.addEventListener('click', () => {
+        offcanvasWrapper.classList.remove('active');
+        offcanvasOverlay.classList.remove('active');
+    });
+
+    // Close menu when clicking on overlay
+    offcanvasOverlay.addEventListener('click', () => {
+        offcanvasWrapper.classList.remove('active');
+        offcanvasOverlay.classList.remove('active');
+    });
+
+
+</script>
 <footer class="footer">
     <div class="container">
         <div class="row">
             <div class="col-lg-3 col-md-6 col-sm-6">
                 <div class="footer__about">
                     <div class="footer__logo">
-                        <a href="#"><img src="../../img/logo/ZANCE&co_footer_logo.svg" alt=""></a>
+                        <a><img src="../../img/logo/ZANCE&co_footer_logo.svg" alt=""></a>
                     </div>
                     <p class="text-secondary">Go Beyond Limits</p>
-                    <a href="#"><img src="../../img/icon/social_media.svg" alt=""></a>
+                    <a><img src="../../img/icon/social_media.svg" alt=""></a>
                 </div>
             </div>
             <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
                 <div class="footer__widget">
                     <h6>GET IN TOUCH </h6>
                     <ul>
-                        <li><a href="#">help@zance&cotech.com</a></li>
-                        <li><a href="#">5th block, Kollam, Kerala,, 691302</a></li>                       
+                        <li><a>help@zance&cotech.com</a></li>
+                        <li><a>5th block, Kollam, Kerala,, 691302</a></li>
                     </ul>
                 </div>
             </div>
@@ -24,10 +50,10 @@
                 <div class="footer__widget">
                     <h6>POLICIES</h6>
                     <ul>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Shipping and Returns</a></li>
-                        <li><a href="#">Warranty Guidelines</a></li>
-                        <li><a href="#">Terms and Conditions</a></li>
+                        <li><a>Privacy Policy</a></li>
+                        <li><a>Shipping and Returns</a></li>
+                        <li><a>Warranty Guidelines</a></li>
+                        <li><a>Terms and Conditions</a></li>
                     </ul>
                 </div>
             </div>
@@ -35,33 +61,33 @@
                 <div class="footer__widget">
                     <h6>QUICK LINKS</h6>
                     <ul>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Downloads</a></li>
-                        <li><a href="#">FAQs    </a></li>
+                        <li><a>Privacy Policy</a></li>
+                        <li><a href="/user/aboutUs">About Us</a></li>
+                        <li><a>Downloads</a></li>
+                        <li><a>FAQs </a></li>
                     </ul>
                 </div>
-            </div>            
+            </div>
         </div>
         <div class="row">
             <div class="col-lg-12 text-center">
-                <div class="footer__copyright__text text-secondary">                    
+                <div class="footer__copyright__text text-secondary">
                     <p class="text-secondary">Copyright ©
                         <script>
                             document.write(new Date().getFullYear());
                         </script>
                         All rights reserved by zance&co
-                    </p>                    
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 </footer>
 <script>
-    window.addEventListener('load', function() {
+    window.addEventListener('load', function () {
         const loader = document.querySelector('.loader-wrapper');
         const content = document.querySelector('.content');
-        setTimeout(function() {
+        setTimeout(function () {
             loader.classList.add('loader-hidden');
             content.classList.add('content-loaded');
         }, 2000);

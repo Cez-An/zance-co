@@ -30,6 +30,12 @@ router.route("/verifyOtp")
   .get(authController.renderOtpVerification)
   .post(authController.otpVerification);
 
+// getting the time for the timer
+router.get('/otp-timer',authController.getOtpExpiryTime);
+
+// render varify otp
+router.get('/verifyOtp',authController.renderotp )
+
 // resend otp route
 router.post("/resendOtp", authController.resendOtp);
 

@@ -37,25 +37,33 @@ env.config();
       }
   
       const otp = generateOtp();
-    
-      
   
       const emailSent = await sendVerificationEmail(email, otp);
   
       if (!emailSent) {
-        return res.json("email error");
+        return res.json("signup email could not be sent");
       }
   
       req.session.userOtp = otp;
       req.session.userData = { email, password, name, number };
-  
+      req.session.otpExpiry = Date.now() + 60 * 1000;
+
       res.redirect("/user/verifyOtp");
+
+
       console.log("Otp sent", otp);
     } catch (error) {
       console.error("signup error", error);
       res.render("/pageNotFound");
     }
   };  
+
+  const renderotp = async (req, res) => {
+    res.render("user/verifyOtp", {
+      otpExpiry: req.session.otpExpiry
+    });
+  }
+
 
   const renderLogin = async (req, res) => {
     try {
@@ -147,12 +155,20 @@ env.config();
           message: "OTP session expired. Request a new OTP.",
         });
       }
+
+      if (Date.now() > req.session.otpExpiry) {
+        return res.status(STATUS_CODE.BAD_REQUEST).json({
+          success: false,
+          message: "OTP has expired. Please request a new one.",
+        });
+      }
   
       if (otp.toString() === req.session.userOtp.toString()) {
         req.session.isOtpVerified = true;
         const userId = await generateUserId();
         const user = req.session.userData;
         const passwordHash = await securePassword(user.password);
+
         const saveUserData = new User({
           name: user.name,
           userId,
@@ -258,8 +274,10 @@ env.config();
   
       const otp = generateOtp();
       req.session.userOtp = otp;
-  
+      req.session.otpExpiry = Date.now() + 60 * 1000;
+
       const emailSent = await sendVerificationEmail(email, otp);
+
       if (emailSent) {
         console.log("resend otp:", otp);
         res
@@ -319,6 +337,13 @@ env.config();
     }
   };
   
+  const getOtpExpiryTime = (req, res) => {
+  if (req.session.otpExpiry) {
+    return res.json({ expiry: req.session.otpExpiry });
+  } else {
+    return res.status(400).json({ error: "No OTP timer found" });
+  }
+  };
   
   export default {
     renderLogin,
@@ -329,6 +354,8 @@ env.config();
     otpVerification,
     resendOtp,
     validateUserEmail,
+    getOtpExpiryTime,
+    renderotp
 
 
   }

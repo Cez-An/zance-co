@@ -5,13 +5,13 @@ import dotenv from "dotenv";
 import { generateUserId } from "../helpers/customerId.js";
 
 dotenv.config();
-
+const port = process.env.port
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "/auth/google/callback",
+      callbackURL: "port/auth/google/callback",
       passReqToCallback: true,
     },
     async (req, accessToken, refreshToken, profile, done) => {

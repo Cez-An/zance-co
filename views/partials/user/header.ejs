@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="Male_Fashion Template">
+    <meta name="description" content="zance&co">
     <meta name="keywords" content="Male_Fashion, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -31,7 +31,76 @@
     <link rel="stylesheet" href="../../css/style.css" type="text/css">
     <link rel="stylesheet" href="../../css/headerpartials.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        .offcanvas-menu-wrapper {
+        margin-top: 60px; /* Adjust based on your navbar height */
+        z-index: 1001;
+        position: relative;
+        }
+        .header {
+        z-index: 1000;
+        position: relative;
+        }
+        .offcanvas-menu-wrapper {
+        display: none;
+        background: white;
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 999;
+    }
     
+    .offcanvas-menu-wrapper.active {
+        display: block;
+    }
+    .offcanvas__nav__option {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .offcanvas__nav__option a {
+        color: #000;
+        font-weight: 500;
+        font-size: 14px;
+    }
+    .offcanvas-close {
+      text-align: right;
+      padding: 15px 20px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #000;
+    }
+
+    .offcanvas-close i {
+      transition: 0.3s;
+    }
+
+    .offcanvas-close i:hover {
+      color: #8a2be2; /* Light purple hover or match your theme */
+    }
+    .offcanvas-menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 998;
+      display: none; /* hidden by default */
+    }
+    .offcanvas-menu-overlay.active {
+      display: block;
+    }
+    
+
+    </style>
 
 </head>
 
@@ -44,13 +113,16 @@
     <!-- Offcanvas Menu Begin -->
     <div class="offcanvas-menu-overlay"></div>
     <div class="offcanvas-menu-wrapper">
-       
+       <div class="offcanvas-close">
+        <i class="fa fa-times" id="close-offcanvas"></i>
+        </div>
+
         <div class="offcanvas__nav__option">
             <a href="/user/wishlist"><i class="bi bi-suit-heart"></i></a>
             <a href="/user/cart"><i class="bi bi-bag"></i></a>
             <% if (locals.user) { %>
                 <div class="dropdown">
-                   <a href="" class="sign-in-link"  id="user-name"><%=locals.user.name%></a>
+                   <a class="sign-in-link"  id="user-name"><%=locals.user.name%></a>
                    <div class="dropdown-content">
                        <a href="/user/userProfile">User Profile</a>
                        <a href="/user/order">Orders</a>
@@ -87,17 +159,7 @@
                     <nav class="header__menu mobile-menu">
                         <ul>
                             <li class="active"><a href="/user">HOME</a></li>
-                            <li><a href="/user/renderShopPage">SHOP</a></li>
-                            <!-- <li><a href="#">PAGES</a>
-                                <ul class="dropdown">
-                                    <li><a href="/user">About Us</a></li>
-                                    <li><a href="/user">Shop Details</a></li>
-                                    <li><a href="/user">Shopping Cart</a></li>
-                                    <li><a href="/user">Check Out</a></li>
-                                    <li><a href="/user">Blog Details</a></li>
-                                </ul>
-                            </li> -->
-                            <li><a href="/user">ABOUT</a></li>
+                            <li><a href="/user/renderShopPage">SHOP</a></li>                         
                             <li><a href="/user">CONTACT</a></li>
                         </ul>
                     </nav>

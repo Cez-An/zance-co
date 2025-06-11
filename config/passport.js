@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import { generateUserId } from "../helpers/customerId.js";
 
 dotenv.config();
-const port = process.env.port
+
 passport.use(
   new GoogleStrategy(
     {

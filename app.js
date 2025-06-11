@@ -67,9 +67,9 @@ app.use("/auth", googleRouter);
 app.use("/admin", adminRouter);
 app.use('/payments', paymentRouter);
 
-// app.use((req, res, next) => {
-//   res.status(STATUS_CODE.NOT_FOUND).render("partials/404");
-// });
+app.use((req, res, next) => {
+  res.status(STATUS_CODE.NOT_FOUND).render("partials/404");
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running at:`);

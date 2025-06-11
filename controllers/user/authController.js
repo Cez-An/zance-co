@@ -47,11 +47,9 @@ env.config();
       req.session.userOtp = otp;
       req.session.userData = { email, password, name, number };
       req.session.otpExpiry = Date.now() + 60 * 1000;
-
       res.redirect("/user/verifyOtp");
-
-
       console.log("Otp sent", otp);
+
     } catch (error) {
       console.error("signup error", error);
       res.render("/pageNotFound");

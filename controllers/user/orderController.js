@@ -29,7 +29,7 @@ const loadOrders = async (req,res) => {
               })
               .sort({ createdAt: -1 });
 
-      res.render('user/myOrders',{title : "My Orders",orders, user, firstName});
+      res.render('user/myOrders',{title : "My Orders",orders, user, firstName,RAZOR_API_KEY: process.env.RAZOR_API_KEY,});
 
   } catch (error) {
       console.error('Error loading orders:', error.message);

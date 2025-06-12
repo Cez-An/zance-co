@@ -177,7 +177,7 @@
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <span class="text-white" style="font-size: 0.95rem;">Coupon Discount</span>
                                         <span class="text-success fw-semibold flex-shrink-0">₹ <%= couponDiscount %>
-                                                </span>
+                                        </span>
                                         <input type="hidden" id="couponDiscount" name="couponDiscount"
                                             value="<%= couponDiscount %>">
                                         <input type="hidden" id="couponId" name="couponId" value="<%= couponId %>">
@@ -360,6 +360,8 @@
                             text: "Payment failed! " + response.error.description,
                             icon: "error",
                             showConfirmButton: true
+                        }).then(() => {
+                            window.location.href = "/user/order"; // change the URL to your actual orders page route
                         });
                     });
 

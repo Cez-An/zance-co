@@ -1,67 +1,70 @@
-<%-include("../../views/partials/user/header") %> 
+<%-include("../../views/partials/user/header") %>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
 
     <style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background-color: #252525;
-        color: #ffffff;
-    }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #252525;
+            color: #ffffff;
+        }
 
-    .bottom-nav {
-        width: 100%;
-        height: 60px;
-        background-color: #000000;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        padding: 0 10px;
-        box-shadow: 0 -2px 5px rgba(0,0,0,0.5);
-        z-index: 1000;
-    }
+        .bottom-nav {
+            width: 100%;
+            height: 60px;
+            background-color: #000000;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 10px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
 
-    .bottom-nav a {
-        flex-grow: 1;
-        text-align: center;
-        text-decoration: none;
-        color: #ffffff;
-        font-size: 14px;
-        padding: 8px 0;
-    }
+        .bottom-nav a {
+            flex-grow: 1;
+            text-align: center;
+            text-decoration: none;
+            color: #ffffff;
+            font-size: 14px;
+            padding: 8px 0;
+        }
 
-    .bottom-nav a:hover,
-    .bottom-nav a.active {
-        background-color: #6510DC;
-        border-radius: 8px;
-    }
+        .bottom-nav a:hover,
+        .bottom-nav a.active {
+            background-color: #6510DC;
+            border-radius: 8px;
+        }
 
-    .bottom-nav i {
-        display: block;
-        font-size: 18px;
-        margin-bottom: 2px;
-    }
+        .bottom-nav i {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
 
-    .content {
-        padding: 20px;
-        padding-bottom: 80px; /* Space for bottom nav */
-        color: #ffffff;
-    }
+        .content {
+            padding: 20px;
+            padding-bottom: 80px;
+            /* Space for bottom nav */
+            color: #ffffff;
+        }
     </style>
-    
+
     <style>
         body {
             background-color: #000000;
             font-family: 'Segoe UI', Arial, sans-serif;
             color: #333;
             margin: 0;
-            
+
         }
+
         .navbar {
             position: fixed;
             top: 0;
@@ -137,17 +140,21 @@
                 padding: 10px 12px;
             }
         }
+
         .content-area {
             flex-grow: 1;
         }
+
         .page-header {
             margin: 40px 0;
         }
+
         h1 {
             font-size: 28px;
             font-weight: 700;
             color: #1a1a1a;
         }
+
         .order-card {
             background-color: rgb(235 228 255) !important;
             border-radius: 12px;
@@ -155,39 +162,47 @@
             padding: 20px;
             margin-bottom: 20px;
         }
+
         .order-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
         }
+
         .order-id {
             font-size: 16px;
             font-weight: 600;
             color: #1a1a1a;
         }
+
         .order-status {
             font-size: 14px;
             font-weight: 500;
             padding: 5px 12px;
             border-radius: 20px;
         }
+
         .order-status.pending {
             background-color: #FFE082;
             color: #FFB300;
         }
+
         .order-status.shipped {
             background-color: #81C784;
             color: #2E7D32;
         }
+
         .order-status.delivered {
             background-color: #4CAF50;
             color: #fff;
         }
+
         .order-status.cancelled {
             background-color: #d11414;
             color: #fff;
         }
+
         .order-details {
             display: flex;
             justify-content: space-between;
@@ -195,19 +210,23 @@
             color: #666;
             margin-bottom: 15px;
         }
+
         .order-details span {
             font-weight: 500;
             color: #333;
         }
+
         .order-items {
             margin-bottom: 15px;
         }
+
         .item-row {
             display: flex;
             align-items: center;
             padding: 10px 0;
             border-bottom: 1px solid #bababa;
         }
+
         .item-img {
             width: 50px;
             height: 50px;
@@ -216,30 +235,36 @@
             margin-right: 15px;
             border: 1px solid #eee;
         }
+
         .item-info {
             flex-grow: 1;
         }
+
         .item-info h6 {
             font-size: 14px;
             font-weight: 600;
             margin: 0 0 5px;
             color: #1a1a1a;
         }
+
         .item-info p {
             font-size: 12px;
             color: #777;
             margin: 0;
         }
+
         .item-price {
             font-size: 14px;
             font-weight: 600;
             color: #1a1a1a;
         }
+
         .order-actions {
             display: flex;
             justify-content: flex-end;
             gap: 10px;
         }
+
         .btn {
             padding: 8px 20px;
             font-size: 13px;
@@ -248,53 +273,93 @@
             text-decoration: none;
             transition: all 0.3s ease;
         }
+
         .btn-primary {
             background-color: #6C5DD3;
             color: #fff;
             border: none;
         }
+
         .btn-primary:hover {
             background-color: #5848C2;
         }
+
         .btn-outline-primary {
             border: 1px solid #6C5DD3;
             color: #6C5DD3;
             background-color: transparent;
         }
+
         .btn-outline-primary:hover {
             background-color: #6C5DD3;
             color: #fff;
         }
-        .no-orders, .loading, .error {
+
+        .no-orders,
+        .loading,
+        .error {
             text-align: center;
             color: #ffffff;
             font-size: 16px;
             padding: 40px;
         }
+
         a {
             text-decoration: none;
         }
+
         .status-badge {
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: bold;
-        display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            display: inline-block;
         }
 
-        .status-placed { background-color: #e0f3ff; color: #0275d8; }
-        .status-shipped { background-color: #d9f9e3; color: #28a745; }
-        .status-out-for-delivery { background-color: #fff3cd; color: #856404; }
-        .status-delivered { background-color: #d4edda; color: #155724; }
-        .status-cancelled { background-color: #f8d7da; color: #721c24; }
-        .status-failed { background-color: #f8d7da; color: #dc3545; }
-        .status-returned { background-color: #ffeeba; color: #856404; }
-        .status-unknown { background-color: #e2e3e5; color: #6c757d; }
-        
+        .status-placed {
+            background-color: #e0f3ff;
+            color: #0275d8;
+        }
+
+        .status-shipped {
+            background-color: #d9f9e3;
+            color: #28a745;
+        }
+
+        .status-out-for-delivery {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-delivered {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-cancelled {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-failed {
+            background-color: #f8d7da;
+            color: #dc3545;
+        }
+
+        .status-returned {
+            background-color: #ffeeba;
+            color: #856404;
+        }
+
+        .status-unknown {
+            background-color: #e2e3e5;
+            color: #6c757d;
+        }
     </style>
-</head>
-<body>
- 
+    </head>
+
+    <body>
+
         <!-- Main Content -->
         <div class="container mt-1">
             <!-- Sidebar -->
@@ -304,136 +369,225 @@
                     <div class="page-header text-white">
                         <h1 class="text-white">My Orders</h1>
                     </div>
-                
-                    <% if (orders && orders.length > 0) { %>
-                        <% orders.forEach(order => { %>
+
+                    <% if (orders && orders.length> 0) { %>
+                        <% orders.forEach(order=> { %>
                             <div class="order-card bg-light">
                                 <!-- Order Header -->
                                 <div class="order-header">
                                     <span class="order-id">Order - <%= order.orderId %></span>
-                                    
+
                                 </div>
-                    
+
                                 <!-- Order Details -->
                                 <div class="order-details">
                                     <div>
                                         <span>Order Date:</span>
-                                        <%= new Date(order.createdAt).toLocaleString('en-US', {
-                                            weekday: 'short',
-                                            year: 'numeric',
-                                            month: 'short',
-                                            day: '2-digit',
-                                            hour: '2-digit',
-                                            minute: '2-digit',
-                                            hour12: true
-                                          }) %>
+                                        <%= new Date(order.createdAt).toLocaleString('en-US', { weekday: 'short' ,
+                                            year: 'numeric' , month: 'short' , day: '2-digit' , hour: '2-digit' ,
+                                            minute: '2-digit' , hour12: true }) %>
                                     </div>
                                     <div>
                                         <span>Total: </span>₹ <%= order.totalPrice %>
                                     </div>
                                 </div>
-                    
+
                                 <!-- Order Items -->
                                 <div class="order-items">
-                                    <% order.orderItems.forEach(item => { %>
+                                    <% order.orderItems.forEach(item=> { %>
                                         <div class="item-row">
-                                            <img src="<%= item.productImage %>" 
-                                                alt="Product Image" 
-                                                class="item-img">
+                                            <img src="<%= item.productImage %>" alt="Product Image" class="item-img">
                                             <div class="item-info">
-                                                <h6><%= item.product.name %></h6>
-                                                <p>Qty: <%= item.quantity %> | <strong>₹ <%= item.basePrice %></strong></p>
+                                                <h6>
+                                                    <%= item.product.name %>
+                                                </h6>
+                                                <p>Qty: <%= item.quantity %> | <strong>₹ <%= item.basePrice %></strong>
+                                                </p>
                                             </div>
-                                
-                                            <% if (item.individualStatus === 'Placed') { %>
+
+                                            <% if (item.individualStatus==='Placed' ) { %>
                                                 <span class="status-badge status-placed">Placed</span>
-                                            <% } else if (item.individualStatus === 'Shipped') { %>
-                                                <span class="status-badge status-shipped">Shipped</span>
-                                            <% } else if (item.individualStatus === 'Out for Delivery') { %>
-                                                <span class="status-badge status-out-for-delivery">Out for Delivery</span>
-                                            <% } else if (item.individualStatus === 'Delivered') { %>
-                                                <span class="status-badge status-delivered">Delivered</span>
-                                            <% } else if (item.individualStatus === 'Cancelled') { %>
-                                                <span class="status-badge status-cancelled">Cancelled</span>
-                                            <% } else if (item.individualStatus === 'Rejected') { %>
-                                                <span class="status-badge status-cancelled">Retrun Rejected</span>
-                                            <% } else if (item.individualStatus === 'Payment Failed') { %>
-                                                <span class="status-badge status-failed">Payment Failed</span>
-                                            <% } else if (item.individualStatus === 'Returned') { %>
-                                                <span class="status-badge status-returned">Returned</span>
-                                            <% } else if (item.individualStatus === 'Refund Requested') { %>
-                                                <span class="status-badge status-returned">Refund Requested</span>
-                                            <% } else { %>
-                                                <span class="status-badge status-unknown">Unknown</span>
-                                            <% } %>
+                                                <% } else if (item.individualStatus==='Shipped' ) { %>
+                                                    <span class="status-badge status-shipped">Shipped</span>
+                                                    <% } else if (item.individualStatus==='Out for Delivery' ) { %>
+                                                        <span class="status-badge status-out-for-delivery">Out for
+                                                            Delivery</span>
+                                                        <% } else if (item.individualStatus==='Delivered' ) { %>
+                                                            <span class="status-badge status-delivered">Delivered</span>
+                                                            <% } else if (item.individualStatus==='Cancelled' ) { %>
+                                                                <span
+                                                                    class="status-badge status-cancelled">Cancelled</span>
+                                                                <% } else if (item.individualStatus==='Rejected' ) { %>
+                                                                    <span class="status-badge status-cancelled">Retrun
+                                                                        Rejected</span>
+                                                                    <% } else if
+                                                                        (item.individualStatus==='Payment Failed' ) { %>
+                                                                        <span class="status-badge status-failed">Payment
+                                                                            Failed</span>
+                                                                        <% } else if (item.individualStatus==='Returned'
+                                                                            ) { %>
+                                                                            <span
+                                                                                class="status-badge status-returned">Returned</span>
+                                                                            <% } else if
+                                                                                (item.individualStatus==='Refund Requested'
+                                                                                ) { %>
+                                                                                <span
+                                                                                    class="status-badge status-returned">Refund
+                                                                                    Requested</span>
+                                                                                <% } else { %>
+                                                                                    <span
+                                                                                        class="status-badge status-unknown">Unknown</span>
+                                                                                    <% } %>
                                         </div>
-                                    <% }) %>
-                                </div>                                
-                    
+                                        <% }) %>
+                                </div>
+
                                 <!-- Action Buttons -->
                                 <div class="d-flex gap-3 justify-content-end">
-                                    <button class="btn btn-primary details-btn" data-order-id="<%= order._id %>">View Order</button>                                    
+                                    <% if (order.paymentStatus==="Pending" ) { %>
+                                        <button class="btn btn-warning retry-btn"
+                                            onclick="retryPayment('<%= order._id %>')">
+                                            Retry Payment
+                                        </button>
+                                        <% } else if (order.paymentStatus==="Paid" ) { %>
+                                            <button class="btn btn-primary details-btn"
+                                                data-order-id="<%= order._id %>">
+                                                View Order
+                                            </button>
+                                            <% } %>
                                 </div>
+
                             </div>
-                        <% }) %>
-                    <% } else { %>
-                        <div class="no-orders">
-                            <p class="no-orders">You haven't placed any orders yet. Start shopping now!</p>
-                            <a href="/user/renderShopPage" class="btn w-25 btn-primary">Shop Now</a>
-                        </div>
-                    <% } %>
+                            <% }) %>
+                                <% } else { %>
+                                    <div class="no-orders">
+                                        <p class="no-orders">You haven't placed any orders yet. Start shopping now!</p>
+                                        <a href="/user/renderShopPage" class="btn w-25 btn-primary">Shop Now</a>
+                                    </div>
+                                    <% } %>
                 </div>
             </div>
         </div>
 
-  <div class="bottom-nav">
-    <a href="/user/order" class="active">
-      <i class="fas fa-shopping-cart"></i>
-      <span>Orders</span>
-    </a>
-    <a href="/user/userProfile">
-      <i class="fas fa-user"></i>
-      <span>Profile</span>
-    </a>
-    <a href="/user/address">
-      <i class="fas fa-map-marker-alt"></i>
-      <span>Addresses</span>
-    </a>
-    <a href="/user/privacy">
-      <i class="fas fa-lock"></i>
-      <span>Privacy</span>
-    </a>
-    <a href="/user/wallet">
-      <i class="fas fa-wallet"></i>
-      <span>Wallet</span>
-    </a>
-  </div>
-    <script>
-    const offcanvasWrapper = document.querySelector('.offcanvas-menu-wrapper');
-    const offcanvasOverlay = document.querySelector('.offcanvas-menu-overlay');
-    const openBtn = document.querySelector('.canvas__open');
-    const closeBtn = document.getElementById('close-offcanvas');
+        <div class="bottom-nav">
+            <a href="/user/order" class="active">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Orders</span>
+            </a>
+            <a href="/user/userProfile">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+            <a href="/user/address">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Addresses</span>
+            </a>
+            <a href="/user/privacy">
+                <i class="fas fa-lock"></i>
+                <span>Privacy</span>
+            </a>
+            <a href="/user/wallet">
+                <i class="fas fa-wallet"></i>
+                <span>Wallet</span>
+            </a>
+        </div>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <script>
+            const offcanvasWrapper = document.querySelector('.offcanvas-menu-wrapper');
+            const offcanvasOverlay = document.querySelector('.offcanvas-menu-overlay');
+            const openBtn = document.querySelector('.canvas__open');
+            const closeBtn = document.getElementById('close-offcanvas');
 
-    // Open menu
-    openBtn.addEventListener('click', () => {
-        offcanvasWrapper.classList.add('active');
-        offcanvasOverlay.classList.add('active');
-    });
+            // Open menu
+            openBtn.addEventListener('click', () => {
+                offcanvasWrapper.classList.add('active');
+                offcanvasOverlay.classList.add('active');
+            });
 
-    // Close menu
-    closeBtn.addEventListener('click', () => {
-        offcanvasWrapper.classList.remove('active');
-        offcanvasOverlay.classList.remove('active');
-    });
+            // Close menu
+            closeBtn.addEventListener('click', () => {
+                offcanvasWrapper.classList.remove('active');
+                offcanvasOverlay.classList.remove('active');
+            });
 
-    // Close menu when clicking on overlay
-    offcanvasOverlay.addEventListener('click', () => {
-        offcanvasWrapper.classList.remove('active');
-        offcanvasOverlay.classList.remove('active');
-    });
+            // Close menu when clicking on overlay
+            offcanvasOverlay.addEventListener('click', () => {
+                offcanvasWrapper.classList.remove('active');
+                offcanvasOverlay.classList.remove('active');
+            });
 
 
-</script>
+
+            async function razorpayHandler(response) {
+                try {
+                    const verifyRes = await fetch('/payments', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            paymentMethod: 'razorpay',
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_signature: response.razorpay_signature
+                        })
+                    });
+
+                    const data = await verifyRes.json();
+                    if (!verifyRes.ok) throw new Error(data.error);
+
+                    Swal.fire({
+                        icon: 'success',
+                        text: data.message,
+                        showConfirmButton: true
+                    }).then(() => {
+                        window.location.href = '/payments/confirmOrder';
+                    });
+                } catch (err) {
+                    console.error('Payment verification failed:', err);
+                    Swal.fire({ icon: 'error', text: err.message || 'Verification failed' });
+                }
+            }
+
+            async function retryPayment(orderId) {
+                try {
+                    const res = await fetch('/payments/retry', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ orderId })
+                    });
+
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error);
+
+                    const options = {
+                        key: "<%= RAZOR_API_KEY %>",
+                        amount: data.amount,
+                        currency: data.currency,
+                        name: "zance&Co",
+                        order_id: data.orderId,
+                        handler: razorpayHandler,
+                        prefill: {
+                            name: "<%= user.name %>",
+                            email: "<%= user.email %>",
+                            contact: "<%= user.phone %>"
+                        },
+                        theme: { color: "#6C5DD3" }
+                    };
+
+                    const rzp = new Razorpay(options);
+                    rzp.open();
+
+                } catch (err) {
+                    console.error(err);
+                    Swal.fire({ icon: 'error', text: err.message });
+                }
+            }
+
+
+
+
+
+
+        </script>
         <script>
             document.querySelectorAll('.details-btn').forEach(button => {
                 button.addEventListener('click', (e) => {
@@ -443,30 +597,33 @@
                 });
             });
         </script>
-    
 
-    <script>
-        window.addEventListener('load', function() {
-            const loader = document.querySelector('.loader-wrapper');
-            const content = document.querySelector('.content');
-            setTimeout(function() {
-                loader.classList.add('loader-hidden');
-                content.classList.add('content-loaded');
-            }, 2000);
-        });
-    </script>
-    <!-- Js Plugins -->
-    <script src="../../js/jquery-3.3.1.min.js"></script>
-    <script src="../../js/bootstrap.min.js"></script>
-    <script src="../../js/jquery.nice-select.min.js"></script>
-    <script src="../../js/jquery.nicescroll.min.js"></script>
-    <script src="../../js/jquery.magnific-popup.min.js"></script>
-    <script src="../../js/jquery.countdown.min.js"></script>
-    <script src="../../js/jquery.slicknav.js"></script>
-    <script src="../../js/mixitup.min.js"></script>
-    <script src="../../js/owl.carousel.min.js"></script>
-    <script src="../../js/main.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 
-</body>
-</html>
+        <script>
+            window.addEventListener('load', function () {
+                const loader = document.querySelector('.loader-wrapper');
+                const content = document.querySelector('.content');
+                setTimeout(function () {
+                    loader.classList.add('loader-hidden');
+                    content.classList.add('content-loaded');
+                }, 2000);
+            });
+        </script>
+        <!-- Js Plugins -->
+        <script src="../../js/jquery-3.3.1.min.js"></script>
+        <script src="../../js/bootstrap.min.js"></script>
+        <script src="../../js/jquery.nice-select.min.js"></script>
+        <script src="../../js/jquery.nicescroll.min.js"></script>
+        <script src="../../js/jquery.magnific-popup.min.js"></script>
+        <script src="../../js/jquery.countdown.min.js"></script>
+        <script src="../../js/jquery.slicknav.js"></script>
+        <script src="../../js/mixitup.min.js"></script>
+        <script src="../../js/owl.carousel.min.js"></script>
+        <script src="../../js/main.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+            crossorigin="anonymous"></script>
+
+    </body>
+
+    </html>

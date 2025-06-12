@@ -59,6 +59,7 @@ const orderSchema = new Schema(
                 "Cancelled",
                 "Payment Failed",
                 "Returned",
+                "Pending"
               ],
             },
             timestamp: {
@@ -121,6 +122,7 @@ const orderSchema = new Schema(
         "Requested",
         "Approved",
         "Rejected",
+        "Pending"
       ],
     },
   },

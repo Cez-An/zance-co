@@ -29,43 +29,39 @@ const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const admin = await Admin.findOne({ email });
+    const admin = await Admin.findOne({ email: email.trim().toLowerCase() });
 
-    if (!admin) {
-      console.warn(`Login failed: Invalid credentials for email - ${email}`);
+    if (!admin || !(await bcrypt.compare(password, admin.password))) {
+      console.warn(`Login failed for email: ${email}`);
       return res.status(STATUS_CODE.UNAUTHORIZED).render("admin/login", {
         message: "Invalid email or password",
       });
     }
 
-    const isPasswordValid = await bcrypt.compare(password, admin.password);
+    req.session.regenerate((err) => {
+      if (err) {
+        console.error("Session regeneration error:", err);
+        return res.status(500).render("admin/login", {
+          message: "Session error. Please try again.",
+        });
+      }
 
-    if (!isPasswordValid) {
-      console.warn(`Login failed: Incorrect password for email - ${email}`);
-      return res.status(STATUS_CODE.UNAUTHORIZED).render("admin/login", {
-        message: "Invalid email or password",
-      });
-    }
+      req.session.admin = { id: admin._id, email: admin.email };
+      console.info(`Admin logged in successfully: ${email}`);
+      return res.redirect("/admin/dashboard");
+    });
 
-    req.session.admin = { id: admin._id, email: admin.email };
-
-    console.info(`Admin logged in successfully: ${email}
-      `);
-
-    return res.redirect("/admin/dashboard");
-    
   } catch (error) {
     console.error("Admin login error:", error);
     return res
       .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
-      .render("/pagenotfound");
+      .render("partials/404");
   }
 };
 
 const renderDashboard = (req, res) => {
   try {
-    console.log(`Admin Logged in
-      `);
+    console.log(`Admin Logged in`);
     res.status(STATUS_CODE.SUCCESS).render("admin/dashboard.ejs");
   } catch (error) {
     console.error("Error occurred while loading the dashboard:", error);

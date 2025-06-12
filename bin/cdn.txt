@@ -3,3 +3,121 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+// const otpVerification = async (req, res) => {
+//   try {
+
+//     const { otp } = req.body;
+
+//     console.log("Stored OTP:", req.session.userOtp);
+//     console.log("User Entered OTP:", otp);
+
+//     if (!req.session.userOtp) {
+//       return res.status(STATUS_CODE.BAD_REQUEST).json({
+//         success: false,
+//         message: "OTP session expired. Request a new OTP.",
+//       });
+//     }
+
+//     if (Date.now() > req.session.otpExpiry) {
+//       return res.status(STATUS_CODE.BAD_REQUEST).json({
+//         success: false,
+//         message: "OTP has expired. Please request a new one.",
+//       });
+//     }
+
+//     if (otp.toString() === req.session.userOtp.toString()) {
+//       req.session.isOtpVerified = true;
+//       const userId = await generateUserId();
+//       const user = req.session.userData;
+//       const passwordHash = await securePassword(user.password);
+
+//       const saveUserData = new User({
+//         name: user.name,
+//         userId,
+//         email: user.email,
+//         phone: user.number,
+//         password: passwordHash,
+//       });
+
+//       req.session.user = saveUserData;
+//       const referalcode = req.session.referalcode;
+
+//       const referedUser = await User.findOne({ referalCode: referalcode });
+//       console.log(referedUser);
+
+//       if (referedUser) {
+//           saveUserData.wallet += 50;
+//           referedUser.wallet = (referedUser.wallet || 0) + 50;
+//           referedUser.redeemedUsers.push(saveUserData._id);
+//           await referedUser.save();
+//       }
+//       await saveUserData.save();
+//       res
+//         .status(STATUS_CODE.SUCCESS)
+//         .json({ success: true, redirectUrl: "/user/login" });
+//     } else {
+//       res.status(STATUS_CODE.BAD_REQUEST).json({
+//         success: false,
+//         message: "Invalid OTP, Please try again backend",
+//       });
+//     }
+//   } catch (error) {
+//     console.error("Error Verifying OTP:", error);
+//     res
+//       .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
+//       .json({ success: false, message: "An error occurred" });
+//   }
+// };
+
+
+// const createRazorpayOrder = async (req, res) => {
+//   try {
+//     const userId = req.session.user?.id ?? req.session.user?._id ?? null;
+//     if (!userId) {
+//       return res
+//         .status(STATUS_CODE.BAD_REQUEST)
+//         .json({ error: "User not logged in" });
+//     }
+
+//     const cart = await Cart.findOne({ userId }).populate("items.productId");
+//     if (!cart || !cart.items.length === 0) {
+//       return res
+//         .status(STATUS_CODE.BAD_REQUEST)
+//         .json({ error: "Cart is empty" });
+//     }
+
+//     let cartTotal = cart.items.reduce(
+//       (acc, item) => acc + item.quantity * item.productId.offerPrice,
+//       0
+//     );
+//     const deliveryCharge = cartTotal < 499 ? 40 : 0;
+//     const couponDiscount = req.session.couponDiscount || 0;
+//     const grandTotal = cartTotal + deliveryCharge - couponDiscount;
+
+//     // Create Razorpay order
+//     const options = {
+//       amount: Math.round(grandTotal * 100),
+//       currency: "INR",
+//       receipt: `receipt_${Date.now()}`,
+//     };
+
+//     const razorpayOrder = await razorpay.orders.create(options);
+
+//     req.session.razorpayOrderId = razorpayOrder.id;
+//     req.session.orderAmount = grandTotal;
+//     await req.session.save();
+
+//     return res.status(STATUS_CODE.SUCCESS).json({
+//       orderId: razorpayOrder.id,
+//       amount: grandTotal * 100,
+//       currency: "INR",
+//       keyId: process.env.RAZOR_API_KEY,
+//     });
+//   } catch (error) {
+//     console.error("Error creating Razorpay order:", error);
+//     return res
+//       .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
+//       .json({ error: "Failed to create order" });
+//   }
+// };

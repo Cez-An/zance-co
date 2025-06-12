@@ -34,7 +34,7 @@ const loadPayments = async (req, res) => {
         if (cart && cart.items.length > 0) {
             cartTotal = cart.items.reduce((acc, item) => {
                 const product = item.productId;
-                const price = product?.salePrice || 0; 
+                const price = product?.offerPrice || product?.offerPrice  || 0; 
                 return acc + item.quantity * price;
             }, 0);
         
@@ -85,7 +85,7 @@ const createRazorpayOrder = async (req, res) => {
             return res.status(STATUS_CODE.BAD_REQUEST).json({ error: 'Cart is empty' });
         }
 
-        let cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.productId.salePrice, 0);
+        let cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.productId.offerPrice, 0);
         const deliveryCharge = cartTotal < 499 ? 40 : 0;
         const couponDiscount = req.session.couponDiscount || 0;
         const grandTotal = cartTotal + deliveryCharge - couponDiscount;
@@ -148,7 +148,7 @@ const paymentSuccess = async (req, res) => {
         if (paymentMethod === 'cod') {
 
 
-            let cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.productId.salePrice, 0);
+            let cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.productId.offerPrice, 0);
             const deliveryCharge = cartTotal < 499 ? 40 : 0;
             const couponDiscount = discount || 0;
             console.log("coupon discount",couponDiscount);
@@ -166,7 +166,7 @@ const paymentSuccess = async (req, res) => {
                     product: item.productId._id,
                     name: item.productId.name,
                     quantity: item.quantity,
-                    basePrice: item.productId.salePrice,
+                    basePrice: item.productId.offerPrice,
                     brand: item.productId.brand,
                     productImage: item.productId.productImage[0],
                     individualStatus: 'Placed',
@@ -210,7 +210,7 @@ const paymentSuccess = async (req, res) => {
             }
 
 
-            let cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.productId.salePrice, 0);
+            let cartTotal = cart.items.reduce((acc, item) => acc + item.quantity * item.productId.offerPrice, 0);
             const deliveryCharge = cartTotal < 499 ? 40 : 0;
             const couponDiscount = discount || 0;
             const grandTotal = cartTotal + deliveryCharge - couponDiscount;
@@ -222,7 +222,7 @@ const paymentSuccess = async (req, res) => {
                     product: item.productId._id,
                     name: item.productId.name,
                     quantity: item.quantity,
-                    basePrice: item.productId.salePrice,
+                    basePrice: item.productId.offerPrice,
                     brand: item.productId.brand,
                     productImage: item.productId.productImage[0],
                     individualStatus: 'Placed',

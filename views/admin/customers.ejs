@@ -268,7 +268,8 @@
 
         <br>
 
-        <div class="table-responsive">
+        <!-- TABLE VIEW (≥1024px) -->
+        <div class="table-responsive d-none d-lg-block">
             <table class="table table-hover">
                 <thead>
                     <tr class="text-center">
@@ -283,29 +284,26 @@
                     </tr>
                 </thead>
                 <tbody>
-
-                    <% i=1 %>
-                        <% user.forEach(element=> {%>
-
+                    <% let i=1; %>
+                        <% user.forEach(element=> { %>
                             <tr class="text-center">
                                 <td>
                                     <%= i++ %>
                                 </td>
                                 <td>
-                                    <%=element.name %>
+                                    <%= element.name %>
                                 </td>
                                 <td>
-                                    <%=element.email %>
+                                    <%= element.email %>
                                 </td>
                                 <td>
-                                    <%=element.phone %>
+                                    <%= element.phone %>
                                 </td>
-                                <td>₹&nbsp;<%=element.wallet %>
+                                <td>₹&nbsp;<%= element.wallet %>
                                 </td>
                                 <td>
-                                    <%=element.userId %>
+                                    <%= element.userId %>
                                 </td>
-
                                 <td>
                                     <button
                                         class="status-btn btn <%= element.isBlocked ? 'btn-danger' : 'btn-success' %> status-indicator"
@@ -321,12 +319,49 @@
                                         <%= element.isBlocked ? 'Unblock' : 'Block' %>
                                     </button>
                                 </td>
-
                             </tr>
                             <% }); %>
                 </tbody>
             </table>
         </div>
+
+        <!-- CARD VIEW (<1024px) -->
+        <div class="d-block d-lg-none">
+            <% user.forEach((element, index)=> { %>
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold mb-2">
+                            <%= element.name %>
+                        </h5>
+                        <p class="mb-1"><strong>Email:</strong>
+                            <%= element.email %>
+                        </p>
+                        <p class="mb-1"><strong>Phone:</strong>
+                            <%= element.phone %>
+                        </p>
+                        <p class="mb-1"><strong>Wallet:</strong> ₹<%= element.wallet %>
+                        </p>
+                        <p class="mb-1"><strong>User ID:</strong>
+                            <%= element.userId %>
+                        </p>
+                        <button
+                            class="status-btn btn <%= element.isBlocked ? 'btn-danger' : 'btn-success' %> status-indicator"
+                            data-id="<%= element._id %>">
+                            <%= element.isBlocked ? 'Blocked' : 'Active' %>
+                        </button>
+                        <div class="d-flex justify-content-between">
+                            <button
+                                class="status-btn btn <%= element.isBlocked ? 'btn-success' : 'btn-danger' %> action-btn"
+                                data-id="<%= element._id %>"
+                                data-action="<%= element.isBlocked ? 'unblock' : 'block' %>">
+                                <%= element.isBlocked ? 'Unblock' : 'Block' %>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <% }); %>
+        </div>
+
 
         <nav aria-label="Page navigation">
             <ul class="pagination">

@@ -268,62 +268,86 @@
 
         <br>
 
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr class="text-center">
-                        <th>No.</th>
-                        <th>Name</th>
-                        <th>Price</th>
-                        <th>Category</th>                        
-                        <th>Product ID</th>
-                        <th>Stock</th>
-                        <th>Discount %</th>                                             
-                        <th>Status</th>
-                        <th>Actions</th>
-                        <th>Edit</th>
-                    </tr>
-                </thead>
-                <tbody>
+       <!-- TABLE VIEW (md and up) -->
+<div class="table-responsive d-none d-md-block">
+    <table class="table table-hover">
+        <thead>
+            <tr class="text-center">
+                <th>No.</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Category</th>                        
+                <th>Product ID</th>
+                <th>Stock</th>
+                <th>Discount %</th>                                             
+                <th>Status</th>
+                <th>Actions</th>
+                <th>Edit</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% let i = 1; %>
+            <% product.forEach(element => { %>
+                <tr class="text-center">
+                    <td><%= i++ %></td>
+                    <td><%= element.name %></td>
+                    <td>₹&nbsp;<%= element.salePrice %></td>
+                    <td><%= element.category?.name %></td>
+                    <td><%= element.productId %></td>
+                    <td><%= element.quantity %></td>
+                    <td><%= element.productOffer %>&nbsp;%</td>
+                    <td>
+                        <button class="status-btn btn <%= element.isBlocked ? 'btn-danger' : 'btn-success' %> status-indicator"
+                            data-id="<%= element._id %>">
+                            <%= element.isBlocked ? 'BLOCKED' : 'ACTIVE' %>
+                        </button>
+                    </td>
+                    <td>
+                        <button class="status-btn btn <%= element.isBlocked ? 'btn-success' : 'btn-danger' %> action-btn"
+                            data-id="<%= element._id %>" data-action="<%= element.isBlocked ? 'unblock' : 'block' %>">
+                            <%= element.isBlocked ? 'Unblock' : 'Block' %>
+                        </button>
+                    </td>
+                    <td>
+                        <a href="/admin/products/<%= element._id %>">
+                            <button class="btn btn-dark">Edit</button>
+                        </a>
+                    </td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+</div>
 
-                    <% i=1 %>
-                        <% product.forEach(element=> {%>
-
-                            <tr class="text-center">
-
-                                <td><%=i++ %></td>
-                                <td><%=element.name %></td>
-                                <td>₹&nbsp;<%=element.salePrice %></td>
-                                <td><%=element.category?.name%></td>
-                                <td><%=element.productId %></td>
-                                <td><%=element.quantity  %> </td>
-                                <td><%=element.productOffer %>&nbsp;%</td>
-
-                                <td>
-                                    <button
-                                        class="status-btn btn <%= element.isBlocked ? 'btn-danger' : 'btn-success' %> status-indicator"
-                                        data-id="<%= element._id %>">
-                                        <%= element.isBlocked ? 'BLOCKED' : 'ACTIVE' %>
-                                    </button>
-                                </td>
-                                <td>
-                                    <button
-                                        class="status-btn btn <%= element.isBlocked ? 'btn-success' : 'btn-danger' %> action-btn"
-                                        data-id="<%= element._id %>"
-                                        data-action="<%= element.isBlocked ? 'unblock' : 'block' %>">
-                                        <%= element.isBlocked ? 'Unblock' : 'Block' %>
-                                    </button>
-                                </td>
-
-                                <td><a href="/admin/products/<%=element._id %>"><button
-                                            class="btn btn-dark">Edit</button></a></td>
-                            </tr>
-
-                            <% }); %>
-
-                </tbody>
-            </table>
+<!-- CARD VIEW (sm and below) -->
+<div class="d-block d-md-none">
+    <% product.forEach((element, index) => { %>
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title fw-bold"><%= element.name %></h5>
+                <p class="mb-1"><strong>Price:</strong> ₹<%= element.salePrice %></p>
+                <p class="mb-1"><strong>Category:</strong> <%= element.category?.name %></p>
+                <p class="mb-1"><strong>Product ID:</strong> <%= element.productId %></p>
+                <p class="mb-1"><strong>Stock:</strong> <%= element.quantity %></p>
+                <p class="mb-1"><strong>Discount:</strong> <%= element.productOffer %>%</p>
+                <p class="mb-2">
+                    <strong>Status:</strong>
+                    <span class="badge <%= element.isBlocked ? 'bg-danger' : 'bg-success' %>">
+                        <%= element.isBlocked ? 'BLOCKED' : 'ACTIVE' %>
+                    </span>
+                </p>
+                <div class="d-flex justify-content-between">
+                    <button class="status-btn btn <%= element.isBlocked ? 'btn-success' : 'btn-danger' %> action-btn"
+                            data-id="<%= element._id %>" data-action="<%= element.isBlocked ? 'unblock' : 'block' %>">
+                            <%= element.isBlocked ? 'Unblock' : 'Block' %>
+                        </button>
+                    <a href="/admin/products/<%= element._id %>" class="btn btn-dark btn-sm">Edit</a>
+                </div>
+            </div>
         </div>
+    <% }); %>
+</div>
+
 
         <nav aria-label="Page navigation">
             <ul class="pagination">

@@ -139,6 +139,11 @@ const addItemToCart = async (req, res) => {
 
     const totalRequestedQuantity = parsedQuantity + existingCartQuantity;
 
+    if(existingCartQuantity>=5){
+      return res.status(STATUS_CODE.BAD_REQUEST).json({
+        error: "You cannot add more than 5 units of a product to the cart.",
+      });
+    }
 
     if (totalRequestedQuantity > product.quantity){
       return res.status(STATUS_CODE.NOT_FOUND).json({ error: `Only ${product.quantity} unit(s) available in stock.

@@ -347,7 +347,7 @@
                                                 <%= item.quantity %> x <%= item.productId.name %>
                                             </span>
                                             <span class="text-white fw-medium flex-shrink-0">
-                                                ₹ <%= (item.quantity * item.productId.salePrice).toLocaleString('en-IN') %>
+                                                ₹ <%= (item.quantity * item.productId.offerPrice).toLocaleString('en-IN') %>
                                             </span>
                                         </div>
                                     <% }) %>

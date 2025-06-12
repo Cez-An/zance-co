@@ -27,7 +27,7 @@ const loadCheckout = async (req, res) => {
         if (cart && cart.items.length > 0) {
             cartTotal = cart.items.reduce((acc, item) => {
                 const product = item.productId;
-                const price = product?.salePrice || 0; 
+                const price = product?.offerPrice || product?.salePrice || 0;
                 return acc + item.quantity * price;
             }, 0);
         

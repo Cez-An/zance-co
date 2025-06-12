@@ -52,31 +52,43 @@
     </style>
 
     <!-- Payment Section -->
-    <main class="container mt-4">
+    <main class="container my-5">
+        
         <form id="paymentForm">
-            <div class="d-flex justify-content-between w-100 align-items-center" style="padding: 16px; border-radius: 10px;">
-                <h4 class="fw-bold mb-0 text-white">Select Payment Method</h4>
-                <div class="d-flex justify-content-center align-items-center gap-3">
-                    <div class="progress-step">
+           
+            <div class="container-fluid">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 p-3 mx-0"
+                style="border-radius: 10px; background-color: #343a40;">
+
+                <!-- Title -->
+                <h4 class="fw-bold mb-2 mb-md-0 text-white text-center text-md-start">
+                    Select Payment Method
+                </h4>
+
+                <!-- Progress Steps -->
+                <div class="d-flex flex-wrap justify-content-center justify-content-md-end align-items-center gap-2">
+                    <div class="progress-step active d-flex align-items-center">
                         <i class="fas fa-shopping-cart text-muted me-1" style="font-size: 1rem;"></i>
-                        <span class="fw-medium text-muted" style="font-size: 0.8rem;">Cart</span>
+                        <span class="fw-medium text-muted" style="font-size: 0.9rem;">Cart</span>
                     </div>
-                    <i class="fas fa-arrow-right progress-arrow text-muted"></i>
-                    <div class="progress-step active">
+                    <i class="fas fa-arrow-right text-muted"></i>
+                    <div class="progress-step d-flex align-items-center">
                         <i class="fas fa-truck me-1 text-muted" style="font-size: 0.9rem;"></i>
-                        <span style="font-size: 0.9rem;" class="text-muted">Shipping</span>
+                        <span class="text-muted" style="font-size: 0.8rem;">Shipping</span>
                     </div>
-                    <i class="fas fa-arrow-right progress-arrow text-muted"></i>
-                    <div class="progress-step">
-                        <i class="fas fa-credit-card text-white me-1" style="font-size: 0.9rem;"></i>
-                        <span class="fw-medium text-white" style="font-size: 0.8rem;">Payments</span>
+                    <i class="fas fa-arrow-right text-muted"></i>
+                    <div class="progress-step d-flex align-items-center">
+                        <i class="fas fa-credit-card me-1 text-white" style="font-size: 0.9rem;"></i>
+                        <span class="text-white" style="font-size: 0.8rem;">Payments</span>
                     </div>
                 </div>
             </div>
+        </div>
+
             <div class="row g-4">
                 
                 <!-- Payment Methods -->
-                <div class="col-md-8">
+                <div class="col-md-12 col-lg-8">
             
                     <!-- Cash on Delivery -->
                     <div class="card p-3 mb-3 border-0 shadow-sm" style="background-color: #eae2fc;">
@@ -108,7 +120,7 @@
                 </div>
     
                 <!-- Price Summary -->
-                  <div class="col-lg-4">
+                  <div class="col-md-12 col-lg-4">
                     <div class="card p-3 shadow-sm border-0 order-summary mb-3">
                         <h5 class="fw-bold text-white mb-4">Price Details</h5>
 
@@ -154,6 +166,7 @@
                 </div>
             </div>
         </form>
+        
     </main>
     <br><br>
 

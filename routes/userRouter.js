@@ -132,4 +132,8 @@ router.post('/couponValidate', userAuth.checkStatus,couponController.validateCou
 
 router.get("/pagenotfound", userController.pageNotFound);
 
+router.get("/about",shopController.aboutpage)
+
+router.get("/testing",shopController.testing)
+
 export default router;

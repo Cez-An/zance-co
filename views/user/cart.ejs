@@ -11,7 +11,7 @@
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap"
-    rel="stylesheet">
+        rel="stylesheet">
 
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
@@ -27,102 +27,99 @@
     <link rel="stylesheet" href="../../css/nice-select.css" type="text/css">
     <link rel="stylesheet" href="../../css/owl.carousel.min.css" type="text/css">
     <link rel="stylesheet" href="../../css/slicknav.min.css" type="text/css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
     <link rel="stylesheet" href="../../css/style.css" type="text/css">
     <link rel="stylesheet" href="../../css/headerpartials.css">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 <style>
-a {
-    text-decoration: none;
-}
-.text-muted {
-color: #6c757d!important;
-}
+    a {
+        text-decoration: none;
+    }
+
+    .text-muted {
+        color: #6c757d !important;
+    }
 </style>
-<body>
+ <style>
+        .offcanvas-menu-wrapper {
+        margin-top: 60px; /* Adjust based on your navbar height */
+        z-index: 1001;
+        position: relative;
+        }
+        .header {
+        z-index: 1000;
+        position: relative;
+        }
+        .offcanvas-menu-wrapper {
+        display: none;
+        background: white;
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 999;
+    }
     
-<!-- Offcanvas Menu Begin -->
-    <div class="offcanvas-menu-overlay"></div>
-    <div class="offcanvas-menu-wrapper">
-       
-        <div class="offcanvas__nav__option">
-            
-            <a href="/user/wishlist"><i class="bi bi-suit-heart"></i></a>
-            <a href="/user/cart"><i class="bi bi-bag"></i></a>
-            <% if (locals.user) { %>
-                <div class="dropdown">
-                   <a href="" class="sign-in-link" id="user-name"><%=locals.user.name%></a>
-                   <div class="dropdown-content">
-                       <a href="/user/userProfile">User Profile</a>
-                       <a href="/user/logout">Logout</a>
-                   </div>
-                </div>
-                <% } else { %>
-                
-               <a href="/user/signup">SIGN UP</a>
-               <a href="/user/login">LOG IN</a>
-
-               <% } %>
-
-        </div>
-        <div id="mobile-menu-wrap"></div>
-        <div class="offcanvas__text">
-            <p>Your Ultimate Keyboard Destination</p>
-        </div>
-    </div>
-    <!-- Offcanvas Menu End -->
-
-    <!-- Header Section Begin -->
-    <header class="header">
-        
-        <div class="container">
-            <div class="row nav-bar-size">
-                <div class="col-lg-3 col-md-3">
-                    <div class="header__logo">
-                        <a href="/user"><img class="nav_logo" src="../../img/logo/ZANCE&co_navbar_logo.svg" alt=""></a>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <nav class="header__menu mobile-menu">
-                        <ul>
-                            <li class="active"><a href="/user">HOME</a></li>
-                            <li><a href="/user/renderShopPage">SHOPS</a></li>                            
-                            <li><a href="/user">ABOUT</a></li>
-                            <li><a href="/user">CONTACT</a></li>
-                        </ul>
-                    </nav>
-                </div>
-                <div class="col-lg-3 col-md-3">
-                    <div class="header__nav__option">
-                        <a href="/user/wishlist"><i class="bi bi-suit-heart"></i></a>
-                        <a href="/user/cart"><i class="bi bi-bag"></i></a>
-
-                        <% if (locals.user) { %>
-                         <div class="dropdown">
-                            <a href="" class="sign-in-link" id="user-name"><%=locals.user.name%></a>
-                            <div class="dropdown-content">
-                                <a href="/user/userProfile">User Profile</a>
-                                <a href="/user/logout">Logout</a>
-                            </div>
-                         </div>
-                         <% } else { %>
-                         
-                        <a href="/user/signup">SIGN UP</a>
-                        <a href="/user/login">LOG IN</a>
-
-                        <% } %>
-                    </div>
-                </div>
-            </div>
-            <div class="canvas__open"><i class="fa fa-bars text-light"></i></div>
-        </div>
-    </header>
+    .offcanvas-menu-wrapper.active {
+        display: block;
+    }
+    .offcanvas__nav__option {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+    }
     
-    <!-- Header Section End -->
+    .offcanvas__nav__option a {
+        color: #000;
+        font-weight: 500;
+        font-size: 14px;
+    }
+    .offcanvas-close {
+      text-align: right;
+      padding: 15px 20px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #000;
+    }
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    .offcanvas-close i {
+      transition: 0.3s;
+    }
+
+    .offcanvas-close i:hover {
+      color: #8a2be2; /* Light purple hover or match your theme */
+    }
+    .offcanvas-menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 998;
+      display: none; /* hidden by default */
+    }
+    .offcanvas-menu-overlay.active {
+      display: block;
+    }
+  
+    a {
+        text-decoration: none;
+    }
+
+    .text-muted {
+        color: #6c757d !important;
+    }
+    
+    </style>
 
     <style>
         .progress-step {
@@ -200,66 +197,159 @@ color: #6c757d!important;
             position: sticky;
             top: 20px;
         }
-
     </style>
+
+<body>
+
+    <!-- Offcanvas Menu Begin -->
+    <div class="offcanvas-menu-overlay"></div>
+    <div class="offcanvas-menu-wrapper">
+       <div class="offcanvas-close">
+        <i class="fa fa-times" id="close-offcanvas"></i>
+        </div>
+
+        <div class="offcanvas__nav__option">
+            <a href="/user/wishlist"><i class="bi bi-suit-heart"></i></a>
+            <a href="/user/cart"><i class="bi bi-bag"></i></a>
+            <% if (locals.user) { %>
+                <div class="dropdown">
+                   <a class="sign-in-link"  id="user-name"><%=locals.user.name%></a>
+                   <div class="dropdown-content">
+                       <a href="/user/userProfile">User Profile</a>
+                       <a href="/user/order">Orders</a>
+                       <!-- <a href="/user/userProfile">User Profile</a> -->
+                       <a href="/user/logout">Logout</a>
+                   </div>
+                </div>
+                <% } else { %>
+                
+               <a href="/user/signup">SIGN UP</a>
+               <a href="/user/login">LOG IN</a>
+
+               <% } %>
+
+        </div>
+        <div id="mobile-menu-wrap"></div>
+        <div class="offcanvas__text">
+            <p>Your Ultimate Keyboard Destination</p>
+        </div>
+    </div>
+    <!-- Offcanvas Menu End -->
+
+    <!-- Header Section Begin -->
+    <header class="header">
+        
+        <div class="container">
+            <div class="row nav-bar-size">
+                <div class="col-lg-3 col-md-3">
+                    <div class="header__logo">
+                        <a href="/user"><img class="nav_logo" src="../../img/logo/ZANCE&co_navbar_logo.svg" alt=""></a>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <nav class="header__menu mobile-menu">
+                        <ul>
+                            <li class="active"><a href="/user">HOME</a></li>
+                            <li><a href="/user/renderShopPage">SHOP</a></li>                         
+                            <li><a href="/user/about">ABOUT</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="header__nav__option">
+                        <a href="/user/wishlist"><i class="bi bi-suit-heart"></i></a>
+                        <a href="/user/cart"><i class="bi bi-bag"></i></a>
+
+                        <% if (locals.user) { %>
+                         <div class="dropdown">
+                            <a  class="sign-in-link" id="user-name"><%=locals.user.name%></a>
+                            <div class="dropdown-content">
+                                <a href="/user/userProfile">User Profile</a>
+                                <a href="/user/order">Orders</a>
+                                <a href="/user/logout">Logout</a>
+                            </div>
+                         </div>
+                         <% } else { %>
+                         
+                        <a href="/user/signup">SIGN UP</a>
+                        <a href="/user/login">LOG IN</a>
+
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            <div class="canvas__open"><i class="fa fa-bars text-light"></i></div>
+        </div>
+    </header>
+
+    <!-- Header Section End -->
+
 
     <!-- Main Section -->
     <main class="container my-5">
-        
-        <div class="d-flex justify-content-between align-items-center mb-3"
-            style="padding: 16px; border-radius: 10px;">
-            <h4 class="fw-bold mb-0 text-white">Discover Items in your Cart</h4>
-            <div class="d-flex justify-content-center align-items-center">
-                <div class="progress-step active">
-                    &nbsp;&nbsp;<i class="fas fa-shopping-cart text-white me-1" style="font-size: 1rem;"></i>
-                    <span class="fw-medium " style="font-size: 0.9rem; color: white;">Cart</span>
-                </div>
-                <i class="fas fa-arrow-right progress-arrow text-muted"></i>
-                <div class="progress-step">
-                    <i class="fas fa-truck me-1 text-muted" style="font-size: 0.9rem;"></i>
-                    <span style="font-size: 0.8rem;" class="text-muted">Shipping</span>
-                </div>
-                <i class="fas fa-arrow-right progress-arrow text-muted"></i>
-                <div class="progress-step">
-                    <i class="fas fa-credit-card text-muted me-1" style="font-size: 0.9rem;"></i>
-                    <span class="fw-medium text-muted" style="font-size: 0.8rem;">Payments</span>
+
+        <div class="container-fluid">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 p-3 mx-0"
+                style="border-radius: 10px; background-color: #343a40;">
+
+                <!-- Title -->
+                <h4 class="fw-bold mb-2 mb-md-0 text-white text-center text-md-start">
+                    Discover Items in your Cart
+                </h4>
+
+                <!-- Progress Steps -->
+                <div class="d-flex flex-wrap justify-content-center justify-content-md-end align-items-center gap-2">
+                    <div class="progress-step active d-flex align-items-center">
+                        <i class="fas fa-shopping-cart text-white me-1" style="font-size: 1rem;"></i>
+                        <span class="fw-medium text-white" style="font-size: 0.9rem;">Cart</span>
+                    </div>
+                    <i class="fas fa-arrow-right text-muted"></i>
+                    <div class="progress-step d-flex align-items-center">
+                        <i class="fas fa-truck me-1 text-muted" style="font-size: 0.9rem;"></i>
+                        <span class="text-muted" style="font-size: 0.8rem;">Shipping</span>
+                    </div>
+                    <i class="fas fa-arrow-right text-muted"></i>
+                    <div class="progress-step d-flex align-items-center">
+                        <i class="fas fa-credit-card me-1 text-muted" style="font-size: 0.9rem;"></i>
+                        <span class="text-muted" style="font-size: 0.8rem;">Payments</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Cart Section -->      
+
+        <!-- Cart Section -->
         <div class="row g-5">
-            <div id="cart-container" class="col-md-8">
-                <% if (cart && cart.items && cart.items.length > 0) { %>
-                    <% cart.items.forEach(item => { %>
-                        <div class="card mb-4 shadow-sm border-0 cart-item"
-                            style="background-color: #eae2fc;" data-product-id="<%= item.productId._id %>" data-base-price="<%= item.productId.salePrice %>">
+            <div id="cart-container" class="col-lg-8 col-md-12 ">
+                <% if (cart && cart.items && cart.items.length> 0) { %>
+                    <% cart.items.forEach(item=> { %>
+                        <div class="card mb-4 shadow-sm border-0 cart-item" style="background-color: #eae2fc;"
+                            data-product-id="<%= item.productId._id %>"
+                            data-base-price="<%= item.productId.salePrice %>">
                             <div class="row g-0 align-items-center px-4 py-2">
-                                <div class="col-3 col-md-2">
+                                <div class="col-md-2 text-center">
                                     <img src="<%= item.productImage %>" alt="<%= item.productId.name %>"
-                                        class="img-fluid rounded"
-                                        style="max-width: 100px; object-fit: cover; border: 1px solid #EDEDED;">
+                                        class="img-fluid rounded" style="max-height: 80px; object-fit: contain;">
                                 </div>
                                 <div class="col-12 col-md-10">
-                                    <div class="d-flex align-items-center flex-nowrap gap-3">
-                                        <div class="flex-grow-1" style="min-width: 0;">
+                                     <div class="flex-grow-1" style="min-width: 0;">
                                             <h6 class="fw-bold mb-2 text-dark text-truncate"
                                                 style="font-size: 1.05rem;">
                                                 <%= item.productId.name %>
                                             </h6>
-                                            <p class="mb-0 text-dark fw-semibold">
-                                                <span style="font-size: 1.2rem;">₹ <%= item.productId.salePrice.toLocaleString('en-IN') %></span> | 
-                                                <del style="font-size: 0.9rem; color: #888;">₹ <%= item.basePrice.toLocaleString('en-IN') %></del>
-                                            </p>
                                             <input type="hidden" id="userId" value="<%= user._id %>">
                                         </div>
+                                    <div class="d-flex align-items-center justify-content-center justify-content-md-end flex-nowrap gap-3">
+                                       
                                         <div class="d-flex align-items-center gap-3 flex-shrink-0">
                                             <div class="quantity-control d-flex align-items-center gap-2">
                                                 <button class="quantity-btn"
                                                     onclick="updateQuantity('<%= item.productId._id %>', -1)">
                                                     <i class="fa-solid fa-minus" style="font-size: 12px;"></i>
                                                 </button>
-                                                <span class="quantity-display"><%= item.quantity %></span>
+                                                <span class="quantity-display">
+                                                    <%= item.quantity %>
+                                                </span>
                                                 <button class="quantity-btn"
                                                     onclick="updateQuantity('<%= item.productId._id %>', 1)">
                                                     <i class="fa-solid fa-plus" style="font-size: 12px;"></i>
@@ -267,7 +357,8 @@ color: #6c757d!important;
                                             </div>
                                             <p class="mb-0 fw-bold text-dark total-price"
                                                 style="font-size: 15px; width: 70px; flex-shrink: 0;">
-                                                ₹ <%= (item.quantity * item.productId.salePrice).toLocaleString('en-IN') %>
+                                                ₹ <%= (item.quantity * item.productId.salePrice).toLocaleString('en-IN')
+                                                    %>
                                             </p>
                                             <button class="btn btn-outline-danger btn-sm rounded-circle remove-btn"
                                                 onclick="removeFromCart('<%= item.productId._id %>')"
@@ -279,209 +370,208 @@ color: #6c757d!important;
                                 </div>
                             </div>
                         </div>
-                    <% }) %>
-                <% } else { %>
-                    <div class="text-center py-5 bg-dark" style="border-radius: 20px;">
-                        <i class="fa-solid fa-cart-shopping fa-4x text-white mb-4" style="font-size: 3rem;"></i>
-                        <p class="text-white fs-4 fw-medium">Your cart is empty!</p>
-                        <a href="/user/renderShopPage" class="btn mt-3 px-5 py-2 text-white"
-                            style="background: linear-gradient(90deg, #3f4664, #1a1549); border-radius: 20px;">
-                            Start Shopping
-                        </a>
-                    </div>
-                <% } %>
+                        <% }) %>
+                            <% } else { %>
+                                <div class="text-center py-5 bg-dark" style="border-radius: 20px;">
+                                    <i class="fa-solid fa-cart-shopping fa-4x text-white mb-4"
+                                        style="font-size: 3rem;"></i>
+                                    <p class="text-white fs-4 fw-medium">Your cart is empty!</p>
+                                    <a href="/user/renderShopPage" class="btn mt-3 px-5 py-2 text-white"
+                                        style="background: linear-gradient(90deg, #3f4664, #1a1549); border-radius: 20px;">
+                                        Start Shopping
+                                    </a>
+                                </div>
+                                <% } %>
             </div>
-            
-            
+
+
 
             <!-- Order Summary -->
-            <div class="col-md-4">
+            <div class="col-lg-4 col-md-12 ">
                 <div class="card p-4 shadow-sm border-0 order-summary">
                     <h5 class="fw-bold text-white mb-4" style="font-size: 1.5rem;">Order Summary</h5>
                     <% if (cart && cart.items && cart.items.length> 0) { %>
-                        <% 
-                                let total = 0;
-                                cart.items.forEach(item => { 
-                                    total += item.quantity * item.productId.salePrice;
-                                });
-                                let deliveryCharge = total < 499 ? 39 : 0;
-                                let grandTotal = total + deliveryCharge;
-                            %>
-                            <% cart.items.forEach(item => { %>
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <span class="text-white text-truncate" 
-                                        style="font-size: 0.95rem; max-width: 70%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                        <%= item.quantity %> x <%= item.productId.name %>
-                                    </span>
-                                    <span class="text-white fw-medium flex-shrink-0">
-                                        ₹ <%= (item.quantity * item.productId.salePrice).toLocaleString('en-IN') %>
-                                    </span>
-                                </div>
-                            <% }) %>
+                        <% let total=0; cart.items.forEach(item=> {
+                            total += item.quantity * item.productId.salePrice;
+                            });
+                            let deliveryCharge = total < 499 ? 39 : 0; let grandTotal=total + deliveryCharge; %>
+                                <% cart.items.forEach(item=> { %>
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <span class="text-white text-truncate"
+                                            style="font-size: 0.95rem; max-width: 70%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                            <%= item.quantity %> x <%= item.productId.name %>
+                                        </span>
+                                        <span class="text-white fw-medium flex-shrink-0">
+                                            ₹ <%= (item.quantity * item.productId.salePrice).toLocaleString('en-IN') %>
+                                        </span>
+                                    </div>
+                                    <% }) %>
 
-                            <!-- Delivery Charges -->
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="text-white" style="font-size: 0.95rem;">Delivery Charges</span>
-                                <span class="<%= deliveryCharge ? 'text-danger' : 'text-success' %> flex-shrink-0">
-                                    <%= deliveryCharge ? `₹ ${deliveryCharge}` : 'Free' %>
-                                </span>
-                            </div>
+                                        <!-- Delivery Charges -->
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="text-white" style="font-size: 0.95rem;">Delivery Charges</span>
+                                            <span
+                                                class="<%= deliveryCharge ? 'text-danger' : 'text-success' %> flex-shrink-0">
+                                                <%= deliveryCharge ? `₹ ${deliveryCharge}` : 'Free' %>
+                                            </span>
+                                        </div>
 
-                            <hr class="my-4" style="border-color: #E0E0E0;">
+                                        <hr class="my-4" style="border-color: #E0E0E0;">
 
-                            <!-- Total Amount (Including GST and Delivery) -->
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fw-bold text-white" style="font-size: 1.2rem;">Total</span>
-                                <span class="fw-bold text-white flex-shrink-0" style="font-size: 1.2rem;">
-                                    ₹ <%= grandTotal.toLocaleString('en-IN') %>
-                                </span>
-                            </div>
+                                        <!-- Total Amount (Including GST and Delivery) -->
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="fw-bold text-white" style="font-size: 1.2rem;">Total</span>
+                                            <span class="fw-bold text-white flex-shrink-0" style="font-size: 1.2rem;">
+                                                ₹ <%= grandTotal.toLocaleString('en-IN') %>
+                                            </span>
+                                        </div>
 
-                            <button class="btn checkout-btn w-100 mt-4"
-                                onclick="goToCheckout('<%= cart._id %>', '<%= user._id %>')"
-                                style="border-radius: 12px; padding: 12px; font-size: 1.1rem; color: #000000;background-color: rgb(255, 255, 255);">
-                                Continue to Checkout
-                            </button>
-                        <% } else { %>
-                            <p class="text-white text-center fs-5">No items in your cart.</p>
-                    <% } %>
+                                        <button class="btn checkout-btn w-100 mt-4"
+                                            onclick="goToCheckout('<%= cart._id %>', '<%= user._id %>')"
+                                            style="border-radius: 12px; padding: 12px; font-size: 1.1rem; color: #000000;background-color: rgb(255, 255, 255);">
+                                            Continue to Checkout
+                                        </button>
+                                        <% } else { %>
+                                            <p class="text-white text-center fs-5">No items in your cart.</p>
+                                            <% } %>
                 </div>
             </div>
+
         </div>
     </main>
-<br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br>
 
 
 
-<!-- Footer Section Begin -->
-<footer class="footer">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-3 col-md-6 col-sm-6">
-                <div class="footer__about">
-                    <div class="footer__logo">
-                        <a href="#"><img src="../../img/logo/ZANCE&co_footer_logo.svg" alt=""></a>
+    <!-- Footer Section Begin -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                    <div class="footer__about">
+                        <div class="footer__logo">
+                            <a href="#"><img src="../../img/logo/ZANCE&co_footer_logo.svg" alt=""></a>
+                        </div>
+                        <p>Go Beyond Limits</p>
+                        <a href="#"><img src="../../img/icon/social_media.svg" alt=""></a>
                     </div>
-                    <p>Go Beyond Limits</p>
-                    <a href="#"><img src="../../img/icon/social_media.svg" alt=""></a>
+                </div>
+                <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
+                    <div class="footer__widget">
+                        <h6>GET IN TOUCH </h6>
+                        <ul>
+                            <li><a href="#">help@zance&cotech.com</a></li>
+                            <li><a href="#">5th block, Kollam, Kerala,, 691302</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-6">
+                    <div class="footer__widget">
+                        <h6>POLICIES</h6>
+                        <ul>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Shipping and Returns</a></li>
+                            <li><a href="#">Warranty Guidelines</a></li>
+                            <li><a href="#">Terms and Conditions</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-3 col-sm-6">
+                    <div class="footer__widget">
+                        <h6>QUICK LINKS</h6>
+                        <ul>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">About Us</a></li>
+                            <li><a href="#">Downloads</a></li>
+                            <li><a href="#">FAQs </a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
-                <div class="footer__widget">
-                    <h6>GET IN TOUCH </h6>
-                    <ul>
-                        <li><a href="#">help@zance&cotech.com</a></li>
-                        <li><a href="#">5th block, Kollam, Kerala,, 691302</a></li>                       
-                    </ul>
-                </div>
-            </div>
-            <div class="col-lg-2 col-md-3 col-sm-6">
-                <div class="footer__widget">
-                    <h6>POLICIES</h6>
-                    <ul>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Shipping and Returns</a></li>
-                        <li><a href="#">Warranty Guidelines</a></li>
-                        <li><a href="#">Terms and Conditions</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-lg-2 col-md-3 col-sm-6">
-                <div class="footer__widget">
-                    <h6>QUICK LINKS</h6>
-                    <ul>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Downloads</a></li>
-                        <li><a href="#">FAQs    </a></li>
-                    </ul>
-                </div>
-            </div>            
-        </div>
-        <div class="row">
-            <div class="col-lg-12 text-center">
-                <div class="footer__copyright__text">                    
-                    <p>Copyright ©
-                        <script>
-                            document.write(new Date().getFullYear());
-                        </script>
-                        All rights reserved by zance&co
-                    </p>                    
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <div class="footer__copyright__text">
+                        <p>Copyright ©
+                            <script>
+                                document.write(new Date().getFullYear());
+                            </script>
+                            All rights reserved by zance&co
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</footer>
+    </footer>
 
-<script>
+    <script>
 
-async function updateQuantity(productId, change) {
-    try {
-        const response = await fetch('/user/cart', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ productId, change }),
-        });
+        async function updateQuantity(productId, change) {
+            try {
+                const response = await fetch('/user/cart', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ productId, change }),
+                });
 
-        const data = await response.json();
+                const data = await response.json();
 
-        if (response.ok) {
-            const itemElem = document.querySelector(`[data-product-id="${productId}"]`);
-            const quantityElem = itemElem.querySelector('.quantity-display');
-            const priceElem = itemElem.querySelector('.total-price');
-            const unitPrice = parseFloat(itemElem.dataset.basePrice);
+                if (response.ok) {
+                    const itemElem = document.querySelector(`[data-product-id="${productId}"]`);
+                    const quantityElem = itemElem.querySelector('.quantity-display');
+                    const priceElem = itemElem.querySelector('.total-price');
+                    const unitPrice = parseFloat(itemElem.dataset.basePrice);
 
-            let newQuantity = parseInt(quantityElem.textContent) + change;
-            quantityElem.textContent = newQuantity;
-            priceElem.textContent = `₹ ${(newQuantity * unitPrice).toLocaleString('en-IN')}`;
+                    let newQuantity = parseInt(quantityElem.textContent) + change;
+                    quantityElem.textContent = newQuantity;
+                    priceElem.textContent = `₹ ${(newQuantity * unitPrice).toLocaleString('en-IN')}`;
 
-            updateOrderSummary(); // <-- Recalculate totals
-        } else {
-            Swal.fire({
-                icon: 'error',
-                text: data.error || 'Failed to update quantity',
-            });
+                    updateOrderSummary(); // <-- Recalculate totals
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        text: data.error || 'Failed to update quantity',
+                    });
+                }
+            } catch (error) {
+                console.error('Error updating quantity:', error);
+                Swal.fire({
+                    icon: 'error',
+                    text: 'Something went wrong. Please try again later.',
+                });
+            }
         }
-    } catch (error) {
-        console.error('Error updating quantity:', error);
-        Swal.fire({
-            icon: 'error',
-            text: 'Something went wrong. Please try again later.',
-        });
-    }
-}
 
-async function removeFromCart(productId) {
-    const userId = document.getElementById('userId').value;
+        async function removeFromCart(productId) {
+            const userId = document.getElementById('userId').value;
 
-    const result = await Swal.fire({
-        text: "Do you really want to remove this item from your cart?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes, remove it!',
-        cancelButtonText: 'Cancel'
-    });
+            const result = await Swal.fire({
+                text: "Do you really want to remove this item from your cart?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, remove it!',
+                cancelButtonText: 'Cancel'
+            });
 
-    if (result.isConfirmed) {
-        const response = await fetch(`/user/cart?userId=${userId}`, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ productId })
-        });
+            if (result.isConfirmed) {
+                const response = await fetch(`/user/cart?userId=${userId}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ productId })
+                });
 
-        if (response.ok) {
-            const itemElem = document.querySelector(`[data-product-id="${productId}"]`);
-            itemElem.remove();
+                if (response.ok) {
+                    const itemElem = document.querySelector(`[data-product-id="${productId}"]`);
+                    itemElem.remove();
 
-            // Update order summary
-            updateOrderSummary();
+                    // Update order summary
+                    updateOrderSummary();
 
-            // If cart is empty, show empty message
-            const remainingItems = document.querySelectorAll('.cart-item');
-            if (remainingItems.length === 0) {
-                document.getElementById('cart-container').innerHTML = `
+                    // If cart is empty, show empty message
+                    const remainingItems = document.querySelectorAll('.cart-item');
+                    if (remainingItems.length === 0) {
+                        document.getElementById('cart-container').innerHTML = `
                     <div class="text-center py-5 bg-dark" style="border-radius: 20px;">
                         <i class="fa-solid fa-cart-shopping fa-4x text-white mb-4" style="font-size: 3rem;"></i>
                         <p class="text-white fs-4 fw-medium">Your cart is empty!</p>
@@ -491,47 +581,47 @@ async function removeFromCart(productId) {
                         </a>
                     </div>`;
 
-                // Also clear order summary
-                document.querySelector('.order-summary').innerHTML = `
+                        // Also clear order summary
+                        document.querySelector('.order-summary').innerHTML = `
                     <h5 class="fw-bold text-white mb-4" style="font-size: 1.5rem;">Order Summary</h5>
                     <p class="text-white text-center fs-5">No items in your cart.</p>
                 `;
+                    }
+
+                    Swal.fire({
+                        text: 'The item has been removed from your cart.',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                } else {
+                    Swal.fire({
+                        text: 'Failed to remove the item from the cart.',
+                        icon: 'error',
+                        showConfirmButton: false,
+                        timer: 1500,
+                    });
+                }
             }
-
-            Swal.fire({
-                text: 'The item has been removed from your cart.',
-                icon: 'success',
-                showConfirmButton: false,
-                timer: 1500,
-            });
-        } else {
-            Swal.fire({
-                text: 'Failed to remove the item from the cart.',
-                icon: 'error',
-                showConfirmButton: false,
-                timer: 1500,
-            });
         }
-    }
-}
 
-function updateOrderSummary() {
-    const items = document.querySelectorAll('.cart-item');
-    const summaryContainer = document.querySelector('.order-summary');
+        function updateOrderSummary() {
+            const items = document.querySelectorAll('.cart-item');
+            const summaryContainer = document.querySelector('.order-summary');
 
-    if (!summaryContainer) return;
+            if (!summaryContainer) return;
 
-    let subtotal = 0;
-    let summaryHTML = '';
+            let subtotal = 0;
+            let summaryHTML = '';
 
-    items.forEach(item => {
-        const productName = item.querySelector('h6').textContent.trim();
-        const quantity = parseInt(item.querySelector('.quantity-display').textContent);
-        const unitPrice = parseFloat(item.dataset.basePrice);
-        const itemTotal = quantity * unitPrice;
-        subtotal += itemTotal;
+            items.forEach(item => {
+                const productName = item.querySelector('h6').textContent.trim();
+                const quantity = parseInt(item.querySelector('.quantity-display').textContent);
+                const unitPrice = parseFloat(item.dataset.basePrice);
+                const itemTotal = quantity * unitPrice;
+                subtotal += itemTotal;
 
-        summaryHTML += `
+                summaryHTML += `
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <span class="text-white text-truncate" style="font-size: 0.95rem; max-width: 70%;">
                     ${quantity} x ${productName}
@@ -541,12 +631,12 @@ function updateOrderSummary() {
                 </span>
             </div>
         `;
-    });
+            });
 
-    const deliveryCharge = subtotal < 499 ? 39 : 0;
-    const grandTotal = subtotal + deliveryCharge;
+            const deliveryCharge = subtotal < 499 ? 39 : 0;
+            const grandTotal = subtotal + deliveryCharge;
 
-    summaryContainer.innerHTML = `
+            summaryContainer.innerHTML = `
         <h5 class="fw-bold text-white mb-4" style="font-size: 1.5rem;">Order Summary</h5>
         ${summaryHTML}
         <div class="d-flex justify-content-between align-items-center mb-2">
@@ -568,26 +658,53 @@ function updateOrderSummary() {
             style="border-radius: 12px; padding: 12px; font-size: 1.1rem; color: #000000;background-color: rgb(255, 255, 255);">Continue to Checkout</button>
         <% } %>
     `;
-}
+        }
 
 
-    // Go to Checkout
-    function goToCheckout(cartId, userId) {
-        window.location.href = `/user/checkout?cartId=${cartId}&userId=${userId}`;
-    }
+        // Go to Checkout
+        function goToCheckout(cartId, userId) {
+            window.location.href = `/user/checkout?cartId=${cartId}&userId=${userId}`;
+        }
+    </script>
+<script>
+    const offcanvasWrapper = document.querySelector('.offcanvas-menu-wrapper');
+    const offcanvasOverlay = document.querySelector('.offcanvas-menu-overlay');
+    const openBtn = document.querySelector('.canvas__open');
+    const closeBtn = document.getElementById('close-offcanvas');
+
+    // Open menu
+    openBtn.addEventListener('click', () => {
+        offcanvasWrapper.classList.add('active');
+        offcanvasOverlay.classList.add('active');
+    });
+
+    // Close menu
+    closeBtn.addEventListener('click', () => {
+        offcanvasWrapper.classList.remove('active');
+        offcanvasOverlay.classList.remove('active');
+    });
+
+    // Close menu when clicking on overlay
+    offcanvasOverlay.addEventListener('click', () => {
+        offcanvasWrapper.classList.remove('active');
+        offcanvasOverlay.classList.remove('active');
+    });
+
+
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
-<!-- Js Plugins -->
-<script src="../../js/jquery-3.3.1.min.js"></script>
-<script src="../../js/bootstrap.min.js"></script>
-<script src="../../js/jquery.nice-select.min.js"></script>
-<script src="../../js/jquery.nicescroll.min.js"></script>
-<script src="../../js/jquery.magnific-popup.min.js"></script>
-<script src="../../js/jquery.countdown.min.js"></script>
-<script src="../../js/jquery.slicknav.js"></script>
-<script src="../../js/mixitup.min.js"></script>
-<script src="../../js/owl.carousel.min.js"></script>
-<script src="../../js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+        crossorigin="anonymous"></script>
+    <!-- Js Plugins -->
+    <script src="../../js/jquery-3.3.1.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/jquery.nice-select.min.js"></script>
+    <script src="../../js/jquery.nicescroll.min.js"></script>
+    <script src="../../js/jquery.magnific-popup.min.js"></script>
+    <script src="../../js/jquery.countdown.min.js"></script>
+    <script src="../../js/jquery.slicknav.js"></script>
+    <script src="../../js/mixitup.min.js"></script>
+    <script src="../../js/owl.carousel.min.js"></script>
+    <script src="../../js/main.js"></script>
 
 </body>

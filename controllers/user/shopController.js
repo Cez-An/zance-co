@@ -135,6 +135,29 @@ const renderShopPage = async (req, res) => {
   }
 };
 
+const aboutpage = async(req,res)=>{
+  try {
+    res.render("user/about")
+  } catch (error) {
+    console.error("Error loading about page:", error);
+    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).render("error", { 
+      message: "Something went wrong when loading the about page."
+    });
+  }
+}
+
+const testing = async (req,res)=>{
+  try {
+    let page = "paymentFailed"
+    res.render(`user/${page}`)
+  } catch (error) {
+    console.error("Error loading about page:", error);
+    res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).render("error", { 
+      message: "Something went wrong when loading the about page."
+    });
+  }
+}
+
 export default {
-    renderShopPage
+    renderShopPage,aboutpage,testing
 }

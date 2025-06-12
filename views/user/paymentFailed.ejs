@@ -1,0 +1,55 @@
+<%-include("../../views/partials/user/header") %> 
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    min-height: 100vh;
+    background-color: #000;
+    display: flex;
+    flex-direction: column;
+  }
+  .payment-failed-wrapper {
+    flex: 1 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    padding: 2rem 0;
+  }
+  .card {
+    max-width: 400px;
+    width: 100%;
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    background-color: #fff;
+  }
+  .icon-failed {
+    font-size: 4rem;
+    color: #dc3545;
+  }
+</style>
+
+<div class="payment-failed-wrapper">
+  <div class="card text-center p-4">
+    <div class="card-body">
+      <div class="icon-failed mb-3">
+        <i class="bi bi-x-circle-fill"></i>
+      </div>
+      <h3 class="text-danger">Payment Failed</h3>
+      <p class="mb-3">Oops! Something went wrong while processing your payment.</p>
+      <p class="text-muted">Please try again .</p>
+      <div class="d-flex justify-content-center gap-3 mt-4">
+        <a href="/" class="btn btn-outline-secondary">Back to Home</a>&nbsp;&nbsp; &nbsp;&nbsp;
+        <a href="/retry-payment" class="btn btn-danger">Try Again</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<%-include("../../views/partials/user/footer") %>

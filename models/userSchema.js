@@ -54,6 +54,26 @@ const userSchema = new Schema(
       type: Number,
       default: 0,
     },
+    walletHistory: [{
+        amount: Number,             
+        type: {
+            type: String,         
+            enum: ['refund', 'top-up', 'purchase','referral-reward'], 
+        },
+        orderId: {
+            type: String,
+            required: false          
+        },
+        transactionId: {
+            type: String,
+            required: false          
+        },
+        date: {
+            type: Date,
+            default: Date.now
+        },
+    
+    }],
     referalCode: {
       type: String,
       required: false,

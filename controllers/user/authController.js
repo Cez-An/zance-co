@@ -62,7 +62,6 @@ env.config();
     });
   }
 
-
   const renderLogin = async (req, res) => {
     try {
       if (req.session.user) {
@@ -139,71 +138,154 @@ env.config();
     }
   };
     
-  const otpVerification = async (req, res) => {
-    try {
+  // const otpVerification = async (req, res) => {
+  //   try {
   
-      const { otp } = req.body;
+  //     const { otp } = req.body;
   
-      console.log("Stored OTP:", req.session.userOtp);
-      console.log("User Entered OTP:", otp);
+  //     console.log("Stored OTP:", req.session.userOtp);
+  //     console.log("User Entered OTP:", otp);
   
-      if (!req.session.userOtp) {
-        return res.status(STATUS_CODE.BAD_REQUEST).json({
-          success: false,
-          message: "OTP session expired. Request a new OTP.",
-        });
-      }
+  //     if (!req.session.userOtp) {
+  //       return res.status(STATUS_CODE.BAD_REQUEST).json({
+  //         success: false,
+  //         message: "OTP session expired. Request a new OTP.",
+  //       });
+  //     }
 
-      if (Date.now() > req.session.otpExpiry) {
-        return res.status(STATUS_CODE.BAD_REQUEST).json({
-          success: false,
-          message: "OTP has expired. Please request a new one.",
-        });
-      }
+  //     if (Date.now() > req.session.otpExpiry) {
+  //       return res.status(STATUS_CODE.BAD_REQUEST).json({
+  //         success: false,
+  //         message: "OTP has expired. Please request a new one.",
+  //       });
+  //     }
   
-      if (otp.toString() === req.session.userOtp.toString()) {
-        req.session.isOtpVerified = true;
-        const userId = await generateUserId();
-        const user = req.session.userData;
-        const passwordHash = await securePassword(user.password);
+  //     if (otp.toString() === req.session.userOtp.toString()) {
+  //       req.session.isOtpVerified = true;
+  //       const userId = await generateUserId();
+  //       const user = req.session.userData;
+  //       const passwordHash = await securePassword(user.password);
 
-        const saveUserData = new User({
-          name: user.name,
-          userId,
-          email: user.email,
-          phone: user.number,
-          password: passwordHash,
-        });
+  //       const saveUserData = new User({
+  //         name: user.name,
+  //         userId,
+  //         email: user.email,
+  //         phone: user.number,
+  //         password: passwordHash,
+  //       });
   
-        req.session.user = saveUserData;
-        const referalcode = req.session.referalcode;
+  //       req.session.user = saveUserData;
+  //       const referalcode = req.session.referalcode;
 
-        const referedUser = await User.findOne({ referalCode: referalcode });
-        console.log(referedUser);
+  //       const referedUser = await User.findOne({ referalCode: referalcode });
+  //       console.log(referedUser);
         
-        if (referedUser) {
-            saveUserData.wallet += 50; 
-            referedUser.wallet = (referedUser.wallet || 0) + 50;
-            referedUser.redeemedUsers.push(saveUserData._id);
-            await referedUser.save();
-        }
-        await saveUserData.save();
-        res
-          .status(STATUS_CODE.SUCCESS)
-          .json({ success: true, redirectUrl: "/user/login" });
-      } else {
-        res.status(STATUS_CODE.BAD_REQUEST).json({
-          success: false,
-          message: "Invalid OTP, Please try again backend",
-        });
-      }
-    } catch (error) {
-      console.error("Error Verifying OTP:", error);
-      res
-        .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
-        .json({ success: false, message: "An error occurred" });
+  //       if (referedUser) {
+  //           saveUserData.wallet += 50; 
+  //           referedUser.wallet = (referedUser.wallet || 0) + 50;
+  //           referedUser.redeemedUsers.push(saveUserData._id);
+  //           await referedUser.save();
+  //       }
+  //       await saveUserData.save();
+  //       res
+  //         .status(STATUS_CODE.SUCCESS)
+  //         .json({ success: true, redirectUrl: "/user/login" });
+  //     } else {
+  //       res.status(STATUS_CODE.BAD_REQUEST).json({
+  //         success: false,
+  //         message: "Invalid OTP, Please try again backend",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error Verifying OTP:", error);
+  //     res
+  //       .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
+  //       .json({ success: false, message: "An error occurred" });
+  //   }
+  // };
+
+  const otpVerification = async (req, res) => {
+  try {
+    const { otp } = req.body;
+
+    console.log("Stored OTP:", req.session.userOtp);
+    console.log("User Entered OTP:", otp);
+
+    if (!req.session.userOtp) {
+      return res.status(STATUS_CODE.BAD_REQUEST).json({
+        success: false,
+        message: "OTP session expired. Request a new OTP.",
+      });
     }
+
+    if (Date.now() > req.session.otpExpiry) {
+      return res.status(STATUS_CODE.BAD_REQUEST).json({
+        success: false,
+        message: "OTP has expired. Please request a new one.",
+      });
+    }
+
+    if (otp.toString() === req.session.userOtp.toString()) {
+      req.session.isOtpVerified = true;
+      const userId = await generateUserId();
+      const user = req.session.userData;
+      const passwordHash = await securePassword(user.password);
+
+      const saveUserData = new User({
+        name: user.name,
+        userId,
+        email: user.email,
+        phone: user.number,
+        password: passwordHash,
+        wallet: 0,
+        walletHistory: [],
+      });
+
+      req.session.user = saveUserData;
+      const referalcode = req.session.referalcode;
+
+      const referedUser = await User.findOne({ referalCode: referalcode });
+      // console.log(referedUser);
+
+      if (referedUser) {
+   
+        saveUserData.wallet += 50;
+        saveUserData.walletHistory.push({
+          amount: 50,
+          type: "referral-reward",
+          transactionId: `REF-${Date.now()}`,
+        });
+
+        referedUser.wallet = (referedUser.wallet || 0) + 50;
+        referedUser.walletHistory.push({
+          amount: 50,
+          type: "referral-reward",
+          transactionId: `REF-${Date.now()}-${saveUserData._id}`,
+        });
+
+        referedUser.redeemedUsers.push(saveUserData._id);
+
+        await referedUser.save();
+      }
+
+      await saveUserData.save();
+      res
+        .status(STATUS_CODE.SUCCESS)
+        .json({ success: true, redirectUrl: "/user/login" });
+    } else {
+      res.status(STATUS_CODE.BAD_REQUEST).json({
+        success: false,
+        message: "Invalid OTP, Please try again backend",
+      });
+    }
+  } catch (error) {
+    console.error("Error Verifying OTP:", error);
+    res
+      .status(STATUS_CODE.INTERNAL_SERVER_ERROR)
+      .json({ success: false, message: "An error occurred" });
+  }
   };
+
 
   async function sendVerificationEmail(email, otp) {
     try {

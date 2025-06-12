@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="zance&co">
+    <meta name="keywords" content="Male_Fashion, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title> | zance&co | </title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="../../css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="../../css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="../../css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="../../css/magnific-popup.css" type="text/css">
+    <link rel="stylesheet" href="../../css/nice-select.css" type="text/css">
+    <link rel="stylesheet" href="../../css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="../../css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="../../css/style.css" type="text/css">
+    <link rel="stylesheet" href="../../css/headerpartials.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        .offcanvas-menu-wrapper {
+        margin-top: 60px; /* Adjust based on your navbar height */
+        z-index: 1001;
+        position: relative;
+        }
+        .header {
+        z-index: 1000;
+        position: relative;
+        }
+        .offcanvas-menu-wrapper {
+        display: none;
+        background: white;
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 999;
+    }
+    
+    .offcanvas-menu-wrapper.active {
+        display: block;
+    }
+    .offcanvas__nav__option {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .offcanvas__nav__option a {
+        color: #000;
+        font-weight: 500;
+        font-size: 14px;
+    }
+    .offcanvas-close {
+      text-align: right;
+      padding: 15px 20px;
+      font-size: 24px;
+      cursor: pointer;
+      color: #000;
+    }
+
+    .offcanvas-close i {
+      transition: 0.3s;
+    }
+
+    .offcanvas-close i:hover {
+      color: #8a2be2; /* Light purple hover or match your theme */
+    }
+    .offcanvas-menu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 998;
+      display: none; /* hidden by default */
+    }
+    .offcanvas-menu-overlay.active {
+      display: block;
+    }
+  
+    a {
+        text-decoration: none;
+    }
+
+    .text-muted {
+        color: #6c757d !important;
+    }
+    
+    </style>
+
+</head>
+
+<body>
+
+    <!-- Offcanvas Menu Begin -->
+    <div class="offcanvas-menu-overlay"></div>
+    <div class="offcanvas-menu-wrapper">
+       <div class="offcanvas-close">
+        <i class="fa fa-times" id="close-offcanvas"></i>
+        </div>
+
+        <div class="offcanvas__nav__option">
+            <a href="/user/wishlist"><i class="bi bi-suit-heart"></i></a>
+            <a href="/user/cart"><i class="bi bi-bag"></i></a>
+            <% if (locals.user) { %>
+                <div class="dropdown">
+                   <a class="sign-in-link"  id="user-name"><%=locals.user.name%></a>
+                   <div class="dropdown-content">
+                       <a href="/user/userProfile">User Profile</a>
+                       <a href="/user/order">Orders</a>
+                       <!-- <a href="/user/userProfile">User Profile</a> -->
+                       <a href="/user/logout">Logout</a>
+                   </div>
+                </div>
+                <% } else { %>
+                
+               <a href="/user/signup">SIGN UP</a>
+               <a href="/user/login">LOG IN</a>
+
+               <% } %>
+
+        </div>
+        <div id="mobile-menu-wrap"></div>
+        <div class="offcanvas__text">
+            <p>Your Ultimate Keyboard Destination</p>
+        </div>
+    </div>
+    <!-- Offcanvas Menu End -->
+
+    <!-- Header Section Begin -->
+    <header class="header">
+        
+        <div class="container">
+            <div class="row nav-bar-size">
+                <div class="col-lg-3 col-md-3">
+                    <div class="header__logo">
+                        <a href="/user"><img class="nav_logo" src="../../img/logo/ZANCE&co_navbar_logo.svg" alt=""></a>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <nav class="header__menu mobile-menu">
+                        <ul>
+                            <li class="active"><a href="/user">HOME</a></li>
+                            <li><a href="/user/renderShopPage">SHOP</a></li>                         
+                            <li><a href="/user/about">ABOUT</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-lg-3 col-md-3">
+                    <div class="header__nav__option">
+                        <a href="/user/wishlist"><i class="bi bi-suit-heart"></i></a>
+                        <a href="/user/cart"><i class="bi bi-bag"></i></a>
+
+                        <% if (locals.user) { %>
+                         <div class="dropdown">
+                            <a  class="sign-in-link" id="user-name"><%=locals.user.name%></a>
+                            <div class="dropdown-content">
+                                <a href="/user/userProfile">User Profile</a>
+                                <a href="/user/order">Orders</a>
+                                <a href="/user/logout">Logout</a>
+                            </div>
+                         </div>
+                         <% } else { %>
+                         
+                        <a href="/user/signup">SIGN UP</a>
+                        <a href="/user/login">LOG IN</a>
+
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+            <div class="canvas__open"><i class="fa fa-bars text-light"></i></div>
+        </div>
+    </header>
+    
+    <!-- Header Section End -->

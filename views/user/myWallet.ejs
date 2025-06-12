@@ -180,7 +180,32 @@
         </div>
 
 
+    <script>
+    const offcanvasWrapper = document.querySelector('.offcanvas-menu-wrapper');
+    const offcanvasOverlay = document.querySelector('.offcanvas-menu-overlay');
+    const openBtn = document.querySelector('.canvas__open');
+    const closeBtn = document.getElementById('close-offcanvas');
 
+    // Open menu
+    openBtn.addEventListener('click', () => {
+        offcanvasWrapper.classList.add('active');
+        offcanvasOverlay.classList.add('active');
+    });
+
+    // Close menu
+    closeBtn.addEventListener('click', () => {
+        offcanvasWrapper.classList.remove('active');
+        offcanvasOverlay.classList.remove('active');
+    });
+
+    // Close menu when clicking on overlay
+    offcanvasOverlay.addEventListener('click', () => {
+        offcanvasWrapper.classList.remove('active');
+        offcanvasOverlay.classList.remove('active');
+    });
+
+
+    </script>
     
     <!-- Js Plugins -->
     <script src="../../js/jquery-3.3.1.min.js"></script>

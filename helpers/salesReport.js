@@ -8,49 +8,54 @@ const __dirname = path.dirname(__filename);
 
 
 export const salesReportPDF = (salesData) => {
-    
-    let totalOrders = salesData.length;
-    let totalAmount = 0;
-    let totalDiscounts = 0;
+  let totalOrders = salesData.length;
+  let totalAmount = 0;
+  let totalDiscounts = 0;
 
-    salesData.forEach(order => {
-    order.orderItems.forEach(item => {
-        totalAmount += item.basePrice;
-        totalDiscounts += order.coupon || 0;
-    });
-    });
+  let serial = 1;
 
-    let netSales = totalAmount - totalDiscounts;
+  let rows = salesData.map(order => {
+    return order.orderItems.map(item => {
+      const isCancelledOrReturned = item.individualStatus === 'Cancelled' || item.individualStatus === 'Returned';
 
-    let serial = 1;
-    let rows = salesData.map(order => {
-    return order.orderItems.map(item => `
+      const effectivePrice = isCancelledOrReturned ? 0 : (item.basePrice || 0) * item.quantity;
+      const discount = isCancelledOrReturned ? 0 : (order.coupon || 0);
+
+      // Accumulate only if not Cancelled/Returned
+      if (!isCancelledOrReturned) {
+        totalAmount += effectivePrice;
+        totalDiscounts += discount;
+      }
+
+      return `
         <tr class="text-center">
             <td>${serial++}</td>
             <td>${order.orderId}</td>
             <td>${order.userId?.name || ' '}</td>
             <td>${new Date(order.createdAt).toISOString().split('T')[0]}</td>
-            
             <td>${item.quantity}</td>
-            <td>₹${item.basePrice * item.quantity}</td>
-            <td>₹${order.coupon || 0}</td>
+            <td>₹${effectivePrice}</td>
+            <td>₹${discount}</td>
             <td>${order.paymentMethod}</td>
         </tr>
-    `).join('');
+      `;
     }).join('');
+  }).join('');
 
-    return `
+  let netSales = totalAmount - totalDiscounts;
+
+  return `
     <html>
     <head>
         <style>
             body { font-family: Arial, sans-serif; padding: 20px; }
             table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-            th, td { border: 0.5px solid black; padding: 8px; text-align: center; font-size : 0.7rem }
-            th { background-color: #f2f2f2; font-size : 0.7rem }
+            th, td { border: 0.5px solid black; padding: 8px; text-align: center; font-size: 0.7rem; }
+            th { background-color: #f2f2f2; font-size: 0.7rem; }
         </style>
     </head>
     <body>
-        <h2 style="text-align : center">zance&co Sales Report</h2>
+        <h2 style="text-align: center">zance&co Sales Report</h2>
 
         <table>
             <thead>
@@ -59,7 +64,6 @@ export const salesReportPDF = (salesData) => {
                     <th>Order ID</th>
                     <th>Customer</th>
                     <th>Order Date</th>
-                    
                     <th>Qty</th>
                     <th>Amount (₹)</th>
                     <th>Discount (₹)</th>
@@ -94,7 +98,6 @@ export const salesReportPDF = (salesData) => {
     </html>`;
 };
 
-
 export const salesReportExcel = async (salesData) => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Sales Report');
@@ -118,11 +121,15 @@ export const salesReportExcel = async (salesData) => {
 
     salesData.forEach(order => {
         order.orderItems.forEach(item => {
-            const itemAmount = item.basePrice * item.quantity;
-            const itemDiscount = order.coupon || 0;
+            const isCancelledOrReturned = ['Cancelled', 'Returned'].includes(item.individualStatus);
+            const itemAmount = isCancelledOrReturned ? 0 : item.basePrice * item.quantity;
+            const itemDiscount = isCancelledOrReturned ? 0 : (order.coupon || 0);
             const productName = item.product?.name || item.product?.productId || item.name || 'N/A';
-            totalAmount += itemAmount;
-            totalDiscounts += itemDiscount;
+
+            if (!isCancelledOrReturned) {
+                totalAmount += itemAmount;
+                totalDiscounts += itemDiscount;
+            }
 
             worksheet.addRow({
                 slNo: serial++,
@@ -134,7 +141,7 @@ export const salesReportExcel = async (salesData) => {
                 amount: `₹${itemAmount.toLocaleString('en-IN')}`,
                 discount: `₹${itemDiscount.toLocaleString('en-IN')}`,
                 paymentMethod: order.paymentMethod,
-                status: order.status
+                status: item.individualStatus || order.status
             });
         });
     });
@@ -142,6 +149,7 @@ export const salesReportExcel = async (salesData) => {
     const totalOrders = salesData.length;
     const netSales = totalAmount - totalDiscounts;
 
+    // Summary Rows
     worksheet.addRow({});
     worksheet.addRow({ slNo: 'Summary:', orderId: 'Total Orders', amount: totalOrders });
     worksheet.addRow({ slNo: '', orderId: 'Total Amount (₹)', amount: `₹${totalAmount.toLocaleString('en-IN')}` });
@@ -153,3 +161,4 @@ export const salesReportExcel = async (salesData) => {
 
     return filePath;
 };
+

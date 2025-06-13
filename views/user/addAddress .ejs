@@ -159,10 +159,10 @@
                                     <!-- Add more countries if needed -->
                                 </select>
                             </div>
-                            <div class="mb-3">
+                            <!-- <div class="mb-3">
                                 <label for="altNumber" class="form-label">Alternate Phone Number (Optional)</label>
                                 <input type="tel" id="altNumber" name="altNumber" class="form-control form-control-sm" placeholder="e.g., 9876543210">
-                            </div>
+                            </div> -->
                         </div>
 
                         <div class="d-flex  gap-4">
@@ -248,7 +248,7 @@ document.getElementById("addAddressForm").addEventListener('submit', async (even
     const fields = {
         fullName: document.getElementById('fullName'),
         phone: document.getElementById('phone'),
-        altNumber: document.getElementById('altNumber'),
+        // altNumber: document.getElementById('altNumber'),
         addressLine1: document.getElementById('addressLine1'),
         addressLine2: document.getElementById('addressLine2'),
         landmark: document.getElementById('landmark'),
@@ -299,16 +299,16 @@ document.getElementById("addAddressForm").addEventListener('submit', async (even
     }
 
     // Alt number (if provided)
-    const altNumber = fields.altNumber.value.trim();
-    if (altNumber) {
-        if (!phonePattern.test(altNumber) || /^(\d)\1{9}$/.test(altNumber)) {
-            errorFields.phone.innerText = "Alternate number must be valid and not all same digits";
-            hasError = true;
-        } else if (altNumber === phone) {
-            errorFields.phone.innerText = "Primary and alternate numbers must be different";
-            hasError = true;
-        }
-    }
+    // const altNumber = fields.altNumber.value.trim();
+    // if (altNumber) {
+    //     if (!phonePattern.test(altNumber) || /^(\d)\1{9}$/.test(altNumber)) {
+    //         errorFields.phone.innerText = "Alternate number must be valid and not all same digits";
+    //         hasError = true;
+    //     } else if (altNumber === phone) {
+    //         errorFields.phone.innerText = "Primary and alternate numbers must be different";
+    //         hasError = true;
+    //     }
+    // }
 
     // Address Line 1
     const addressLine1Pattern = /^[a-zA-Z0-9\s,.-]+$/;
@@ -362,7 +362,7 @@ document.getElementById("addAddressForm").addEventListener('submit', async (even
     const formData = {
         fullName,
         phone,
-        altNumber,
+        // altNumber,
         addressLine1,
         addressLine2: fields.addressLine2.value.trim(),
         landmark: fields.landmark.value.trim(),

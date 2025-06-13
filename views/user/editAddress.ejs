@@ -149,12 +149,12 @@
                                         <!-- Add more countries if needed -->
                                     </select>
                                 </div>
-                                <div class="mb-3">
+                                <!-- <div class="mb-3">
                                     <label for="altNumber" class="form-label">Alternate Phone Number (Optional)</label>
                                     <input type="tel" id="altNumber" name="altNumber" class="form-control form-control-sm" 
                                            value="<%= address.altPhone %>">
                                            
-                                </div>
+                                </div> -->
                             </div>
                         
                             <div class="d-flex justify-content-between align-items-center mt-3">
@@ -246,7 +246,7 @@
             city: document.getElementById('city'),
             state: document.getElementById('state'),
             country: document.getElementById('country'),
-            altNumber: document.getElementById('altNumber'),
+            // altNumber: document.getElementById('altNumber'),
             zipCode: document.getElementById('zipCode'),
             addressType: document.querySelector('input[name="addressType"]:checked'),
             index: document.getElementById('index'),
@@ -301,11 +301,11 @@
             hasError = true;
         }
 
-        const altNumber = fields.altNumber.value.trim();
-        if (altNumber && (!/^\d{10}$/.test(altNumber) || /^(\d)\1{9}$/.test(altNumber))) {
-            errorFields.phone.innerText = "Alternate number must be a valid 10-digit number (not all same digits)";
-            hasError = true;
-        }
+        // const altNumber = fields.altNumber.value.trim();
+        // if (altNumber && (!/^\d{10}$/.test(altNumber) || /^(\d)\1{9}$/.test(altNumber))) {
+        //     errorFields.phone.innerText = "Alternate number must be a valid 10-digit number (not all same digits)";
+        //     hasError = true;
+        // }
 
         const city = fields.city.value.trim();
         const cityPattern = /^[A-Za-z]+(?: [A-Za-z]+)*$/;
@@ -351,7 +351,7 @@
             city,
             state,
             country: fields.country.value,
-            altNumber,
+            // altNumber,
             zipCode,
             addressType,
             index: fields.index.value,
